@@ -174,27 +174,54 @@
   font-size: 12px;
 }
 
-/* Brand mark as a full watermark behind the panel.
-   It was previously 120vh tall and pushed past the diagonal, so it was
-   clipped on three sides at once and read as an accidental crop rather than
-   a deliberate mark. Now it is sized and placed to sit WHOLE inside the dark
-   panel: 64vh centred vertically spans 18vh–82vh, and at every one of those
-   heights the 12° cut is further right than the mark's own edge, so no part
-   of it disappears under the white.
-   BrandGlyph paints discs as well as paths, so it is tinted via `color`
+/* Brand mark as a watermark straddling the 12° seam.
+   Drawn twice at identical coordinates, one copy per side, because no single
+   tint reads at watermark opacity on both near-black and warm paper: brand
+   blue that lifts off the dark panel vanishes into the light one. Each copy
+   is clipped to its own side — the dark one by the viewport, the light one by
+   `.auth`'s existing clip-path — so the two halves meet exactly on the seam
+   and read as one mark passing beneath it.
+   BrandGlyph paints discs as well as paths, so each is tinted via `color`
    (it renders with currentColor) rather than by filling <path> only. */
+.ghost,
+.ghostLight {
+  /* Shared geometry — the two halves MUST resolve to the same rectangle or
+     the mark visibly breaks at the seam. Both anchor to the viewport's right
+     edge (`.auth` is itself flush right) and to its vertical centre, so the
+     same three values place both.
+     Sized to sit whole between top and bottom: the complaint about the old
+     mark was that it read as a crop, and bleeding it off the viewport edges
+     would bring that straight back. Placed so its body spans the cut. */
+  top: 50%;
+  /* The seam runs from `panelW` off the right edge at the top to
+     `panelW + slant` at the bottom, so at the vertical centre it sits at
+     `panelW + slant/2`. Anchoring there and then translating by half the
+     mark's OWN width centres it on the seam at any viewport size, rather
+     than by a hand-tuned offset that only balances at one width. */
+  inset-inline-end: calc(var(--panelW) + var(--slant) * 0.5);
+  height: min(82vh, 660px);
+  width: auto;
+  transform: translate(50%, -50%);
+  pointer-events: none;
+}
+.root[dir="rtl"] .ghost,
+.root[dir="rtl"] .ghostLight {
+  transform: translate(-50%, -50%);
+}
 .ghost {
   position: fixed;
-  top: 50%;
-  inset-inline-end: calc(var(--panelW) + var(--slant) * 0.9);
-  height: min(64vh, 500px);
-  width: auto;
-  transform: translateY(-50%);
-  /* Slightly stronger than before to hold the same presence at the smaller
-     size, but still well under the text that crosses it. */
-  opacity: 0.07;
+  /* Brand blue lifted off the near-black panel. */
   color: var(--brand);
-  pointer-events: none;
+  opacity: 0.16;
+}
+.ghostLight {
+  /* Absolute, not fixed: `.auth` is the containing block, and its clip-path
+     then trims this half exactly along the 12° seam. */
+  position: absolute;
+  /* Ink rather than brand blue — the same blue that reads as a highlight on
+     near-black disappears into warm paper at watermark opacity. */
+  color: var(--ink);
+  opacity: 0.05;
 }
 
 /* ══ auth panel (white, 12° cut) ═════════════════════════ */
@@ -234,6 +261,9 @@
 .card {
   width: min(380px, 88%);
   padding: 32px 0;
+  /* Above the light half of the watermark, which is a sibling in `.auth`. */
+  position: relative;
+  z-index: 1;
 }
 .chip {
   display: inline-block;
@@ -603,7 +633,8 @@
   .stats {
     margin-top: 28px;
   }
-  .ghost {
+  .ghost,
+  .ghostLight {
     display: none;
   }
   .authEdge {
