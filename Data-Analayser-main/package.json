@@ -12,7 +12,8 @@
     "db:migrate": "node scripts/migrate-json-to-db.mjs",
     "db:restore-from-d1": "node scripts/migrate-d1-to-postgres.mjs",
     "db:export": "node scripts/export-data.mjs",
-    "vapid:gen": "node scripts/gen-vapid.mjs"
+    "vapid:gen": "node scripts/gen-vapid.mjs",
+    "verify:isolation": "node scripts/verify-isolation.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
