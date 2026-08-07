@@ -206,12 +206,51 @@ export function rawBinder(): {
 }
 
 // ── Schema initialisation guard ────────────────────────────────────────────
-// Ensures the DDL block runs at most once per process lifetime.  Concurrent
-// callers (typical on Vercel cold-start) all await the same promise instead
-// of racing through CREATE / ALTER statements on a single-connection pool.
+// Ensures the DDL block runs at most once per database per process lifetime.
+// Concurrent callers (typical on Vercel cold-start) all await the same promise
+// instead of racing through CREATE / ALTER statements on a single-connection
+// pool.
+//
+// Keyed PER DATABASE, not per process: one warm lambda serves requests for
+// several workspaces, and a single shared promise would let workspace B skip
+// its own bootstrap because workspace A had already run — leaving a freshly
+// provisioned database without a schema, or a migration unapplied.
 const globalForSchema = globalThis as unknown as {
-  __mtSchemaPromise?: Promise<void>;
+  __mtSchemaPromises?: Map<string, Promise<void>>;
 };
+
+/** Identity of the database `ensureSchema()` is about to bootstrap. */
+function schemaKey(): string {
+  if (usingD1()) return "d1";
+  if (hasControlPlane()) return `ws:${requireBoundWorkspace().slug}`;
+  return "single";
+}
+
+/**
+ * Memoise a bootstrap promise per database. A rejected bootstrap is evicted so
+ * the next request retries rather than inheriting a permanently poisoned
+ * process.
+ */
+function oncePerDatabase(key: string, run: () => Promise<void>): Promise<void> {
+  let cache = globalForSchema.__mtSchemaPromises;
+  if (!cache) {
+    cache = new Map<string, Promise<void>>();
+    globalForSchema.__mtSchemaPromises = cache;
+  }
+  const existing = cache.get(key);
+  if (existing) return existing;
+  const promise = run().catch((err) => {
+    cache.delete(key);
+    throw err;
+  });
+  cache.set(key, promise);
+  return promise;
+}
+
+/** Drop one database's memoised bootstrap so the next call re-runs it. */
+function clearSchemaCache(key: string): void {
+  globalForSchema.__mtSchemaPromises?.delete(key);
+}
 
 /**
  * Schema fingerprint. Bump this string any time `_ensureSchemaOnce` gains
@@ -642,29 +681,25 @@ export async function ensureSchema(): Promise<void> {
   // In D1 mode (the default) apply the SQLite schema (d1/schema.sql)
   // idempotently on first use, so a fresh or stale D1 self-heals — the D1
   // analogue of the Postgres DDL bootstrap below. Guarded by a flag row so warm
-  // processes pay just one SELECT; cached per process via __mtSchemaPromise.
+  // processes pay just one SELECT; memoised per database by ensureSchema().
   if (usingD1()) {
-    if (globalForSchema.__mtSchemaPromise) return globalForSchema.__mtSchemaPromise;
-    // Seed the changelog here too, not just on the Postgres path below — D1 is
-    // the default database, so skipping it left the Product-updates feed frozen
-    // on whatever was already in `news_posts` while the version badge (derived
-    // from releaseNotes.ts) marched on without it.
-    globalForSchema.__mtSchemaPromise = (async () => {
+    // Seed the changelog here too, not just on the Postgres path below —
+    // skipping it left the Product-updates feed frozen on whatever was already
+    // in `news_posts` while the version badge (derived from releaseNotes.ts)
+    // marched on without it.
+    return oncePerDatabase("d1", async () => {
       await ensureD1SchemaOnce();
       await _seedReleaseNotes();
-    })();
-    return globalForSchema.__mtSchemaPromise;
+    });
   }
-  if (globalForSchema.__mtSchemaPromise) return globalForSchema.__mtSchemaPromise;
   // Ensure DDL first, then seed the release-notes changelog. The seed lives
   // outside _ensureSchemaOnce's "nothing to do" early return so it still runs
   // on warm, already-bootstrapped databases.
-  globalForSchema.__mtSchemaPromise = (async () => {
+  return oncePerDatabase(schemaKey(), async () => {
     await _ensureSchemaOnce();
     await _seedReleaseNotes();
     await _ensureMustChangePasswordColumn();
-  })();
-  return globalForSchema.__mtSchemaPromise;
+  });
 }
 
 /**
@@ -907,7 +942,7 @@ async function ensureD1SchemaOnce(): Promise<void> {
     await ensureD1Fts();
   } catch {
     // Allow a retry on the next call instead of caching a rejected promise.
-    globalForSchema.__mtSchemaPromise = undefined;
+    clearSchemaCache("d1");
   }
 }
 
@@ -927,7 +962,7 @@ export async function resetSchemaCache(): Promise<void> {
   // No Postgres DDL to replay in D1 mode (the default); just drop the cached
   // promise so a later USE_D1=0 boot re-runs the bootstrap.
   if (usingD1()) {
-    globalForSchema.__mtSchemaPromise = undefined;
+    clearSchemaCache("d1");
     return;
   }
   const q = sql();
@@ -949,8 +984,10 @@ export async function resetSchemaCache(): Promise<void> {
     )
   `;
   // Bust the in-process promise cache so the next ensureSchema() call
-  // actually hits the database instead of returning the cached void.
-  globalForSchema.__mtSchemaPromise = undefined;
+  // actually hits the database instead of returning the cached void. Scoped to
+  // the database this call ran against — resetting one workspace's schema must
+  // not force every other workspace to re-bootstrap.
+  clearSchemaCache(schemaKey());
 }
 
 /**
@@ -959,7 +996,6 @@ export async function resetSchemaCache(): Promise<void> {
  * forces every existing user to change their admin-set password on next login.
  * Runs outside _ensureSchemaOnce's "all applied" early-return (like the
  * release-notes seed) so it still applies on warm, already-bootstrapped DBs.
- * Postgres is dormant (the app runs on D1), so this is best-effort.
  */
 async function _ensureMustChangePasswordColumn(): Promise<void> {
   const q = sql();
