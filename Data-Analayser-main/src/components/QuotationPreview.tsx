@@ -209,8 +209,13 @@ interface Props {
   boqMode?: boolean;
 }
 
-const DEFAULT_FOOTER_TEXT =
-  "Address: Amman- Gardens street- Khawaja Complex No.65- Tel: +962 65560272 Fax: +962 65560275";
+/**
+ * Fallback used when a quotation carries no footer and the workspace has not
+ * set one. Deliberately blank: the footer is a company's postal address and
+ * phone numbers, so any hardcoded value prints the wrong company's contact
+ * details. An unset footer renders as empty rather than as someone else's.
+ */
+const DEFAULT_FOOTER_TEXT = "";
 
 function money(n: number): string {
   return `JOD ${n.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}`;

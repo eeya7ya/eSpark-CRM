@@ -40,8 +40,12 @@ export interface AppSettings {
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
   defaultTerms: [...DEFAULT_TERMS],
-  footerText:
-    "Address: Amman- Gardens street- Khawaja Complex No.65- Tel: +962 65560272 Fax: +962 65560275",
+  // Deliberately blank. The footer carries a company's postal address and
+  // phone numbers, so there is no safe generic default — a hardcoded one
+  // prints the wrong company's contact details on every quotation until an
+  // admin notices. Each workspace supplies its own via Admin → Settings
+  // (and, once provisioned, from its `companyDetails`).
+  footerText: "",
   brandVariants: [...BRAND_VARIANTS],
   techProposalAssets: { ...DEFAULT_TECH_PROPOSAL_ASSETS },
 };

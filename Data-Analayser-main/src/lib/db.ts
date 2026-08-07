@@ -65,36 +65,43 @@ function getUrl(): string {
 }
 
 /**
- * Returns a lazily-created, process-wide `postgres` tagged-template client.
- * Usage:
- *   const q = sql();
- *   const rows = await q`select * from users where id = ${id}`;
- */
-/**
- * Whether the app talks to Cloudflare D1 (the default) rather than Postgres.
+ * Whether the app talks to Cloudflare D1 rather than Postgres.
  *
- * D1 is now the app's primary database. Postgres/Neon has been retired, so the
- * app runs with no Postgres connection string configured at all. Setting
- * `USE_D1=0` opts back into the (dormant) Postgres path — kept only as an
- * emergency fallback for anyone who still has a Postgres URL.
+ * **Postgres (Neon) is the primary database.** It is the engine the
+ * multi-workspace model is built on: a workspace is a Postgres database, and
+ * routing a request to one is a matter of picking its connection string.
+ *
+ * D1 remains fully implemented as a fallback — the dialect shim
+ * (`db-d1-sql.ts`), schema (`d1/schema.sql`) and admin tooling all still work
+ * — so `USE_D1=1` is a one-env-var rollback if Postgres has to be abandoned in
+ * a hurry.
+ *
+ * Resolution order:
+ *   1. `USE_D1=0` / `USE_D1=1` — explicit override, wins either way.
+ *   2. A Postgres connection string is configured → Postgres.
+ *   3. Otherwise D1, if it happens to be configured.
+ *   4. Neither → Postgres, so the thrown error names the connection string
+ *      that is actually expected rather than the fallback engine.
  */
 export function usingD1(): boolean {
   // Explicit override wins either way.
   if (process.env.USE_D1 === "0") return false;
   if (process.env.USE_D1 === "1") return true;
-  // Unset (the normal case): use D1 when it's configured.
-  if (isD1Configured()) return true;
-  // D1 not configured: only fall back to Postgres if a Postgres URL actually
-  // exists (a not-yet-migrated environment). With Postgres removed too, stay on
-  // D1 so the error points at the D1 setup — the intended database — instead of
-  // a misleading "no Postgres connection string".
-  return !hasPostgresUrl();
+  // Unset (the normal case): Postgres is primary whenever it is configured.
+  if (hasPostgresUrl()) return false;
+  // No Postgres URL — keep a D1-only environment working rather than failing.
+  return isD1Configured();
 }
 
+/**
+ * Returns a lazily-created, process-wide `postgres` tagged-template client.
+ * Usage:
+ *   const q = sql();
+ *   const rows = await q`select * from users where id = ${id}`;
+ */
 export function sql(): Sql {
-  // D1 is the default database: route every query through the D1 engine
-  // (src/lib/db-d1-sql.ts) instead of Postgres. Only `USE_D1=0` falls back to
-  // the legacy Postgres client (which then needs a connection string).
+  // D1 fallback: route every query through the dialect shim
+  // (src/lib/db-d1-sql.ts) instead of the Postgres client.
   if (usingD1()) {
     return getD1Sql() as unknown as Sql;
   }
@@ -110,8 +117,8 @@ export function sql(): Sql {
       // Promise.all only helps if there are multiple connections to dispatch
       // across. Previously `max: 1` serialised those queries and was a major
       // cause of the "dashboard times out" symptom. Three is still tiny
-      // enough that 100 concurrent warm lambdas stay well under the
-      // Supavisor client budget.
+      // enough that 100 concurrent warm lambdas stay well under the pooler's
+      // client budget (Neon's pooled endpoint, PgBouncer in transaction mode).
       max: 3,
       idle_timeout: 20,
       connect_timeout: 10,

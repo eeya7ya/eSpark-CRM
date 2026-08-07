@@ -9,11 +9,20 @@ behind its own switch so you can enable them one at a time.
 ## 0. Current stack (where things are now)
 
 - **App hosting:** Vercel (Next.js, Node runtime).
-- **Database:** Neon (serverless Postgres) — holds all your data after the recovery.
+- **Database:** Neon (serverless Postgres) — the live database. Set
+  `DATABASE_URL` to the **pooled** connection string.
 - **Files + images + backups:** Cloudflare R2.
-- **D1:** holds a full copy of the data (schema + rows) and is ready to become
-  the live database once the app engine is verified (see §4).
+- **D1:** a fully-implemented fallback engine, not in use. `USE_D1=1` switches
+  the app back to it in one variable if Postgres ever has to be abandoned in a
+  hurry. Note that D1 does **not** support multiple workspaces — it is a
+  single-database rollback path only.
 - **Supabase:** gone.
+
+> **If you are switching back to Neon from a period of running on D1:** the
+> newest rows are in whichever engine was live. Migrate before flipping —
+> `npm run db:restore-from-d1`, or `scripts/migrate-d1-to-postgres.mjs`.
+> Otherwise the app will come up on whatever Neon last held, which may be
+> stale. Take an R2 backup first either way.
 
 ---
 
@@ -33,7 +42,7 @@ Set these in **Vercel → Project → Settings → Environment Variables → Pro
 | `CRON_SECRET` | protects the daily backup cron | §2 |
 | `RESTORE_SECRET` | protects the one-shot restore endpoint | §5 (remove after use) |
 | `OFFLOAD_QUOTATION_IMAGES` | `1` = images → R2 | §3 (off by default) |
-| `USE_D1` | `1` = app uses D1 instead of Postgres | §4 (off by default) |
+| `USE_D1` | `1` = fall back to D1 instead of Postgres | rollback only (off by default) |
 
 > After changing any env var you must **Redeploy** for it to take effect.
 

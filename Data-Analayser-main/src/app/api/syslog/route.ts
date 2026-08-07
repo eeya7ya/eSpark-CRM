@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser, requireAdmin } from "@/lib/auth";
-import { sql } from "@/lib/db";
+import { sql, rawBinder, usingD1 } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,9 +30,15 @@ const globalForClickLog = globalThis as unknown as { __clickLogReady?: boolean }
 
 async function ensureClickLog(q: SqlClient): Promise<void> {
   if (globalForClickLog.__clickLogReady) return;
-  await q`
+  // `integer primary key` is SQLite's implicit rowid alias and auto-assigns.
+  // Postgres treats the same declaration as a plain NOT NULL integer, so an
+  // insert that omits `id` fails there — it needs an explicit identity column.
+  const idColumn = usingD1()
+    ? "id integer primary key"
+    : "id bigserial primary key";
+  await q.unsafe(`
     create table if not exists click_log (
-      id         integer primary key,
+      ${idColumn},
       user_id    integer,
       username   text,
       path       text not null,
@@ -40,7 +46,7 @@ async function ensureClickLog(q: SqlClient): Promise<void> {
       tag        text,
       created_at text not null
     )
-  `;
+  `);
   globalForClickLog.__clickLogReady = true;
 }
 
@@ -67,19 +73,19 @@ export async function POST(req: NextRequest) {
     await ensureClickLog(q);
 
     const now = new Date().toISOString();
-    const params: Array<string | number | null> = [];
-    for (const ev of events) {
-      const t = typeof ev?.t === "string" ? ev.t.slice(0, 40) : now;
-      params.push(
-        user.id,
-        user.username,
-        String(ev?.path ?? "").slice(0, 300),
-        String(ev?.label ?? "").slice(0, 200),
-        String(ev?.tag ?? "").slice(0, 40),
-        t,
-      );
-    }
-    const rowSql = events.map(() => "(?, ?, ?, ?, ?, ?)").join(", ");
+    // rawBinder emits the right placeholder for the active engine (`?` on D1,
+    // `$n` on Postgres) and collects the params in matching order.
+    const { P, params } = rawBinder();
+    const rowSql = events
+      .map((ev) => {
+        const t = typeof ev?.t === "string" ? ev.t.slice(0, 40) : now;
+        return `(${P(user.id)}, ${P(user.username)}, ${P(
+          String(ev?.path ?? "").slice(0, 300),
+        )}, ${P(String(ev?.label ?? "").slice(0, 200))}, ${P(
+          String(ev?.tag ?? "").slice(0, 40),
+        )}, ${P(t)})`;
+      })
+      .join(", ");
     await q.unsafe(
       `insert into click_log (user_id, username, path, label, tag, created_at) values ${rowSql}`,
       params,

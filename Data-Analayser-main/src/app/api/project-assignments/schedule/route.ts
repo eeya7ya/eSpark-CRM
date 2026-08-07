@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sql, ensureSchema } from "@/lib/db";
+import { sql, ensureSchema, usingD1 } from "@/lib/db";
 import { requireUser, canReadAll } from "@/lib/auth";
 import { hasModuleRole } from "@/lib/modules";
 
@@ -63,12 +63,20 @@ export async function GET(req: NextRequest) {
 
     // Board rows: every user holding any projects-module grant, with their
     // role(s) aggregated for a label.
-    // group_concat is the SQLite/D1 equivalent of array_agg; it returns a
-    // comma-separated string (no in-aggregate ORDER BY), so we split + sort the
-    // roles in JS to preserve the original `string[]` shape.
-    const technicianRows = (await q`
+    //
+    // The two engines spell this aggregate differently and neither the
+    // tagged template nor the D1 dialect rewriter can bridge it: SQLite's
+    // group_concat rejects DISTINCT when a separator argument is present,
+    // so a blanket string_agg→group_concat rewrite would produce invalid
+    // SQL. Pick the right form up front instead. Both return a
+    // comma-separated string (no in-aggregate ORDER BY), so the roles are
+    // split and sorted in JS below to preserve the `string[]` shape.
+    const rolesAgg = usingD1()
+      ? "group_concat(distinct umr.role)"
+      : "string_agg(distinct umr.role, ',')";
+    const technicianRows = (await q.unsafe(`
       select u.id, u.username, u.display_name,
-             group_concat(distinct umr.role) as roles
+             ${rolesAgg} as roles
       from users u
       join user_module_roles umr
         on umr.user_id = u.id
@@ -76,7 +84,7 @@ export async function GET(req: NextRequest) {
        and umr.revoked_at is null
       group by u.id, u.username, u.display_name
       order by coalesce(u.display_name, u.username)
-    `) as Array<{
+    `)) as Array<{
       id: number;
       username: string;
       display_name: string | null;
