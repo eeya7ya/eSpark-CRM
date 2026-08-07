@@ -1,0 +1,129 @@
+import { redirect } from "next/navigation";
+import { getSessionUser } from "@/lib/auth";
+import { sql, ensureSchema } from "@/lib/db";
+import { getAppSettings } from "@/lib/settings";
+import TopBar from "@/components/TopBar";
+import QuotationViewer from "@/components/QuotationViewer";
+import BackButton from "@/components/BackButton";
+
+export const dynamic = "force-dynamic";
+
+interface SearchParams {
+  id?: string;
+  tab?: string;
+  /**
+   * `view=1` forces the standalone read-only viewer instead of forwarding into
+   * the CRM drill-down. Used by the sales "View quotation" link: the quotation
+   * lives under the PRESALES folder/project, which the requesting salesperson
+   * can't open in the CRM — but they can view it read-only here (the
+   * /api/quotations GET grants them read as the RFQ requester).
+   */
+  view?: string;
+}
+
+/**
+ * Legacy /quotation route — V1.4C retired the old flat "Clients & Quotations"
+ * list (and its trash tab) in favour of the CRM drill-down. What's left is a
+ * thin compatibility shim so the many in-app links that only know a quotation
+ * id keep working, while pushing viewing into the CRM:
+ *
+ *   • /quotation             → redirect to the CRM hub (the old list is gone)
+ *   • /quotation?tab=trash    → redirect to the CRM trash
+ *   • /quotation?id=<n>       → resolve the quotation's project/company home and
+ *                               forward into the CRM viewer.
+ *
+ * Quotations with no project (NULL project_id) have no nested CRM home — the
+ * CRM viewer is mounted under a project — so they fall back to the standalone
+ * read-only viewer rendered here. That fallback is the only surface left that
+ * can display a project-less quotation; everything else flows through the CRM.
+ */
+export default async function QuotationPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const user = await getSessionUser();
+  if (!user) redirect("/login");
+
+  const sp = await searchParams;
+
+  // The old list view (and its trash tab) are gone — send users into the CRM.
+  if (!sp.id) {
+    redirect(sp.tab === "trash" ? "/crm/trash" : "/crm");
+  }
+
+  const quotationId = Number(sp.id);
+  if (!Number.isFinite(quotationId) || quotationId <= 0) {
+    redirect("/crm");
+  }
+
+  // Resolve the quotation's CRM home: quotation → project → folder → company.
+  // A complete, non-deleted chain means we can forward into the CRM viewer; a
+  // missing chain (project-less quotation, or a deleted project / folder)
+  // drops to the standalone viewer fallback below. A DB hiccup during
+  // resolution also falls through to the viewer (which surfaces its own load
+  // error gracefully) rather than 500-ing the whole page. The `redirect()`
+  // call stays OUTSIDE the try/catch so its NEXT_REDIRECT signal isn't
+  // swallowed.
+  let home:
+    | { id: number; project_id: number; folder_id: number; company_id: number | null }
+    | undefined;
+  try {
+    await ensureSchema();
+    const q = sql();
+    const rows = (await q`
+      select q.id, q.project_id, p.folder_id, f.company_id
+      from quotations q
+      join projects p on p.id = q.project_id and p.deleted_at is null
+      join client_folders f on f.id = p.folder_id and f.deleted_at is null
+      where q.id = ${quotationId} and q.deleted_at is null
+      limit 1
+    `) as Array<{
+      id: number;
+      project_id: number;
+      folder_id: number;
+      company_id: number | null;
+    }>;
+    home = rows[0];
+  } catch {
+    home = undefined;
+  }
+
+  // `view=1` skips the CRM redirect and renders the standalone read-only
+  // viewer below — so a salesperson who can't open the presales' CRM folder
+  // can still view the quotation they requested.
+  if (home && sp.view !== "1") {
+    redirect(
+      home.company_id
+        ? `/crm/company/${home.company_id}/clients/${home.folder_id}/${home.project_id}/quotations/${home.id}`
+        : `/crm/individual/${home.folder_id}/${home.project_id}/quotations/${home.id}`,
+    );
+  }
+
+  // View-only / fallback surface. Reached either by the sales "View
+  // quotation" link (`view=1`) for a quotation that lives under the presales
+  // folder they can't open in the CRM, or by a project-less quotation with no
+  // CRM home. Render the SAME read-only QuotationViewer the CRM uses, inside
+  // the same back-button + card chrome, so it reads as "inside the quotation"
+  // rather than a disconnected page — just without the authoring affordances
+  // (the viewer already locks editing for sales).
+  const appSettings = await getAppSettings();
+  return (
+    <div className="min-h-screen bg-magic-soft/40 print-root">
+      <div className="no-print">
+        <TopBar user={user} />
+      </div>
+      <main className="mx-auto max-w-screen-xl px-4 py-4 sm:px-6 print-main">
+        <div className="no-print mb-3 flex items-center justify-between gap-3">
+          <BackButton fallbackHref="/crm" fallbackLabel="Back" />
+          <span className="inline-flex items-center rounded-full border border-magic-border bg-white px-2.5 py-1 text-xs font-semibold text-magic-ink/60">
+            View only
+          </span>
+        </div>
+        <section className="rounded-2xl border border-magic-border bg-white p-5">
+          <QuotationViewer quotationId={quotationId} appSettings={appSettings} />
+        </section>
+      </main>
+    </div>
+  );
+}

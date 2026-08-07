@@ -1,0 +1,13 @@
+import TopBarSkeleton from "@/components/TopBarSkeleton";
+import PageLoader from "@/components/PageLoader";
+
+export default function AdminLoading() {
+  return (
+    <div className="min-h-screen bg-magic-soft/40">
+      <TopBarSkeleton />
+      <main className="max-w-5xl mx-auto px-6 py-6 lg:px-10">
+        <PageLoader fullScreen label="Loading admin…" />
+      </main>
+    </div>
+  );
+}
