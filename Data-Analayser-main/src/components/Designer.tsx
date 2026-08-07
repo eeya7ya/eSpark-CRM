@@ -1,0 +1,2319 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { SessionUser } from "@/lib/auth";
+import QuotationPreview, {
+  QuotationItem,
+  QuotationExtraColumn,
+  compressDataUrl,
+  REENCODE_THRESHOLD,
+} from "./QuotationPreview";
+import type { AppSettings } from "@/lib/settings";
+import {
+  DEFAULT_TERMS,
+  loadDraft,
+  saveDraft,
+  clearDraft,
+  saveEditingContext,
+  loadEditingContext,
+  loadEditDraft,
+  saveEditDraft,
+  clearEditDraft,
+  syncDraftTaxContext,
+  mergeQuotationItems,
+  PRICING_FACTORS,
+  type PricingCategory,
+} from "@/lib/quotationDraft";
+import QuickCatalogPicker from "./QuickCatalogPicker";
+import CataloguePickerModal from "./CataloguePickerModal";
+import InstallationCalculatorModal from "./InstallationCalculatorModal";
+import ExcelImportModal from "./ExcelImportModal";
+import ActionMenu from "./ActionMenu";
+import {
+  BRAND_VARIANTS,
+  DEFAULT_BRAND_VARIANT_ID,
+  getBrandVariant,
+} from "@/lib/brandVariants";
+import { computeQuotationTotals } from "@/lib/quotationTotals";
+import { type PrintKind } from "@/lib/printFilename";
+import { runQuotationPrint } from "@/lib/printQuotation";
+import Select from "@/components/Select";
+
+export interface ExistingQuotation {
+  id: number;
+  ref: string;
+  project_name: string;
+  client_name: string | null;
+  client_email: string | null;
+  client_phone: string | null;
+  sales_engineer: string | null;
+  prepared_by: string | null;
+  site_name: string;
+  tax_percent: number;
+  folder_id: number | null;
+  contact_id: number | null;
+  project_id?: number | null;
+  /**
+   * Server `updated_at` of this row. Used to validate the per-id edit
+   * draft on hydration — a draft branched from an older revision is stale
+   * and must not mask the fresher DB data.
+   */
+  updated_at?: string | null;
+  items_json: QuotationItem[];
+  config_json: {
+    showPictures?: boolean;
+    terms?: string[];
+    notes?: string;
+    salesPhone?: string;
+    clientIdentity?: "client" | "company";
+    extraColumns?: QuotationExtraColumn[];
+    scopeIntro?: string;
+    designEng?: string;
+    pricingCategory?: PricingCategory;
+    manualFactor?: number;
+    includeTax?: boolean;
+    taxInclusive?: boolean;
+    discountMode?: "percent" | "amount";
+    discountPercent?: number;
+    discountAmount?: number;
+    /**
+     * Brand variant id whose logo / cover / about-us artwork this
+     * quotation should render. Legacy rows (no value stored) fall back
+     * to the default eSpark bundle in `getBrandVariant()`.
+     */
+    brandVariantId?: string;
+    // Legacy marker. Quotations saved before the "Excl. Tax" button was
+    // changed from a display overlay to a real unit_price transform stored
+    // raw (tax-inclusive) prices even when taxInclusive=true. The hydration
+    // path below divides those rows on first open and then sets this flag
+    // on save so the migration only runs once per quotation.
+    taxPricesNormalized?: boolean;
+  };
+}
+
+interface ClientFolder {
+  id: number;
+  name: string;
+  client_email?: string | null;
+  client_phone?: string | null;
+  client_company?: string | null;
+  company_name?: string | null;
+  company_id?: number | null;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function readJson(res: Response): Promise<any> {
+  const text = await res.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: text.slice(0, 200) || res.statusText };
+  }
+}
+
+export default function Designer({
+  user,
+  existing,
+  initialFolderId,
+  initialContactId,
+  initialProjectId,
+  appSettings,
+  onSaved,
+}: {
+  user: SessionUser;
+  existing?: ExistingQuotation;
+  /**
+   * Folder id passed in via `?folder=<id>` when the user clicked
+   * "+ New quotation" from inside a client card on /quotation. We use
+   * it to pre-select the folder in create mode so the client fields
+   * are already locked in when the Designer first renders.
+   */
+  initialFolderId?: number | null;
+  /**
+   * Contact id passed in via `?contact=<id>` when the user clicked
+   * "+ New quotation" next to a person on the Company Detail page.
+   * The Designer carries it through the save payload so the new
+   * quotation is attributed to that person, not just to the company
+   * folder. Ignored in edit mode (we keep whatever the existing row
+   * already has).
+   */
+  initialContactId?: number | null;
+  /**
+   * Project id passed in via `?project=<id>` when the user clicked
+   * "+ New quotation in this project" from the /folder/[id] page.
+   * Carried straight through the save payload so the new quotation is
+   * filed under that project. Ignored in edit mode where we always
+   * preserve the existing row's project_id.
+   */
+  initialProjectId?: number | null;
+  /**
+   * Global presets loaded on the server — seeds the default Terms list for
+   * new quotations and supplies the admin-editable printable footer.
+   */
+  appSettings: AppSettings;
+  /**
+   * Invoked by `saveQuotation()` after a successful edit-mode PATCH so the
+   * parent `DesignerShell` can re-fetch `/api/quotations?id=<n>` and hand
+   * the Designer an `existing` prop that matches what the DB now holds.
+   * Without this the form re-renders its own in-memory values fine, but
+   * any later navigation that re-mounts the Designer (e.g. bouncing
+   * through /catalog) reads a pre-save snapshot off the cached fetch.
+   */
+  onSaved?: () => void;
+}) {
+  const adminDefaultTerms =
+    appSettings.defaultTerms && appSettings.defaultTerms.length > 0
+      ? appSettings.defaultTerms
+      : DEFAULT_TERMS;
+  // Brand bundles come from the admin Branding tab; fall back to the built-in
+  // defaults if the settings row predates the feature. Drives both the Brand
+  // dropdown and the cover/about-us artwork the preview prints.
+  const brandVariants =
+    appSettings.brandVariants && appSettings.brandVariants.length > 0
+      ? appSettings.brandVariants
+      : BRAND_VARIANTS;
+  const router = useRouter();
+  const editMode = !!existing;
+  const [projectName, setProjectName] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  // Sales engineer is intentionally NOT auto-filled. Presales Engineer
+  // defaults to the logged-in user (they open the quotation), but the
+  // Sales Engineer is a separate role and must be typed in manually —
+  // auto-seeding it caused every new quotation to ship with the presales
+  // and sales engineers identical, which hid the fact that the sales
+  // field had been left blank. Saved quotations still restore whatever
+  // the author stamped — see the hydration effect below.
+  const [salesEng, setSalesEng] = useState("");
+  const [salesPhone, setSalesPhone] = useState("");
+  const [preparedBy, setPreparedBy] = useState(user.username);
+  const [refCode, setRefCode] = useState("");
+  // Preview of the auto-generated reference format (<DEPT>-FO<YY>-####) shown
+  // for a brand-new quotation, so the Ref field reflects the auto-referencing
+  // scheme instead of a bare "(auto)". Display-only — the real 4-hex counter is
+  // assigned by the server on save.
+  const [refPreview, setRefPreview] = useState("");
+  const [siteName, setSiteName] = useState("");
+  const [taxPercent, setTaxPercent] = useState(16);
+  const [items, setItems] = useState<QuotationItem[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("");
+  const [showPictures, setShowPictures] = useState(false);
+  const [terms, setTerms] = useState<string[]>([...adminDefaultTerms]);
+  const [notes, setNotes] = useState("");
+  const [extraColumns, setExtraColumns] = useState<QuotationExtraColumn[]>([]);
+  const [scopeIntro, setScopeIntro] = useState("");
+  const [designEng, setDesignEngState] = useState("");
+  const [pricingCategory, setPricingCategoryState] = useState<PricingCategory>("si");
+  // User-defined multiplier applied to SI base prices when pricing
+  // category == "manual". Stored as a string so the <input> can hold
+  // partial values like "1." while the user is still typing without the
+  // backing number collapsing to NaN.
+  const [manualFactor, setManualFactor] = useState<number>(1);
+  const [manualFactorText, setManualFactorText] = useState<string>("1");
+  const [includeTax, setIncludeTax] = useState(true);
+  const [taxInclusive, setTaxInclusive] = useState(false);
+  // Discount applied to the subtotal before tax. The user enters a % of
+  // the subtotal or toggles to a fixed JOD amount; both values are kept so
+  // switching mode is lossless. `discountMode` decides which one is live.
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [discountMode, setDiscountMode] = useState<"percent" | "amount">(
+    "percent",
+  );
+  const [brandVariantId, setBrandVariantId] = useState<string>(
+    DEFAULT_BRAND_VARIANT_ID,
+  );
+  const [folders, setFolders] = useState<ClientFolder[]>([]);
+  const [folderId, setFolderId] = useState<number | null>(null);
+  // contactId is set on mount from `?contact=<id>` and kept stable for the
+  // lifetime of this Designer instance. Edit mode rehydrates it from
+  // existing.contact_id below; create mode just carries the URL value.
+  const [contactId, setContactId] = useState<number | null>(
+    initialContactId ?? null,
+  );
+  // projectId is set on mount from `?project=<id>` (create mode) or from
+  // existing.project_id (edit mode). Carried into the save payload so
+  // the new quotation lands inside the right project — see PR 2's
+  // projects layer.
+  const [projectId, setProjectId] = useState<number | null>(
+    initialProjectId ?? null,
+  );
+  // Which identity prints on the "Client:" line — the individual client
+  // folder, or the company that folder belongs to. The header dropdown
+  // flips this and the client name / email / phone follow the choice. We
+  // default to "company" so a company-route quotation keeps showing the
+  // company up top (its historical behaviour); folders with no company
+  // gracefully fall back to the only available option (the client).
+  const [clientIdentity, setClientIdentity] = useState<"client" | "company">(
+    "company",
+  );
+  // Email / phone for the company identity. Companies carry no contact
+  // columns of their own, so we pull the company's first saved contact and
+  // surface its email / phone when the user selects the company identity.
+  const [companyContact, setCompanyContact] = useState<{
+    email: string;
+    phone: string;
+  } | null>(null);
+  // When true, the embedded QuotationPreview is rendered in non-editable
+  // mode for the duration of a browser print dialog, so the printed output
+  // matches the /quotation viewer exactly (no editable chrome, no extra
+  // "Add row / Add column" toolbars). The toggle flips back off as soon as
+  // the print dialog closes via `onafterprint`.
+  const [printMode, setPrintMode] = useState(false);
+  // Bill of Quantities print toggle. Flipped on by the "Print BOQ" button
+  // so QuotationPreview renders without the Unit Price / Total Price
+  // columns, per-system subtotals and the Final Totals page. Cleared on
+  // `afterprint` alongside `printMode` so the editable UI comes back
+  // untouched when the print dialog closes.
+  const [boqMode, setBoqMode] = useState(false);
+  // Controls the Quick Catalogue picker sidebar shown beside the preview.
+  // Open by default so the empty RHS area on a blank draft immediately
+  // offers an actionable search-and-add surface.
+  const [quickPickerOpen, setQuickPickerOpen] = useState(true);
+  // Whether the Excel-import modal is currently visible. Triggered from
+  // the toolbar "Import Excel" button.
+  const [excelImportOpen, setExcelImportOpen] = useState(false);
+  // Full catalogue PICKER overlay — opened from "+ Add from Catalogue" so the
+  // user browses/searches the whole catalogue and drops products into this
+  // quotation without leaving the Designer (replaces the old /catalog round-trip).
+  const [cataloguePickerOpen, setCataloguePickerOpen] = useState(false);
+  // Installation Calculator — reserved entry point. The full picker
+  // (predefined conduits, cables, locations, technician fees, etc.) lands
+  // in a follow-up; for now opening the panel renders an informational
+  // shell so the toolbar slot, state plumbing, and modal mount are all
+  // already wired and downstream work doesn't need a UI re-shuffle.
+  const [installationCalculatorOpen, setInstallationCalculatorOpen] =
+    useState(false);
+  // Hydration status is tracked as a state (not a ref) so the persist
+  // effects can depend on it. A ref would flip mid-effect and let the
+  // save effects run on the same tick as hydration — with React's
+  // stale-closure behaviour that meant the first save call wrote the
+  // initial empty-state values to localStorage, transiently wiping the
+  // user's per-id edit draft before the next render fixed it up.
+  const [hydrated, setHydrated] = useState(false);
+
+  // (see also the cleanup effect below: once `existing.id` changes away
+  // from the suppressed id, the snapshot guard is released so a later
+  // return to the parent quotation autosaves edits normally again).
+  //
+  // Records the parent-quotation id whose edit-draft autosave should be
+  // suppressed because a "Save as Draft" / "Save as Review" snapshot was
+  // taken from it. The autosave effect below checks this against
+  // `existing.id` and bails out, so the sequence
+  //   1. user edits parent  →  effect writes localStorage
+  //   2. user clicks "Save as Draft"  →  new snapshot POSTed
+  //   3. saveQuotation() calls clearEditDraft(parent.id)
+  //   4. setSaving(false) in `finally` triggers one more render
+  //   5. autosave effect would normally re-write the parent's slot
+  // can no longer leak the parent's UI changes back into its localStorage.
+  // Scoping by id (instead of a plain boolean) is important because the
+  // Designer doesn't unmount across the router.push to the new snapshot —
+  // the same component instance re-renders with `existing` pointing to
+  // the draft, and we WANT autosave to resume for that id.
+  const snapshotSavingForIdRef = useRef<number | null>(null);
+
+  // Presales Engineer for this session — always anchored to the logged-in
+  // user so an admin signed in after a sales engineer on the same browser
+  // never inherits the previous person's name. Edit mode still lets saved
+  // quotations keep whatever `config_json.designEng` the author stamped.
+  const defaultDesignEng = user.display_name || user.username;
+
+  /**
+   * A folder acts as the CRM record for the client: when one is selected
+   * the Designer treats the folder's email/phone/name as the source of
+   * truth for the quotation header and locks those inputs so the only
+   * thing the user types for a new quotation is the project name.
+   */
+  const selectedFolder =
+    folderId != null ? folders.find((f) => f.id === folderId) || null : null;
+  const clientLocked = !!selectedFolder;
+  // A quotation always lives inside a project (the project folder it was
+  // created in), so when we have a project the Project header field is
+  // driven by that project's name and shown read-only.
+  const projectLocked = projectId != null;
+
+  // The identities offered in the header's Client dropdown: the individual
+  // client folder, plus the company it belongs to (when it has one). Each
+  // option carries its own contact details so selecting it fills the
+  // client name / email / phone in one go.
+  const clientOptions = useMemo(() => {
+    if (!selectedFolder) return [] as Array<{
+      key: "client" | "company";
+      label: string;
+      name: string;
+      email: string;
+      phone: string;
+    }>;
+    const opts: Array<{
+      key: "client" | "company";
+      label: string;
+      name: string;
+      email: string;
+      phone: string;
+    }> = [
+      {
+        key: "client",
+        label: `${selectedFolder.name || "Client"} — Client`,
+        name: selectedFolder.name || "",
+        email: selectedFolder.client_email || "",
+        phone: selectedFolder.client_phone || "",
+      },
+    ];
+    const companyName =
+      selectedFolder.company_name || selectedFolder.client_company || "";
+    if (companyName) {
+      opts.push({
+        key: "company",
+        label: `${companyName} — Company`,
+        name: companyName,
+        email: companyContact?.email || "",
+        phone: companyContact?.phone || "",
+      });
+    }
+    return opts;
+  }, [selectedFolder, companyContact]);
+
+  /**
+   * The Designer always shows the full design UI now — the previous "Step 1
+   * pick a client" hero was removed at the user's request. Clients are still
+   * selectable via the toolbar, but the editor (toolbar + quotation table)
+   * surfaces immediately on every load instead of being gated behind a
+   * folder selection.
+   */
+  const showDesignUI = true;
+
+  function setDesignEng(value: string) {
+    // Session-local only: changes stay in the draft / saved config but do
+    // not leak to a browser-wide localStorage pref. A previous global
+    // "last Presales Engineer" key leaked between users on shared browsers
+    // so an admin would see a sales engineer's name under their own login.
+    setDesignEngState(value);
+  }
+
+  // ── Pricing category switching ────────────────────────────────────────────
+  // When the user picks a new preset category (SI / DPP / End-user) we
+  // recompute every row's unit_price from its stored price_si baseline.
+  // Manual pricing now also recomputes — using a user-defined multiplier
+  // (`manualFactor`) that the user types next to the button — so the rule
+  // is: unit_price = price_si × factor for every category, with the factor
+  // being the preset value for SI/DPP/End-user and the user-entered
+  // number for manual.
+  function setPricingCategory(next: PricingCategory) {
+    setPricingCategoryState(next);
+
+    const factor =
+      next === "manual"
+        ? Number.isFinite(manualFactor) && manualFactor > 0
+          ? manualFactor
+          : 1
+        : PRICING_FACTORS[next];
+
+    setItems((cur) =>
+      cur.map((it) => {
+        // Use stored SI price if available, otherwise treat current
+        // unit_price as the SI baseline (backwards-compat with old items).
+        const base = it.price_si ?? it.unit_price;
+        // When the SI base price is zero or undefined, keep whatever the
+        // user has manually typed into the cell — multiplying zero would
+        // wipe their input. The factor is only meaningful when there is a
+        // real catalogue base price to scale from.
+        if (!base) {
+          return it;
+        }
+        return {
+          ...it,
+          price_si: base,
+          unit_price: Number((base * factor).toFixed(2)),
+        };
+      }),
+    );
+  }
+
+  // Applies the manual multiplier to every row's SI base price. Called
+  // from the manual-factor input whenever the user commits a new value
+  // (onBlur or Enter). We keep this separate from `setPricingCategory`
+  // so the factor can be re-applied without the user having to toggle
+  // the category button a second time.
+  function applyManualFactor(nextFactor: number) {
+    if (!Number.isFinite(nextFactor) || nextFactor <= 0) return;
+    setManualFactor(nextFactor);
+    setManualFactorText(String(nextFactor));
+    if (pricingCategory !== "manual") return;
+    setItems((cur) =>
+      cur.map((it) => {
+        const base = it.price_si ?? it.unit_price;
+        // Same guard as setPricingCategory: skip rows with no real
+        // SI base price so manually entered values are preserved.
+        if (!base) {
+          return it;
+        }
+        return {
+          ...it,
+          price_si: base,
+          unit_price: Number((base * nextFactor).toFixed(2)),
+        };
+      }),
+    );
+  }
+
+  // Pressing the Excl./Incl. Tax button MUTATES every row's unit_price
+  // (and price_si baseline) so the stored value matches what the user
+  // sees and what gets saved. The taxInclusive flag is kept as metadata
+  // recording the user's last action so the button label survives a
+  // reload. Running the transform across every item (optional rows
+  // included) keeps unit prices consistent — the optional flag only
+  // hides the row total, the unit price itself is still displayed for
+  // reference and must track the toggle.
+  function toggleTaxInclusive() {
+    const rate = (Number(taxPercent) || 0) / 100;
+    if (rate <= 0) {
+      setTaxInclusive((v) => !v);
+      return;
+    }
+    const factor = 1 + rate;
+    const goingExclusive = !taxInclusive;
+    const op = goingExclusive
+      ? (n: number) => Number((n / factor).toFixed(2))
+      : (n: number) => Number((n * factor).toFixed(2));
+    setItems((cur) =>
+      cur.map((it) => ({
+        ...it,
+        unit_price: op(Number(it.unit_price) || 0),
+        price_si: it.price_si != null ? op(Number(it.price_si)) : it.price_si,
+      })),
+    );
+    setTaxInclusive((v) => !v);
+  }
+
+  // Derived list of unique system / page names for the current draft —
+  // surfaced as quick-pick chips in the side picker and as a datalist for
+  // the Excel-import default page input so users don't have to retype
+  // page names they've already created.
+  const existingPageNames = useMemo(() => {
+    const seen = new Set<string>();
+    for (const it of items) {
+      const sys = it.system || it.brand;
+      if (sys) seen.add(sys);
+    }
+    return [...seen];
+  }, [items]);
+
+  // Adds a single catalogue item (from the Quick Catalogue picker) to the
+  // live items list, deduping on system + model. Mirrors the behaviour of
+  // `appendItem` in quotationDraft.ts but operates on React state so the
+  // Designer doesn't have to bounce through localStorage to pick up the
+  // new row.
+  function addCatalogItem(item: QuotationItem) {
+    setItems((cur) => {
+      // Tax normalisation: catalogue prices arrive tax-inclusive. If the
+      // current draft is in "Excl. Tax" mode, divide once on insert so
+      // the new row lines up with every other row (which has already
+      // been divided by toggleTaxInclusive).
+      const rate = (Number(taxPercent) || 0) / 100;
+      const normalized: QuotationItem =
+        taxInclusive && rate > 0
+          ? {
+              ...item,
+              unit_price: Number(((Number(item.unit_price) || 0) / (1 + rate)).toFixed(2)),
+              price_si:
+                item.price_si != null
+                  ? Number(((Number(item.price_si) || 0) / (1 + rate)).toFixed(2))
+                  : item.price_si,
+            }
+          : item;
+      return mergeQuotationItems(cur, [normalized]);
+    });
+  }
+
+  // Called by ExcelImportModal once the user has reviewed the detected
+  // column mapping. Either merges the imported rows into the existing
+  // items list or replaces the list entirely, depending on the mode the
+  // user selected in the modal.
+  function applyImportedItems(imported: QuotationItem[], mode: "append" | "replace") {
+    if (imported.length === 0) {
+      setExcelImportOpen(false);
+      return;
+    }
+    setItems((cur) =>
+      mode === "replace"
+        ? mergeQuotationItems([], imported)
+        : mergeQuotationItems(cur, imported),
+    );
+    setExcelImportOpen(false);
+  }
+
+  // ── Hydrate state on mount ────────────────────────────────────────────────
+  // For a NEW quotation, preview the REAL next reference (<DEPT>-FO<YY>-<HEX4>,
+  // e.g. "ITYA-FO26-0001") — the actual next-available number the server will
+  // mint on save, not a bare "(auto)" or a "####" placeholder. The number is
+  // still assigned authoritatively on save, so this is display-only and can
+  // shift if someone else claims the same counter first.
+  useEffect(() => {
+    if (existing) return;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/quotations/next-ref");
+        const data = (await res.json().catch(() => ({}))) as {
+          prefix?: string;
+          ref?: string;
+        };
+        if (alive && res.ok && (data.ref || data.prefix)) {
+          setRefPreview(data.ref || `${data.prefix}####`);
+        }
+      } catch {
+        /* keep the plain "(auto)" fallback */
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [existing]);
+
+  useEffect(() => {
+    if (existing) {
+      saveEditingContext({
+        id: existing.id,
+        ref: existing.ref,
+        projectName: existing.project_name || "",
+        folderId: existing.folder_id ?? null,
+      });
+
+      const baseItems = (Array.isArray(existing.items_json)
+        ? existing.items_json
+        : []
+      ).map((it) => ({
+        ...it,
+        system: it.system || it.brand || "General",
+        price_si: it.price_si ?? it.unit_price,
+      }));
+
+      const draft = loadDraft();
+      // Resolve the tax-toggle state that this quotation is going to
+      // hydrate into BEFORE processing the catalog stagedItems, so we can
+      // pre-divide any incoming rows that landed in the shared draft in
+      // their raw (tax-inclusive) form while this quotation is in Excl.
+      // Tax mode. Without this, rows added via /catalog during an edit
+      // session would show up at full SI price next to already-divided
+      // existing rows, and flipping the toggle back would multiply them
+      // by 1.16 a second time.
+      // Per-id edit draft, but only if it's still fresh. A draft is stale
+      // when the quotation has been saved through another session / device
+      // / path since the draft was branched (its pinned `baseUpdatedAt` no
+      // longer matches the freshly-fetched row's `updated_at`). A stale
+      // draft used to silently mask the newer DB data: the viewer showed
+      // the up-to-date row while pressing Edit reloaded the old localStorage
+      // buffer. We drop such drafts so edit mode always reflects the latest
+      // save. Legacy drafts with no `baseUpdatedAt` are also treated as
+      // stale. Drafts with no server `updated_at` to compare against are
+      // kept (offline-first safety) rather than discarded blindly.
+      const rawEditDraft = loadEditDraft(existing.id);
+      const draftIsStale =
+        rawEditDraft != null &&
+        existing.updated_at != null &&
+        rawEditDraft.baseUpdatedAt !== existing.updated_at;
+      if (rawEditDraft && draftIsStale) {
+        clearEditDraft(existing.id);
+      }
+      const editDraft = draftIsStale ? null : rawEditDraft;
+      const willBeTaxInclusive = editDraft
+        ? Boolean(editDraft.taxInclusive)
+        : Boolean(existing.config_json?.taxInclusive);
+      const rateForStaged =
+        (Number(
+          editDraft?.taxPercent ?? existing.tax_percent ?? 16,
+        ) || 0) / 100;
+      function normalizeStaged(it: QuotationItem) {
+        // Inline the shape so TS infers a narrower `price_si: number`
+        // type (matching `baseItems`) instead of the broader
+        // `QuotationItem` where `price_si` is optional — otherwise
+        // mergedItems.push(staged) below fails typecheck.
+        const resolvedPriceSi: number = it.price_si ?? it.unit_price;
+        const base = {
+          ...it,
+          system: it.system || it.brand || "General",
+          price_si: resolvedPriceSi,
+        };
+        if (!willBeTaxInclusive || rateForStaged <= 0) return base;
+        const factor = 1 + rateForStaged;
+        return {
+          ...base,
+          unit_price: Number(
+            ((Number(base.unit_price) || 0) / factor).toFixed(2),
+          ),
+          price_si: Number(
+            ((Number(base.price_si) || 0) / factor).toFixed(2),
+          ),
+        };
+      }
+      const stagedItems =
+        Array.isArray(draft.items) && draft.items.length > 0
+          ? draft.items.map(normalizeStaged)
+          : [];
+      // Per-quotation edit draft: unsaved edits made in a previous
+      // session (e.g. modified terms, added manual rows, quantity
+      // tweaks) are kept in localStorage under a per-id key so
+      // refreshing /designer?id=X doesn't blow them away. We ALWAYS
+      // consult the edit draft — even when the user just returned
+      // from the catalog with stagedItems — so those in-flight edits
+      // survive the round-trip. Catalog items are then merged on top.
+      // `editDraft` was already loaded above to resolve the tax context.
+      const editDraftItems =
+        editDraft && Array.isArray(editDraft.items) && editDraft.items.length > 0
+          ? editDraft.items.map((it) => ({
+              ...it,
+              system: it.system || it.brand || "General",
+              price_si: it.price_si ?? it.unit_price,
+            }))
+          : null;
+      // Choose the "prior" items: the edit draft if the user had
+      // unsaved edits, otherwise the DB snapshot. Then append /
+      // dedupe the catalog stagedItems on top so the user sees both
+      // their in-flight edits AND the newly added catalog items.
+      const priorItems = editDraftItems ?? baseItems;
+      const mergedItems = priorItems.slice();
+      for (const staged of stagedItems) {
+        const stagedKey = `${staged.system || staged.brand || "General"}__${staged.model}`;
+        const existingIdx = mergedItems.findIndex(
+          (it) =>
+            `${it.system || it.brand || "General"}__${it.model}` === stagedKey,
+        );
+        if (existingIdx >= 0) {
+          mergedItems[existingIdx] = {
+            ...mergedItems[existingIdx],
+            quantity:
+              (Number(mergedItems[existingIdx].quantity) || 0) +
+              (Number(staged.quantity) || 0),
+          };
+        } else {
+          mergedItems.push(staged);
+        }
+      }
+      // Per-system numbering matches QuotationPreview's `renumber()` so the
+      // initial load is consistent with what every later mutation produces
+      // (add / remove / reorder all run through renumber too). Without this
+      // the table briefly showed global running numbers on first paint and
+      // then "jumped" to per-system numbering on the next edit.
+      const perSystemCounter = new Map<string, number>();
+      const combined = mergedItems.map((it) => {
+        if (it.kind === "section") return { ...it, no: 0 };
+        const sys = it.system || it.brand || "General";
+        const next = (perSystemCounter.get(sys) ?? 0) + 1;
+        perSystemCounter.set(sys, next);
+        return { ...it, no: next };
+      });
+      setItems(combined);
+      if (stagedItems.length > 0) clearDraft();
+
+      setProjectName(editDraft?.projectName ?? (existing.project_name || ""));
+      setClientName(existing.client_name || "");
+      setClientEmail(existing.client_email || "");
+      setClientPhone(existing.client_phone || "");
+      // Preserve whatever the author stamped on the saved quotation.
+      // When the stored value is blank, leave the field empty — the
+      // Sales Engineer is typed in manually per quotation, so falling
+      // back to the logged-in user would re-introduce the "sales and
+      // presales are always the same" bug on unsigned records.
+      setSalesEng(existing.sales_engineer || "");
+      // Presales phone: prefer the value saved on the quotation (lossless
+      // re-open), otherwise fall back to the LOGGED-IN user's phone rather
+      // than an empty string. The previous blank fallback let
+      // QuotationPreview's default kick in, which was a hardcoded
+      // "+962 795172566" — effectively the admin's number showing up on
+      // every non-admin user's quotations.
+      setSalesPhone(existing.config_json?.salesPhone || user.phone || "");
+      setPreparedBy(existing.prepared_by || user.username);
+      setRefCode(existing.ref);
+      setSiteName(editDraft?.siteName ?? (existing.site_name || ""));
+      setTaxPercent(
+        Number(editDraft?.taxPercent ?? existing.tax_percent ?? 16),
+      );
+      setShowPictures(
+        editDraft ? Boolean(editDraft.showPictures) : Boolean(existing.config_json?.showPictures),
+      );
+      {
+        // Terms hydration priority (highest → lowest):
+        //   1. In-flight per-id edit draft (unsaved refresh survivor).
+        //   2. Saved DB config_json.terms, whenever it's a non-empty array
+        //      — this is the "terms I persisted" path and it must NEVER
+        //      be silently replaced by admin defaults just because the
+        //      stored list happens to equal the hardcoded built-ins.
+        //      The previous implementation used
+        //      `termsMatchBuiltInDefault()` as a "legacy rebase" hook,
+        //      which meant a user who had simply clicked Save without
+        //      edits saw their persisted terms swapped out on the next
+        //      open — and any future change to the admin defaults would
+        //      permanently overwrite what they had saved. That was the
+        //      "my terms never save" complaint.
+        //   3. Admin-edited defaults (for genuinely blank rows).
+        const savedTerms = Array.isArray(existing.config_json?.terms)
+          ? existing.config_json!.terms!
+          : null;
+        const draftedTerms =
+          editDraft && Array.isArray(editDraft.terms) ? editDraft.terms : null;
+        if (draftedTerms) {
+          setTerms(draftedTerms);
+        } else if (savedTerms && savedTerms.length > 0) {
+          setTerms(savedTerms);
+        } else {
+          setTerms([...adminDefaultTerms]);
+        }
+      }
+      setExtraColumns(
+        editDraft?.extraColumns ??
+          (Array.isArray(existing.config_json?.extraColumns)
+            ? existing.config_json!.extraColumns!
+            : []),
+      );
+      setScopeIntro(editDraft?.scopeIntro ?? (existing.config_json?.scopeIntro || ""));
+      setNotes(editDraft?.notes ?? (existing.config_json?.notes || ""));
+      setClientIdentity(
+        existing.config_json?.clientIdentity === "client" ? "client" : "company",
+      );
+      // Presales Engineer: prefer whatever the quotation was saved with so
+      // reopening an old record is lossless; otherwise anchor to the
+      // logged-in user's display name. The previous fallback chain also
+      // consulted a browser-wide localStorage pref, which leaked names
+      // between users on shared machines — that step is intentionally gone.
+      setDesignEngState(
+        editDraft?.designEng ||
+          existing.config_json?.designEng ||
+          defaultDesignEng,
+      );
+      {
+        // The UI now only exposes "si" (SI base × 1) and "manual" (SI
+        // base × user factor). Legacy quotations saved as "dpp" /
+        // "end_user" still load lossless: convert them to manual and
+        // carry the matching factor so prices stay identical.
+        const rawCat: PricingCategory =
+          editDraft?.pricingCategory || existing.config_json?.pricingCategory || "si";
+        const restoredManualRaw =
+          editDraft && typeof editDraft.manualFactor === "number" && Number.isFinite(editDraft.manualFactor) && editDraft.manualFactor > 0
+            ? editDraft.manualFactor
+            : typeof existing.config_json?.manualFactor === "number" &&
+                Number.isFinite(existing.config_json.manualFactor) &&
+                existing.config_json.manualFactor > 0
+              ? existing.config_json.manualFactor
+              : 1;
+        if (rawCat === "dpp" || rawCat === "end_user") {
+          setPricingCategoryState("manual");
+          const legacyFactor = PRICING_FACTORS[rawCat];
+          setManualFactor(legacyFactor);
+          setManualFactorText(String(legacyFactor));
+        } else {
+          setPricingCategoryState(rawCat);
+          setManualFactor(restoredManualRaw);
+          setManualFactorText(String(restoredManualRaw));
+        }
+      }
+      setIncludeTax(
+        editDraft ? editDraft.includeTax !== false : existing.config_json?.includeTax !== false,
+      );
+      setTaxInclusive(
+        editDraft ? Boolean(editDraft.taxInclusive) : Boolean(existing.config_json?.taxInclusive),
+      );
+      setDiscountMode(
+        (editDraft?.discountMode ??
+          existing.config_json?.discountMode ??
+          "percent") === "amount"
+          ? "amount"
+          : "percent",
+      );
+      setDiscountPercent(
+        Number(editDraft?.discountPercent ?? existing.config_json?.discountPercent ?? 0) || 0,
+      );
+      setDiscountAmount(
+        Number(editDraft?.discountAmount ?? existing.config_json?.discountAmount ?? 0) || 0,
+      );
+      setBrandVariantId(
+        getBrandVariant(
+          editDraft?.brandVariantId ??
+            existing.config_json?.brandVariantId ??
+            DEFAULT_BRAND_VARIANT_ID,
+          brandVariants,
+        ).id,
+      );
+
+      // Legacy migration: quotations saved before the Excl./Incl. Tax
+      // button was changed from a display overlay to a real unit_price
+      // transform stored RAW (tax-inclusive) prices even when the flag
+      // was on. Detect via the absence of `taxPricesNormalized` and
+      // divide every unit_price/price_si by (1+rate) once, so totals and
+      // displayed values match after the divisor was removed from the
+      // preview. The next save persists the flag and skips this branch.
+      const legacyCfg = existing.config_json || {};
+      if (legacyCfg.taxInclusive && !legacyCfg.taxPricesNormalized) {
+        const legacyRate = (Number(existing.tax_percent ?? 16) || 0) / 100;
+        if (legacyRate > 0) {
+          const legacyFactor = 1 + legacyRate;
+          setItems((cur) =>
+            cur.map((it) => ({
+              ...it,
+              unit_price: Number(
+                ((Number(it.unit_price) || 0) / legacyFactor).toFixed(2),
+              ),
+              price_si:
+                it.price_si != null
+                  ? Number(
+                      ((Number(it.price_si) || 0) / legacyFactor).toFixed(2),
+                    )
+                  : it.price_si,
+            })),
+          );
+        }
+      }
+
+      setHydrated(true);
+      return;
+    }
+
+    // Create mode: the per-folder editing context is kept in sync by the
+    // dedicated effect below (`folderId` is not hydrated yet at this
+    // point in the hydration effect, so writing here would lose the
+    // dropdown selection). Nothing else to clear up-front.
+
+    const d = loadDraft();
+    setItems(d.items.map((it) => ({ ...it, price_si: it.price_si ?? it.unit_price })));
+    setProjectName(d.projectName);
+    setClientName(d.clientName);
+    setClientEmail(d.clientEmail);
+    setClientPhone(d.clientPhone);
+    // Sales Engineer is intentionally NOT auto-filled on create, so the
+    // preparer is forced to type in the actual salesperson. We still
+    // restore whatever the current new-quotation draft had typed into
+    // the field so a browser refresh doesn't wipe the user's input.
+    setSalesEng(d.salesEng || "");
+    // Same rationale as the edit-mode branch: default to the logged-in
+    // user's per-user phone so each salesperson's quotations print
+    // their OWN number under "Presales Engineer" instead of whatever
+    // fallback the preview layer used to hard-code.
+    setSalesPhone(d.salesPhone || user.phone || "");
+    setPreparedBy(d.preparedBy || user.username);
+    setRefCode(d.refCode);
+    setSiteName(d.siteName);
+    setTaxPercent(d.taxPercent);
+    setShowPictures(d.showPictures);
+    setTerms(d.terms.length > 0 ? d.terms : [...adminDefaultTerms]);
+    setExtraColumns(d.extraColumns || []);
+    setScopeIntro(d.scopeIntro || "");
+    setNotes(d.notes || "");
+    setClientIdentity(d.clientIdentity === "client" ? "client" : "company");
+    // Presales Engineer for a brand-new quotation is ALWAYS the logged-in
+    // user. We deliberately ignore anything `loadDraft()` returned for
+    // `designEng` so switching accounts on a shared browser doesn't
+    // resurface the previous user's name; the helper already scrubs that
+    // field, this line is defence in depth.
+    setDesignEngState(defaultDesignEng);
+    {
+      const rawCat: PricingCategory = d.pricingCategory || "si";
+      const restoredManualRaw =
+        typeof d.manualFactor === "number" && Number.isFinite(d.manualFactor) && d.manualFactor > 0
+          ? d.manualFactor
+          : 1;
+      if (rawCat === "dpp" || rawCat === "end_user") {
+        setPricingCategoryState("manual");
+        const legacyFactor = PRICING_FACTORS[rawCat];
+        setManualFactor(legacyFactor);
+        setManualFactorText(String(legacyFactor));
+      } else {
+        setPricingCategoryState(rawCat);
+        setManualFactor(restoredManualRaw);
+        setManualFactorText(String(restoredManualRaw));
+      }
+    }
+    setIncludeTax(d.includeTax !== false);
+    setTaxInclusive(Boolean(d.taxInclusive));
+    setDiscountMode(d.discountMode === "amount" ? "amount" : "percent");
+    setDiscountPercent(Number(d.discountPercent) || 0);
+    setDiscountAmount(Number(d.discountAmount) || 0);
+    setBrandVariantId(
+      getBrandVariant(d.brandVariantId || DEFAULT_BRAND_VARIANT_ID, brandVariants)
+        .id,
+    );
+    // Restore the previously picked client folder so a full-page refresh
+    // no longer drops the user back into the "pick a client" hero. The
+    // actual select dropdown is still wired up normally, so changing
+    // clients from this point onward works like before.
+    if (typeof d.folderId === "number" && Number.isFinite(d.folderId)) {
+      setFolderId(d.folderId);
+    }
+    setHydrated(true);
+  }, [existing, user.username, user.display_name]);
+
+  // ── Fetch client folders ──────────────────────────────────────────────────
+  // `cache: "no-store"` is intentional here even though /api/folders ships
+  // `private, max-age=30`. A brand-new client created on /quotation lives
+  // only in the other page's local state; the browser HTTP cache still
+  // holds the pre-create response, and a cached hit here would make the
+  // newly-created folder invisible to the Designer — `folders.find(...)`
+  // below returns null, `selectedFolder` stays null, and the Designer
+  // falls back to its empty "pick a client" hero instead of locking onto
+  // the folder the user just created. Fetching fresh on mount keeps the
+  // "create client → new quotation" path deterministic.
+  useEffect(() => {
+    fetch("/api/folders", { cache: "no-store" })
+      .then((r) => readJson(r))
+      .then((d) => setFolders(d.folders || []))
+      .catch(() => {});
+  }, []);
+
+  // Set folder_id from existing quotation after folders are loaded
+  useEffect(() => {
+    if (existing?.folder_id && folders.length > 0) {
+      setFolderId(existing.folder_id);
+    }
+  }, [existing, folders]);
+
+  // Edit mode: rehydrate project_id from the existing row so saving an
+  // already-filed quotation doesn't strip its project link.
+  useEffect(() => {
+    const next =
+      typeof (existing as ExistingQuotation | undefined)?.project_id === "number"
+        ? (existing as ExistingQuotation).project_id ?? null
+        : null;
+    if (next !== null) setProjectId(next);
+  }, [existing]);
+
+  // Edit mode: rehydrate the contact attribution from the existing row so
+  // a save round-trip doesn't drop the link the company page set up.
+  useEffect(() => {
+    if (existing && existing.contact_id != null) {
+      setContactId(existing.contact_id);
+    }
+  }, [existing]);
+
+  // Create mode: pre-select the folder passed in via `?folder=<id>` on the
+  // URL (the "+ New quotation" button on each client card). We only do
+  // this once, and only when there's no current selection, so the user
+  // can still switch to a different client afterwards.
+  const initialFolderAppliedRef = useRef(false);
+  useEffect(() => {
+    if (editMode) return;
+    if (initialFolderAppliedRef.current) return;
+    if (!initialFolderId) return;
+    if (folders.length === 0) return;
+    if (folders.some((f) => f.id === initialFolderId)) {
+      setFolderId(initialFolderId);
+      initialFolderAppliedRef.current = true;
+    }
+  }, [editMode, initialFolderId, folders]);
+
+  // When the user picks a client folder, snap the header fields to the
+  // CRM data behind that folder. Layout per user spec:
+  //   • Project header  ← folder.name (the folder *is* a project bucket)
+  //   • Client header   ← linked Company name, falling back to the free-
+  //                       text client_company, and only as a last resort
+  //                       the folder name (legacy data where folder=client)
+  //   • Email / Phone   ← the folder's saved contact details
+  // Project name auto-fills only when blank so a name the user typed
+  // (or one restored from a saved quotation) is never clobbered.
+  useEffect(() => {
+    if (!selectedFolder) return;
+    // Apply whichever identity is selected; fall back to the first available
+    // option (the client) when the chosen one doesn't exist for this folder
+    // — e.g. an individual folder has no company option.
+    const chosen =
+      clientOptions.find((o) => o.key === clientIdentity) ?? clientOptions[0];
+    if (!chosen) return;
+    setClientName(chosen.name);
+    setClientEmail(chosen.email);
+    setClientPhone(chosen.phone);
+  }, [selectedFolder, clientIdentity, clientOptions]);
+
+  // Folders not filed under a project still seed the Project field from the
+  // folder name (legacy ad-hoc quotations). When a project IS present the
+  // dedicated fetch below owns the field, so this only fills the gap.
+  useEffect(() => {
+    if (projectId != null) return;
+    if (!selectedFolder) return;
+    setProjectName((prev) => prev || selectedFolder.name || "");
+  }, [projectId, selectedFolder]);
+
+  // Pull the company's first saved contact so the "Company" client identity
+  // can surface a real email / phone (companies have no contact columns of
+  // their own). Cleared when the selected folder has no company.
+  useEffect(() => {
+    const companyId = selectedFolder?.company_id ?? null;
+    if (!companyId) {
+      setCompanyContact(null);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/contacts?company_id=${companyId}`, { cache: "no-store" })
+      .then((r) => readJson(r))
+      .then((d) => {
+        if (cancelled) return;
+        const list = Array.isArray(d.contacts) ? d.contacts : [];
+        const c = list[0];
+        setCompanyContact(
+          c ? { email: c.email || "", phone: c.phone || "" } : null,
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setCompanyContact(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedFolder?.company_id]);
+
+  // The Project header always mirrors the name of the project the quotation
+  // lives in — "just put the same name of the project folder". Fetched once
+  // per project id; failures leave whatever name was already in place.
+  useEffect(() => {
+    if (projectId == null) return;
+    let cancelled = false;
+    fetch(`/api/projects?id=${projectId}`, { cache: "no-store" })
+      .then((r) => readJson(r))
+      .then((d) => {
+        if (cancelled) return;
+        const name = d?.project?.name;
+        if (typeof name === "string" && name.trim()) setProjectName(name);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId]);
+
+  // ── Keep the editing context in sync with the current parent folder ─────
+  // The catalogue's "Back" button routes off whatever `loadEditingContext()`
+  // returns. In edit mode the hydration effect above already stamps the
+  // saved quotation's id/ref/folder_id into the context, so we only need
+  // to handle create mode here: mirror the live `folderId` state so
+  // opening the catalogue from a brand-new quotation — before any save
+  // — still brings the user back to /designer?folder=<n>&new=1 instead
+  // of bouncing to /quotation (the page gate's redirect when the URL
+  // carries no id and no folder).
+  //
+  // Intentionally scoped to `folderId` only (not `projectName`) — the
+  // catalogue back button never reads the project name out of the
+  // context, so re-serialising on every keystroke would just be a
+  // localStorage write per character for nothing.
+  useEffect(() => {
+    if (editMode) return;
+    if (!hydrated) return;
+    if (folderId && Number.isFinite(folderId)) {
+      saveEditingContext({
+        id: 0,
+        ref: "",
+        projectName: "",
+        folderId,
+      });
+    } else {
+      // No client picked yet — don't leave a stale saved-quotation
+      // context from a previous session dangling in localStorage.
+      saveEditingContext(null);
+    }
+  }, [editMode, hydrated, folderId]);
+
+  // ── Persist draft whenever it changes (new-mode only) ─────────────────────
+  useEffect(() => {
+    if (!hydrated || editMode) return;
+    saveDraft({
+      items,
+      projectName,
+      clientName,
+      clientEmail,
+      clientPhone,
+      salesEng,
+      salesPhone,
+      preparedBy,
+      refCode,
+      siteName,
+      taxPercent,
+      showPictures,
+      terms,
+      notes,
+      clientIdentity,
+      extraColumns,
+      scopeIntro,
+      designEng,
+      pricingCategory,
+      manualFactor,
+      includeTax,
+      taxInclusive,
+      discountPercent,
+      discountAmount,
+      discountMode,
+      folderId,
+      brandVariantId,
+    });
+  }, [
+    hydrated,
+    editMode,
+    items,
+    projectName,
+    clientName,
+    clientEmail,
+    clientPhone,
+    salesEng,
+    salesPhone,
+    preparedBy,
+    refCode,
+    siteName,
+    taxPercent,
+    showPictures,
+    terms,
+    notes,
+    clientIdentity,
+    extraColumns,
+    scopeIntro,
+    designEng,
+    pricingCategory,
+    manualFactor,
+    includeTax,
+    taxInclusive,
+    discountPercent,
+    discountAmount,
+    discountMode,
+    folderId,
+    brandVariantId,
+  ]);
+
+  // ── Persist edit-mode draft per quotation id ──────────────────────────────
+  // Edit mode used to skip localStorage entirely, which meant any in-flight
+  // changes (notably term edits) were thrown away on refresh. We now
+  // mirror the relevant state into a per-id slot so refreshing
+  // /designer?id=X reinstates the user's unsaved work. The slot is
+  // cleared from saveQuotation() once the server confirms the PATCH.
+  useEffect(() => {
+    if (!hydrated || !editMode || !existing) return;
+    // Snapshot save in progress for THIS quotation — skip persisting the
+    // in-flight edits so they don't leak back into the parent quotation's
+    // localStorage slot after saveQuotation() has already cleared it. See
+    // `snapshotSavingForIdRef` for the full sequence this prevents. The
+    // check is scoped to existing.id so the new draft/review (which the
+    // router.push will swap us over to) gets normal autosave behaviour.
+    if (snapshotSavingForIdRef.current === existing.id) return;
+    saveEditDraft(existing.id, {
+      items,
+      terms,
+      notes,
+      clientIdentity,
+      extraColumns,
+      scopeIntro,
+      designEng,
+      pricingCategory,
+      manualFactor,
+      includeTax,
+      taxInclusive,
+      discountPercent,
+      discountAmount,
+      discountMode,
+      projectName,
+      siteName,
+      showPictures,
+      taxPercent,
+      brandVariantId,
+      // Pin the draft to the DB revision it was branched from so a later
+      // open can tell whether the quotation changed underneath it.
+      baseUpdatedAt: existing.updated_at ?? null,
+    });
+  }, [
+    hydrated,
+    editMode,
+    existing,
+    items,
+    terms,
+    notes,
+    clientIdentity,
+    extraColumns,
+    scopeIntro,
+    designEng,
+    pricingCategory,
+    manualFactor,
+    includeTax,
+    taxInclusive,
+    discountPercent,
+    discountAmount,
+    discountMode,
+    projectName,
+    siteName,
+    showPictures,
+    taxPercent,
+    brandVariantId,
+  ]);
+
+  // ── Mirror tax-toggle state into the shared catalog draft ────────────────
+  // The /catalog page's `appendItem` only sees the shared draft, so in edit
+  // mode it would otherwise inherit whatever taxInclusive/taxPercent a
+  // previous new-quotation session left behind. That mismatch is what
+  // caused newly-added catalog rows to show up at full SI price next to
+  // the edit quotation's already-divided rows (and then double-multiply on
+  // toggle-back). We sync both fields on every change so appendItem always
+  // pre-divides with the *current* quotation's factor.
+  useEffect(() => {
+    if (!hydrated) return;
+    syncDraftTaxContext(taxInclusive, taxPercent);
+  }, [hydrated, taxInclusive, taxPercent]);
+
+  // ── Release the snapshot-save autosave guard on navigation ──────────────
+  // After a "Save as Draft" / "Save as Review" succeeds, saveQuotation()
+  // pins `snapshotSavingForIdRef` to the parent's id and then router.pushes
+  // to the new snapshot. Once the Designer rerenders with the snapshot's
+  // `existing` (a different id), the guard has served its purpose; clear
+  // it so that later, if the user navigates back to the original parent,
+  // their fresh edits autosave normally instead of being silently dropped.
+  useEffect(() => {
+    if (!existing) return;
+    if (
+      snapshotSavingForIdRef.current != null &&
+      snapshotSavingForIdRef.current !== existing.id
+    ) {
+      snapshotSavingForIdRef.current = null;
+    }
+  }, [existing]);
+
+  // ── Restore last-used saved quotation on fresh /designer load ─────────────
+  // If the user landed on /designer with no ?id= query string but there's
+  // an editing context in localStorage (meaning they were last working on
+  // a saved quotation), bounce them over to /designer?id=X so the refresh
+  // keeps them in their current project instead of dropping them into an
+  // empty new-quotation hero. The "+ New quotation" button next to the
+  // client picker is the explicit opt-out.
+  //
+  // Restricted to actual document reloads (F5 / Ctrl+R) so clicking
+  // "Designer" in the top nav from another page still lands on a clean
+  // /designer — otherwise every in-app hop would double-bounce through
+  // the loading skeleton (once for /designer, once for /designer?id=X),
+  // which is what made edit mode feel like it "never opens".
+  const autoRedirectCheckedRef = useRef(false);
+  useEffect(() => {
+    if (autoRedirectCheckedRef.current) return;
+    autoRedirectCheckedRef.current = true;
+    if (editMode) return;
+    if (typeof window === "undefined") return;
+    // Honour the ?new=1 opt-out so the "+ New quotation" button can
+    // land on a clean /designer without getting bounced back. Any
+    // caller that already scoped the URL to a specific client
+    // (`?folder=<n>`) or existing record (`?id=<n>`) is ALSO off-
+    // limits: the previous implementation only opted out on ?new and
+    // let ?folder requests fall through to the stale editing context
+    // resume, which is why creating a new client and clicking
+    // "+ New quotation" sometimes re-opened an old saved quotation
+    // instead of the fresh hero for the just-picked client.
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.has("new") || sp.has("folder") || sp.has("id")) return;
+    // Only redirect on actual browser refreshes. `performance.getEntries
+    // ByType("navigation")[0]` returns the ORIGINAL navigation entry for
+    // the tab, which means once a user has F5-reloaded the app, every
+    // subsequent soft-nav still reads navType === "reload" — so this
+    // check was never doing what its comment claimed, it was triggering
+    // on nearly every in-app hop. Combined with a stale editing
+    // context in localStorage, that's exactly the "old quotation
+    // resurrects on new client" symptom. We keep the performance check
+    // as a last-ditch guard, but the real gate is the URL-sentinel
+    // check above.
+    try {
+      const navEntries = performance.getEntriesByType(
+        "navigation",
+      ) as PerformanceNavigationTiming[];
+      const navType = navEntries[0]?.type;
+      if (navType !== "reload") return;
+    } catch {
+      // If the Performance API is unavailable, fall through to the
+      // redirect — matches the old behaviour so we don't regress users
+      // on browsers without navigation timing.
+    }
+    const ctx = loadEditingContext();
+    if (ctx && Number.isFinite(ctx.id)) {
+      router.replace(`/designer?id=${ctx.id}`);
+    }
+  }, [editMode, router]);
+
+  /**
+   * Persist the current Designer state to the server.
+   *
+   *   mode = "save"   → default flow. Create mode POSTs a new active
+   *                     quotation; edit mode PATCHes the existing record
+   *                     in place.
+   *   mode = "draft"  → only valid in edit mode. POSTs a NEW row with
+   *                     status='draft' and parent_id=existing.id so the
+   *                     server mints <parentRef>D<m> and the current
+   *                     saved quotation is left untouched.
+   *   mode = "review" → same as draft but for reviews (R<m>).
+   */
+  async function saveQuotation(
+    mode: "save" | "draft" | "review" = "save",
+  ) {
+    // Draft / review are snapshots of an existing saved quotation, so they
+    // only make sense in edit mode where we have a parent id to anchor the
+    // suffix counter against. Guard early with a human-readable message.
+    if ((mode === "draft" || mode === "review") && (!editMode || !existing)) {
+      alert(
+        `Save the quotation first, then use "Save as ${mode === "draft" ? "Draft" : "Review"}" to create a ${mode} snapshot.`,
+      );
+      return;
+    }
+    // In create mode, a client folder is required — it's how the quotation
+    // inherits client_name/email/phone. In edit mode we preserve whatever
+    // folder state the existing row had (may be null for legacy rows).
+    if (mode === "save" && !editMode && !folderId) {
+      alert("Please select or create a client before saving the quotation.");
+      return;
+    }
+    // Flip the autosave guard ON before any state mutation that triggers a
+    // re-render — once setSaving(true) below schedules its render, the
+    // per-id edit-draft effect will read this ref and bail out. Active
+    // saves are untouched (the guard only short-circuits the snapshot
+    // path) because the active path's in-flight values match what we're
+    // about to write to the DB anyway.
+    const isSnapshotSave = mode === "draft" || mode === "review";
+    if (isSnapshotSave && existing) {
+      snapshotSavingForIdRef.current = existing.id;
+    }
+    setSaving(true);
+    setSaveStatus("");
+    try {
+      // Shrink any oversized item pictures before building the payload.
+      // Legacy quotations saved before the client-side compressor landed
+      // carry full-resolution base64 data URLs on `picture_url`; a handful
+      // of those easily blow past the API body limit. We re-encode them
+      // here so the save succeeds, and write the smaller versions back
+      // into local state so future saves stay small without re-doing the
+      // work. External http(s) URLs and already-small data URLs pass
+      // through untouched.
+      const oversizedCount = items.filter(
+        (it) =>
+          it.picture_url?.startsWith("data:image/") &&
+          it.picture_url.length > REENCODE_THRESHOLD,
+      ).length;
+      let compressedItems = items;
+      if (oversizedCount > 0) {
+        setSaveStatus(`Compressing ${oversizedCount} picture(s)…`);
+        compressedItems = await Promise.all(
+          items.map(async (it) => {
+            const url = it.picture_url;
+            if (!url || !url.startsWith("data:image/")) return it;
+            if (url.length <= REENCODE_THRESHOLD) return it;
+            const shrunk = await compressDataUrl(url);
+            return shrunk === url ? it : { ...it, picture_url: shrunk };
+          }),
+        );
+        // Sync back so the UI and subsequent saves use the smaller copies.
+        setItems(compressedItems);
+      }
+      const totals = computeQuotationTotals(
+        compressedItems,
+        includeTax ? taxPercent : 0,
+        includeTax && taxInclusive,
+        { mode: discountMode, percent: discountPercent, amount: discountAmount },
+      );
+      // Snapshot payloads deliberately omit `ref` so the server mints a
+      // fresh QX…D<m> / QX…R<m> from the parent. The regular save path
+      // keeps the current refCode so edits don't churn the number.
+      const payload: Record<string, unknown> = {
+        project_name: projectName || "Untitled Quotation",
+        // The DB column for the projects layer is `project_id` (a FK
+        // into the new projects table). `project_name` above is the
+        // unrelated free-text field that's been on quotations forever.
+        project_id: projectId,
+        client_name: clientName,
+        client_email: clientEmail,
+        client_phone: clientPhone,
+        sales_engineer: salesEng,
+        prepared_by: preparedBy || user.username,
+        site_name: siteName,
+        tax_percent: taxPercent,
+        folder_id: folderId,
+        contact_id: contactId,
+        items: compressedItems,
+        totals,
+        config: {
+          showPictures,
+          terms,
+          notes,
+          clientIdentity,
+          salesPhone,
+          extraColumns,
+          scopeIntro,
+          designEng,
+          pricingCategory,
+          manualFactor,
+          includeTax,
+          taxInclusive,
+          discountMode,
+          discountPercent,
+          discountAmount,
+          brandVariantId,
+          // Stamped on every save so the legacy migration in the
+          // hydration effect only runs once per quotation.
+          taxPricesNormalized: true,
+        },
+      };
+      if (mode === "save") {
+        payload.ref = refCode || undefined;
+      }
+      if (mode === "draft" || mode === "review") {
+        payload.mode = mode;
+        payload.parent_id = existing!.id;
+      }
+
+      const isSnapshot = mode === "draft" || mode === "review";
+      const res =
+        editMode && !isSnapshot
+          ? await fetch(`/api/quotations?id=${existing!.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            })
+          : await fetch("/api/quotations", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+      const data = await readJson(res);
+      if (!res.ok) {
+        if (res.status === 413) {
+          throw new Error(
+            "Payload too large — please remove or shrink product pictures and try again.",
+          );
+        }
+        throw new Error(data.error || `save failed (${res.status})`);
+      }
+
+      if (isSnapshot) {
+        // Snapshot succeeded — leave the original quotation open in the
+        // Designer and navigate to the new draft/review so the user lands
+        // on the record they just minted.
+        const label = mode === "draft" ? "Draft" : "Review";
+        setSaveStatus(
+          `${label} saved as ${data.quotation.ref} — opening…`,
+        );
+        // Drop the parent's per-id localStorage edit draft. Without this
+        // the in-flight changes the user just committed to the snapshot
+        // would still be sitting in the parent's slot, and the next time
+        // they open the parent the hydration effect would overlay those
+        // edits on top of the DB row — making it appear as if the
+        // modifications had been saved onto the main file. The whole
+        // point of "Save as Draft" is that the parent stays untouched,
+        // so the in-flight buffer for the parent has to go too.
+        if (existing) clearEditDraft(existing.id);
+        // Invalidate any cached RSC data (notably the /quotation list)
+        // so the new ref shows up the moment the user navigates back.
+        router.refresh();
+        router.push(`/designer?id=${data.quotation.id}`);
+        return;
+      }
+
+      if (editMode) {
+        // The in-flight edit draft has now been flushed to the DB, so
+        // the per-id localStorage slot can go. If the user keeps editing
+        // after this, fresh changes will repopulate it via the save
+        // effect above.
+        if (existing) clearEditDraft(existing.id);
+        const now = new Date().toLocaleTimeString("en-GB");
+        setSaveStatus(`Saved at ${now}`);
+        // Two follow-ups for the "save → click away → come back" loop:
+        //   1. `router.refresh()` invalidates the Next.js RSC cache so
+        //      the /quotation list reflects the updated row when the
+        //      user navigates back — this is the "saved but list
+        //      still shows old values" fix.
+        //   2. `onSaved?.()` nudges DesignerShell to re-fetch in the
+        //      background so `existing` matches the DB. The hydration
+        //      effect inside Designer uses the per-id EditModeDraft
+        //      before falling through to `existing.*`, so any keystroke
+        //      the user types between this save and the refetch is
+        //      preserved by the save-effect's draft writer — the
+        //      refetch is therefore safe for in-flight typing.
+        //      DesignerShell skips its blocking spinner after the
+        //      first load (hasLoadedOnceRef) so this is a silent swap.
+        router.refresh();
+        onSaved?.();
+        return;
+      }
+      clearDraft();
+      saveEditingContext(null);
+      // Same cache-busting rationale as the edit-mode branch above: the
+      // /quotation list is the very next screen most users land on after
+      // creating a quotation, and its server-preloaded data needs to
+      // reflect this brand-new row instead of a 30-second-old cache.
+      router.refresh();
+      router.push(`/quotation?id=${data.quotation.id}`);
+    } catch (err) {
+      // Snapshot save failed — release the autosave guard so the user's
+      // continuing edits start persisting to localStorage again. On the
+      // success branch we deliberately leave the ref pinned to the parent
+      // id because the router.push has already swapped `existing` over to
+      // the new snapshot, so the ref no longer matches and autosave is
+      // free to run for the new draft / review.
+      if (isSnapshotSave) snapshotSavingForIdRef.current = null;
+      setSaveStatus(`Error: ${(err as Error).message}`);
+      alert((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function clearAll() {
+    // "Clear" empties ONLY the line-item table. The header/client details
+    // (project, client, email, phone, site, terms, notes, …) are kept so a
+    // single mis-click doesn't wipe the info the user just typed in. The
+    // autosave effect persists the now-empty item list without touching the
+    // saved header, so we deliberately do NOT call clearDraft() here.
+    if (items.length === 0) return;
+    if (!confirm("Clear the line items? Your project and client details are kept."))
+      return;
+    setItems([]);
+  }
+
+  // Prints the current in-memory quotation preview straight from the
+  // Designer without first saving. We flip `printMode` on so the embedded
+  // <QuotationPreview> re-renders in its non-editable form — same code
+  // path as the /quotation viewer — and only then open the browser print
+  // dialog. Without this, the printed output picked up the editable
+  // chrome (manual-column toolbars, add-row buttons, inline form inputs)
+  // and the empty-state "Add manual item" sheet, giving the user the
+  // extra "unrequired slide" and mis-styled layout they reported.
+  //
+  // `draft=true` produces a "Print Draft" — identical to the normal
+  // printout except the full-bleed cover and about-us sheets are
+  // suppressed via a body class (`print-draft`) that the CSS
+  // `@media print` block keys off. Useful for internal reviews where
+  // the marketing-style front matter is just noise.
+  // Snapshot of the print kind for the about-to-fire printMode useEffect.
+  // Captured at click time so the value handed to runQuotationPrint can't
+  // drift if the user keeps typing in the ref/project fields while the
+  // print dialog is open.
+  const pendingPrintKindRef = useRef<PrintKind>("normal");
+
+  function printQuotation(draft = false) {
+    if (typeof window === "undefined") return;
+    pendingPrintKindRef.current = draft ? "draft" : "normal";
+    setPrintMode(true);
+  }
+
+  /**
+   * Print the current quotation as a Bill of Quantities — identical to
+   * the normal printout except the Unit Price and Total Price columns,
+   * per-system subtotals, and the Final Totals page are suppressed. The
+   * BoQ always drops the marketing cover / about-us sheets too (same as
+   * Print Draft) because a scope document is an internal/attachment
+   * deliverable, not a commercial offer.
+   */
+  function printBoq() {
+    if (typeof window === "undefined") return;
+    pendingPrintKindRef.current = "boq";
+    setBoqMode(true);
+    setPrintMode(true);
+  }
+
+  /**
+   * Exports the current quotation as a .xlsx workbook whose layout mirrors
+   * the printed PDF: a merged title banner, an info block with project +
+   * client + engineer fields, per-system banner rows and subtotals, and a
+   * Final Totals block at the bottom.
+   *
+   * xlsx (SheetJS Community) can't write cell styles reliably, so the
+   * "professional" polish is delivered via structure: merged banner rows,
+   * right-sized column widths, JOD currency number formats, and blank
+   * separator rows between sections. Opening the file in Excel /
+   * Google Sheets produces a clean, document-style read that matches the
+   * printed quotation without needing a paid style layer.
+   */
+  async function exportToExcel() {
+    if (typeof window === "undefined" || items.length === 0) return;
+    const XLSX = await import("xlsx");
+
+    const extraCols = extraColumns;
+    // Column layout, left-to-right, matches the printed table:
+    // 0: No   1: Brand   2: Model   3: Description
+    // 4: Qty  5: Delivery 6: Unit Price 7: Total Price
+    // 8..: manual columns
+    const itemColumnTitles = [
+      "No",
+      "Brand",
+      "Model",
+      "Description",
+      "Qty",
+      "Delivery",
+      "Unit Price",
+      "Total Price",
+      ...extraCols.map((c) => c.label),
+    ];
+    const totalCols = itemColumnTitles.length;
+    const lastColIdx = totalCols - 1;
+
+    const totals = computeQuotationTotals(
+      items,
+      includeTax ? taxPercent : 0,
+      includeTax && taxInclusive,
+      { mode: discountMode, percent: discountPercent, amount: discountAmount },
+    );
+    const currencyFmt = '"JOD" #,##0.00';
+
+    // We build the worksheet via aoa_to_sheet so we have full control
+    // over row-by-row contents and can record cell-level number formats
+    // and merge ranges afterwards. Each entry here is one row of the
+    // resulting sheet; shorter rows are padded with empty strings so
+    // column widths stay aligned.
+    const aoa: (string | number)[][] = [];
+    // Cells whose `.z` number-format should be overridden after the
+    // sheet is materialised. Keyed by A1 address (e.g. "G12").
+    const currencyCells: string[] = [];
+    // Ranges to merge (title banner, info block, system banners, totals).
+    const merges: Array<{ s: { r: number; c: number }; e: { r: number; c: number } }> = [];
+
+    const padRow = (cells: (string | number)[]): (string | number)[] => {
+      const out = cells.slice();
+      while (out.length < totalCols) out.push("");
+      return out;
+    };
+
+    // ── 1) Title banner ────────────────────────────────────────────────
+    aoa.push(padRow(["eSpark — Sales Quotation"]));
+    merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: lastColIdx } });
+
+    // ── 2) Info block (label / value pairs, 2 per row) ────────────────
+    const info: Array<[string, string]> = [];
+    info.push(["Reference", refCode || ""]);
+    info.push(["Date", new Date().toLocaleDateString("en-GB")]);
+    info.push(["Project", projectName || ""]);
+    info.push(["Site", siteName || ""]);
+    if (clientName) info.push(["Client", clientName]);
+    if (clientEmail) info.push(["Email", clientEmail]);
+    if (clientPhone) info.push(["Phone", clientPhone]);
+    if (designEng) info.push(["Presales Engineer", designEng]);
+    if (salesEng) info.push(["Sales Engineer", salesEng]);
+    if (salesPhone) info.push(["Sales Phone", salesPhone]);
+    if (preparedBy) info.push(["Prepared By", preparedBy]);
+
+    // Split the label/value pairs into two columns of 4 fields each,
+    // matching the printed header's left/right info grid.
+    const mid = totalCols >= 8 ? Math.floor(totalCols / 2) : 2;
+    for (let i = 0; i < info.length; i += 2) {
+      const left = info[i];
+      const right = info[i + 1];
+      const row: (string | number)[] = new Array(totalCols).fill("");
+      row[0] = left[0] + ":";
+      row[1] = left[1];
+      // Merge the left value across the first half so long project names
+      // don't overflow into the right-hand block.
+      merges.push({
+        s: { r: aoa.length, c: 1 },
+        e: { r: aoa.length, c: mid - 1 },
+      });
+      if (right) {
+        row[mid] = right[0] + ":";
+        row[mid + 1] = right[1];
+        merges.push({
+          s: { r: aoa.length, c: mid + 1 },
+          e: { r: aoa.length, c: lastColIdx },
+        });
+      }
+      aoa.push(row);
+    }
+    aoa.push(padRow([])); // blank separator
+
+    // ── 3) Per-system tables ──────────────────────────────────────────
+    // We reuse the same "group by system" helper the preview uses so the
+    // Excel groups land in the same order as the printed pages.
+    const groups = (() => {
+      const order: string[] = [];
+      const map = new Map<string, QuotationItem[]>();
+      for (const it of items) {
+        const key = it.system || it.brand || "General";
+        if (!map.has(key)) {
+          map.set(key, []);
+          order.push(key);
+        }
+        map.get(key)!.push(it);
+      }
+      return order.map((k) => ({ system: k, rows: map.get(k)! }));
+    })();
+
+    for (const group of groups) {
+      // System banner row (merged across the whole table)
+      aoa.push(padRow([group.system]));
+      merges.push({
+        s: { r: aoa.length - 1, c: 0 },
+        e: { r: aoa.length - 1, c: lastColIdx },
+      });
+
+      // Column headers row
+      aoa.push(itemColumnTitles.slice());
+
+      // Item rows — per-system local numbering (matches the printed PDF,
+      // where each system restarts at 1).
+      let groupSubtotal = 0;
+      group.rows.forEach((item, localIdx) => {
+        const qty = Number(item.quantity) || 0;
+        const unit = Number(item.unit_price) || 0;
+        const rowTotal = item.optional ? 0 : qty * unit;
+        groupSubtotal += rowTotal;
+        const row: (string | number)[] = [
+          localIdx + 1,
+          item.brand || "",
+          item.model || "",
+          item.description || "",
+          qty,
+          item.delivery || "",
+          unit,
+          item.optional ? "Optional" : rowTotal,
+          ...extraCols.map((c) => item.extra?.[c.id] ?? ""),
+        ];
+        const rowIdx = aoa.length;
+        aoa.push(row);
+        // Column G (index 6) = Unit Price. Always currency.
+        currencyCells.push(XLSX.utils.encode_cell({ r: rowIdx, c: 6 }));
+        // Column H (index 7) = Total Price — only numeric when the row
+        // isn't marked Optional.
+        if (!item.optional) {
+          currencyCells.push(XLSX.utils.encode_cell({ r: rowIdx, c: 7 }));
+        }
+      });
+
+      // Per-system subtotal row, label merged across everything left of
+      // the Total Price column so the amount lines up under the table.
+      const subtotalRow: (string | number)[] = new Array(totalCols).fill("");
+      subtotalRow[0] = `${group.system} Subtotal`;
+      subtotalRow[7] = groupSubtotal;
+      const subRowIdx = aoa.length;
+      aoa.push(subtotalRow);
+      merges.push({
+        s: { r: subRowIdx, c: 0 },
+        e: { r: subRowIdx, c: 6 },
+      });
+      currencyCells.push(XLSX.utils.encode_cell({ r: subRowIdx, c: 7 }));
+
+      aoa.push(padRow([])); // blank separator between system blocks
+    }
+
+    // ── 4) Final Totals block ─────────────────────────────────────────
+    const finalsBannerIdx = aoa.length;
+    aoa.push(padRow(["Final Totals"]));
+    merges.push({
+      s: { r: finalsBannerIdx, c: 0 },
+      e: { r: finalsBannerIdx, c: lastColIdx },
+    });
+
+    const pushTotalRow = (label: string, value: number) => {
+      const row: (string | number)[] = new Array(totalCols).fill("");
+      row[0] = label;
+      row[7] = value;
+      const r = aoa.length;
+      aoa.push(row);
+      merges.push({ s: { r, c: 0 }, e: { r, c: 6 } });
+      currencyCells.push(XLSX.utils.encode_cell({ r, c: 7 }));
+    };
+    pushTotalRow("Grand Total Cost (Subtotal)", totals.subtotal);
+    if (totals.discount > 0) {
+      const discountLabel =
+        discountMode === "percent" && discountPercent > 0
+          ? `Discount (${discountPercent}%)`
+          : "Discount";
+      pushTotalRow(discountLabel, -totals.discount);
+      if (includeTax) {
+        pushTotalRow("Net After Discount", totals.net);
+      }
+    }
+    if (includeTax) {
+      pushTotalRow(`TAX (${taxPercent}%)`, totals.tax);
+    }
+    pushTotalRow("Total Cost", totals.total);
+
+    // ── 5) Materialise the worksheet ──────────────────────────────────
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+    // Column widths (in characters). Picked to match the printed PDF's
+    // visual proportions (No is narrow, Description is wide, etc.).
+    const cols: Array<{ wch: number }> = [
+      { wch: 5 }, // No
+      { wch: 14 }, // Brand
+      { wch: 16 }, // Model
+      { wch: 44 }, // Description
+      { wch: 7 }, // Qty
+      { wch: 12 }, // Delivery
+      { wch: 14 }, // Unit Price
+      { wch: 16 }, // Total Price
+    ];
+    for (let i = 0; i < extraCols.length; i++) cols.push({ wch: 14 });
+    ws["!cols"] = cols;
+    ws["!merges"] = merges;
+
+    // Apply currency format to every money cell we flagged. Using `.z`
+    // (number format string) is the part of the SheetJS CE write path
+    // that Excel / Google Sheets both honour without a styles license.
+    for (const addr of currencyCells) {
+      const cell = ws[addr];
+      if (cell && typeof cell.v === "number") {
+        cell.z = currencyFmt;
+        cell.t = "n";
+      }
+    }
+
+    // Freeze the rows above the first system table so the scope + client
+    // info stays visible while scrolling long item lists.
+    ws["!freeze"] = { xSplit: 0, ySplit: info.length + 3 };
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Quotation");
+
+    const filename = `${refCode || projectName || "quotation"}.xlsx`;
+    XLSX.writeFile(wb, filename);
+  }
+
+  // Once `printMode` is committed the DOM mirrors the read-only viewer, so
+  // we hand off to the shared print helper. Centralising the dialog open +
+  // afterprint cleanup in `runQuotationPrint` keeps every print button —
+  // Print, Print Draft, Print BOQ, in both Designer and QuotationViewer —
+  // on the exact same code path, so the printed page header (logo strip)
+  // and footer (address bar) repeat consistently regardless of which
+  // button was pressed or which paper size the user picks in the dialog.
+  useEffect(() => {
+    if (!printMode) return;
+    runQuotationPrint({
+      ref: refCode,
+      projectName,
+      kind: pendingPrintKindRef.current,
+      afterPrint: () => {
+        setPrintMode(false);
+        setBoqMode(false);
+        pendingPrintKindRef.current = "normal";
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [printMode]);
+
+  return (
+    <div className="space-y-4">
+      {/* ── Settings toolbar ──────────────────────────────────────────────── */}
+      {showDesignUI && (
+      <div className="no-print rounded-2xl border border-espark-border bg-espark-surface p-4">
+        <div className="flex flex-wrap items-end gap-4">
+          {/* Pricing — default is SI (unit = SI base × 1). Toggle
+              "Manual pricing" to apply a custom factor across every row. */}
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-[10px] font-semibold uppercase text-espark-ink/60 mb-1">
+              Pricing
+            </label>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setPricingCategory(pricingCategory === "manual" ? "si" : "manual")
+                }
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  pricingCategory === "manual"
+                    ? "bg-espark-primary text-white"
+                    : "border border-espark-border text-espark-ink/70 hover:bg-espark-soft"
+                }`}
+                title="Toggle to multiply every row's SI base price by a custom factor"
+              >
+                Manual pricing
+              </button>
+              {pricingCategory === "manual" && (
+                <>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualFactorText}
+                    onChange={(e) => setManualFactorText(e.target.value)}
+                    onBlur={() => {
+                      const n = Number(manualFactorText);
+                      if (Number.isFinite(n) && n > 0) {
+                        applyManualFactor(n);
+                      } else {
+                        setManualFactorText(String(manualFactor));
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        (e.target as HTMLInputElement).blur();
+                      }
+                    }}
+                    className="w-20 rounded-md border border-espark-border px-2 py-1 text-sm"
+                    title="Multiplier applied to each row's SI base price (e.g. 1.5 = +50%, 0.98 = −2%)"
+                    aria-label="Manual pricing factor"
+                  />
+                  <span className="text-[10px] text-espark-ink/60">
+                    × SI base
+                  </span>
+                </>
+              )}
+            </div>
+            {pricingCategory !== "manual" && (
+              <p className="mt-1 text-[10px] text-espark-ink/50">
+                Prices use the SI base.
+              </p>
+            )}
+          </div>
+
+          {/* Quick settings */}
+          <div className="flex flex-wrap items-end gap-3">
+            <div>
+              <label className="block text-[10px] font-semibold uppercase text-espark-ink/60">
+                Tax %
+              </label>
+              <div className="flex items-center gap-1.5 mt-1">
+                <input
+                  type="number"
+                  value={taxPercent}
+                  onChange={(e) => setTaxPercent(Number(e.target.value))}
+                  disabled={!includeTax}
+                  className={`w-20 rounded-md border border-espark-border px-2 py-1 text-sm ${
+                    !includeTax ? "opacity-40" : ""
+                  }`}
+                />
+                <button
+                  onClick={() => setIncludeTax(!includeTax)}
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                    includeTax
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "bg-gray-300 text-espark-ink/70 hover:bg-gray-400"
+                  }`}
+                  title={includeTax ? "Click to exclude tax" : "Click to include tax"}
+                >
+                  {includeTax ? "Tax ON" : "Tax OFF"}
+                </button>
+                <button
+                  onClick={toggleTaxInclusive}
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                    taxInclusive
+                      ? "bg-orange-500 text-white hover:bg-orange-600"
+                      : "bg-gray-300 text-espark-ink/70 hover:bg-gray-400"
+                  }`}
+                  title={taxInclusive ? "Prices shown are tax-excluded" : "Click to exclude tax from prices"}
+                >
+                  {taxInclusive ? "Excl. Tax" : "Incl. Tax"}
+                </button>
+              </div>
+            </div>
+            {/* Discount applied to the subtotal before tax. Toggle the
+                trailing button to switch between a % of the subtotal and a
+                fixed JOD amount; the field below it edits the live mode. */}
+            <div>
+              <label className="block text-[10px] font-semibold uppercase text-espark-ink/60">
+                Discount
+              </label>
+              <div className="flex items-center gap-1.5 mt-1">
+                <input
+                  type="number"
+                  min="0"
+                  value={discountMode === "amount" ? discountAmount : discountPercent}
+                  onChange={(e) => {
+                    const v = Math.max(0, Number(e.target.value) || 0);
+                    if (discountMode === "amount") setDiscountAmount(v);
+                    else setDiscountPercent(v);
+                  }}
+                  className="w-20 rounded-md border border-espark-border px-2 py-1 text-sm"
+                  title={
+                    discountMode === "amount"
+                      ? "Fixed discount amount (JOD), applied to the subtotal before tax"
+                      : "Discount as a percentage of the subtotal, applied before tax"
+                  }
+                />
+                <button
+                  onClick={() =>
+                    setDiscountMode(discountMode === "amount" ? "percent" : "amount")
+                  }
+                  className="rounded-md px-2.5 py-1 text-[11px] font-semibold bg-gray-300 text-espark-ink/70 transition-colors hover:bg-gray-400"
+                  title="Switch between a % of the subtotal and a fixed JOD amount"
+                >
+                  {discountMode === "amount" ? "JOD" : "%"}
+                </button>
+              </div>
+            </div>
+            <label className="flex items-center gap-2 text-xs text-espark-ink/80 pb-1">
+              <input
+                type="checkbox"
+                checked={showPictures}
+                onChange={(e) => setShowPictures(e.target.checked)}
+              />
+              Pictures
+            </label>
+            {/* Brand / logo variant picker. Each variant bundles a logo with
+                its matching cover and about-us sheets so switching one
+                automatically swaps in the paired artwork at print time. */}
+            <div>
+              <label className="block text-[10px] font-semibold uppercase text-espark-ink/60">
+                Brand
+              </label>
+              <Select
+                value={brandVariantId}
+                onChange={(next) => setBrandVariantId(next)}
+                title="Select the logo, cover page and about-us page artwork for this quotation"
+                className="mt-1 rounded-md border border-espark-border px-2 py-1 text-sm min-w-[180px]"
+              >
+                {brandVariants.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
+
+      {/* ── Quotation preview & table editor ───────────────────────────────
+          Hidden in create mode until a client folder is picked so the user
+          has a single clear next action (Step 1: pick a client) instead of
+          facing an empty preview they can't save anyway. */}
+      {showDesignUI && (
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-4">
+        <div className="no-print flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold">Quotation preview</h3>
+          <div className="flex items-center gap-2">
+            {editMode && saveStatus && (
+              <span
+                className={`text-[11px] italic ${
+                  saveStatus.startsWith("Error")
+                    ? "text-red-600"
+                    : "text-espark-ink/60"
+                }`}
+              >
+                {saveStatus}
+              </span>
+            )}
+            <button
+              onClick={() => setQuickPickerOpen((v) => !v)}
+              title={
+                quickPickerOpen
+                  ? "Hide the quick catalogue picker sidebar"
+                  : "Show the quick catalogue picker sidebar"
+              }
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                quickPickerOpen
+                  ? "bg-espark-primary text-white border-espark-primary hover:bg-red-700"
+                  : "border-espark-primary text-espark-primary hover:bg-espark-primary hover:text-white"
+              }`}
+            >
+              {quickPickerOpen ? "Hide picker" : "Show picker"}
+            </button>
+            {/*
+             * Content-adding actions grouped under one "Add" menu:
+             * full catalogue picker, installation calculator and Excel/CSV
+             * import all funnel new rows into the quotation.
+             */}
+            <ActionMenu
+              label="Add"
+              variant="outline"
+              title="Add items to the quotation"
+              items={[
+                {
+                  label: "From Catalogue",
+                  onClick: () => setCataloguePickerOpen(true),
+                  title:
+                    "Browse and search the full product catalogue without leaving the editor",
+                },
+                {
+                  label: "Installation Calculator",
+                  onClick: () => setInstallationCalculatorOpen(true),
+                  title:
+                    "Price an installation from conduits, cables, labour and location, then add it as one row to the quotation under the selected system. Rates are set at Admin → Installation Calculator.",
+                },
+                {
+                  label: "Import Excel",
+                  onClick: () => setExcelImportOpen(true),
+                  title:
+                    "Import items from an Excel or CSV file (auto-detects Brand / Model / Description / Quantity / Unit Price)",
+                },
+              ]}
+            />
+            <button
+              onClick={clearAll}
+              disabled={items.length === 0 || saving}
+              className="rounded-md border border-espark-border px-3 py-1.5 text-xs hover:bg-espark-soft disabled:opacity-40"
+            >
+              Clear
+            </button>
+            {/*
+             * All export / print outputs grouped under one "Export as" menu.
+             */}
+            <ActionMenu
+              label="Export as"
+              variant="primary"
+              disabled={items.length === 0}
+              title="Export or print the quotation"
+              items={[
+                {
+                  label: "PDF Full",
+                  onClick: () => printQuotation(false),
+                  title: "Print the current quotation preview",
+                },
+                {
+                  label: "Excel",
+                  onClick: exportToExcel,
+                  title: "Export the quotation as an Excel file",
+                },
+                {
+                  label: "BOQ",
+                  onClick: printBoq,
+                  title:
+                    "Print the Bill of Quantities — items only, no pricing columns or totals",
+                },
+                {
+                  label: "PDF Draft",
+                  onClick: () => printQuotation(true),
+                  title:
+                    "Print without the cover and about-us pages (internal draft)",
+                },
+              ]}
+            />
+            {/*
+             * Saving grouped under one "Save as" menu. "Update" persists in
+             * place; Draft / Review clone the currently-loaded quotation into
+             * a NEW row whose ref carries a D<m> / R<m> suffix — see
+             * src/app/api/quotations/route.ts genSuffixedRef(). The snapshot
+             * items are only shown in edit mode because the suffix counter
+             * needs an existing parent to anchor against.
+             */}
+            <ActionMenu
+              label={saving ? "Saving…" : "Save as"}
+              variant="primary"
+              disabled={saving}
+              items={[
+                {
+                  label: editMode ? "Update" : "Save & open printable",
+                  onClick: () => saveQuotation("save"),
+                  disabled:
+                    items.length === 0 || saving || (!editMode && !folderId),
+                  title:
+                    !editMode && !folderId
+                      ? "Select a client before saving"
+                      : undefined,
+                },
+                {
+                  label: "New Draft",
+                  onClick: () => saveQuotation("draft"),
+                  disabled: items.length === 0 || saving,
+                  title:
+                    "Save a draft snapshot of this quotation (ref ends with D<n>). It can be sent to sales and tracked exactly like the original.",
+                  hidden: !(editMode && existing),
+                },
+                {
+                  label: "New Revision",
+                  onClick: () => saveQuotation("review"),
+                  disabled: items.length === 0 || saving,
+                  title:
+                    "Save a revision of this quotation (ref ends with R<n>). It can be sent to sales and tracked exactly like the original.",
+                  hidden: !(editMode && existing),
+                },
+              ]}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col lg:flex-row gap-4 items-start">
+          <div className="flex-1 min-w-0">
+            <QuotationPreview
+              header={{
+                project_name: projectName,
+                client_name: clientName,
+                client_email: clientEmail,
+                client_phone: clientPhone,
+                sales_engineer: salesEng,
+                sales_phone: salesPhone,
+                prepared_by: preparedBy,
+                design_engineer: designEng,
+                site_name: siteName,
+                ref: refCode || refPreview || "(auto)",
+                tax_percent: taxPercent,
+                date: new Date().toLocaleDateString("en-GB"),
+                extra_columns: extraColumns,
+                scope_intro: scopeIntro,
+                discount_mode: discountMode,
+                discount_percent: discountPercent,
+                discount_amount: discountAmount,
+              }}
+              items={items}
+              setItems={setItems}
+              setHeader={(patch) => {
+                if (patch.project_name !== undefined)
+                  setProjectName(patch.project_name);
+                if (patch.client_name !== undefined)
+                  setClientName(patch.client_name);
+                if (patch.client_email !== undefined)
+                  setClientEmail(patch.client_email);
+                if (patch.client_phone !== undefined)
+                  setClientPhone(patch.client_phone);
+                if (patch.sales_engineer !== undefined)
+                  setSalesEng(patch.sales_engineer);
+                if (patch.sales_phone !== undefined)
+                  setSalesPhone(patch.sales_phone);
+                if (patch.prepared_by !== undefined)
+                  setPreparedBy(patch.prepared_by);
+                if (patch.ref !== undefined) setRefCode(patch.ref);
+                if (patch.site_name !== undefined) setSiteName(patch.site_name);
+                if (patch.extra_columns !== undefined)
+                  setExtraColumns(patch.extra_columns);
+                if (patch.scope_intro !== undefined)
+                  setScopeIntro(patch.scope_intro);
+                if (patch.design_engineer !== undefined)
+                  setDesignEng(patch.design_engineer);
+              }}
+              // While `printMode` is on we re-render in read-only form so the
+              // browser print dialog captures the same DOM the /quotation
+              // viewer produces — no editable inputs, no add-row toolbars, no
+              // empty-state sheet with an "Add manual item" button.
+              editable={!printMode}
+              showPictures={showPictures}
+              terms={terms}
+              setTerms={setTerms}
+              notes={notes}
+              setNotes={setNotes}
+              includeTax={includeTax}
+              taxInclusive={taxInclusive}
+              clientLocked={clientLocked}
+              clientOptions={clientOptions.map((o) => ({
+                key: o.key,
+                label: o.label,
+              }))}
+              clientIdentity={clientIdentity}
+              onClientIdentityChange={(key) =>
+                setClientIdentity(key === "company" ? "company" : "client")
+              }
+              projectLocked={projectLocked}
+              footerText={appSettings.footerText}
+              brandVariantId={brandVariantId}
+              brandVariants={brandVariants}
+              boqMode={boqMode}
+            />
+          </div>
+          {/* Quick catalogue picker — fills the otherwise-empty space to
+              the right of the fixed-width printable sheet. Keeps the user
+              on the Designer instead of round-tripping through /catalog
+              for every product. Hidden automatically while printing. */}
+          {quickPickerOpen && !printMode && (
+            <QuickCatalogPicker
+              existingPages={existingPageNames}
+              onAdd={addCatalogItem}
+              className="w-full lg:w-72 lg:sticky lg:top-4 shrink-0"
+            />
+          )}
+        </div>
+      </div>
+      )}
+      {excelImportOpen && (
+        <ExcelImportModal
+          defaultPage={existingPageNames[0] || ""}
+          existingPages={existingPageNames}
+          onCancel={() => setExcelImportOpen(false)}
+          onImport={applyImportedItems}
+        />
+      )}
+      {cataloguePickerOpen && (
+        <CataloguePickerModal
+          existingPages={existingPageNames}
+          onAdd={addCatalogItem}
+          onClose={() => setCataloguePickerOpen(false)}
+        />
+      )}
+      {installationCalculatorOpen && (
+        <InstallationCalculatorModal
+          systems={existingPageNames}
+          onAdd={addCatalogItem}
+          onClose={() => setInstallationCalculatorOpen(false)}
+        />
+      )}
+    </div>
+  );
+}

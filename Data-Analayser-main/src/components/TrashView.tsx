@@ -1,0 +1,382 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { confirmDelete } from "@/lib/confirmDelete";
+
+/**
+ * TrashView — the "junction box" for soft-deleted client folders,
+ * quotations, and companies. Items listed here never auto-purge. Each row
+ * can be "Restore"d (undo the delete) or "Delete forever"ed — the latter
+ * hard-deletes the row via DELETE /api/trash and is irreversible.
+ */
+
+interface TrashCompany {
+  id: number;
+  name: string;
+  website: string | null;
+  industry: string | null;
+  owner_id: number | null;
+  deleted_at: string;
+  owner_username?: string | null;
+  owner_display_name?: string | null;
+}
+
+interface TrashFolder {
+  id: number;
+  name: string;
+  owner_id: number | null;
+  deleted_at: string;
+  client_email: string | null;
+  client_phone: string | null;
+  client_company: string | null;
+  owner_username?: string | null;
+  owner_display_name?: string | null;
+}
+
+interface TrashQuotation {
+  id: number;
+  ref: string;
+  project_name: string;
+  client_name: string | null;
+  site_name: string;
+  folder_id: number | null;
+  owner_id: number | null;
+  deleted_at: string;
+  owner_username?: string | null;
+  owner_display_name?: string | null;
+}
+
+function formatDateTime(dt: string) {
+  const d = new Date(dt);
+  return `${d.toLocaleDateString()} ${d.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+}
+
+export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
+  const [folders, setFolders] = useState<TrashFolder[]>([]);
+  const [quotations, setQuotations] = useState<TrashQuotation[]>([]);
+  const [companies, setCompanies] = useState<TrashCompany[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [restoringKind, setRestoringKind] = useState<string | null>(null);
+  const [purgingKind, setPurgingKind] = useState<string | null>(null);
+  // We purposely leave `isAdmin` reserved for future admin-only restore UI
+  // (e.g. bulk empty). For now the API already scopes results server-side.
+  void isAdmin;
+
+  async function load() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/trash");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load trash");
+      setFolders(data.folders || []);
+      setQuotations(data.quotations || []);
+      setCompanies(data.companies || []);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function restore(
+    type: "folder" | "quotation" | "company",
+    id: number,
+  ) {
+    const key = `${type}:${id}`;
+    setRestoringKind(key);
+    setError(null);
+    try {
+      const res = await fetch("/api/trash", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, id, cascade: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Restore failed");
+      if (type === "folder") {
+        setFolders((prev) => prev.filter((f) => f.id !== id));
+        // Restoring a folder cascade-restores its quotations on the server;
+        // reload so the quotations list matches reality. (The ones that stay
+        // in trash are orphans the user soloed earlier.)
+        load();
+      } else if (type === "quotation") {
+        setQuotations((prev) => prev.filter((q) => q.id !== id));
+      } else {
+        setCompanies((prev) => prev.filter((c) => c.id !== id));
+      }
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setRestoringKind(null);
+    }
+  }
+
+  async function purge(
+    type: "folder" | "quotation" | "company",
+    id: number,
+    label: string,
+  ) {
+    const noun =
+      type === "company" ? "company" : type === "folder" ? "client" : "quotation";
+    const extra =
+      type === "folder"
+        ? "\n\nAll of its projects and quotations will be permanently deleted too."
+        : "";
+    if (
+      !confirmDelete(
+        `Permanently delete the ${noun} "${label}"?${extra}`,
+      )
+    )
+      return;
+    const key = `${type}:${id}`;
+    setPurgingKind(key);
+    setError(null);
+    try {
+      const res = await fetch(
+        `/api/trash?type=${type}&id=${id}`,
+        { method: "DELETE" },
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Delete failed");
+      if (type === "folder") {
+        setFolders((prev) => prev.filter((f) => f.id !== id));
+      } else if (type === "quotation") {
+        setQuotations((prev) => prev.filter((q) => q.id !== id));
+      } else {
+        setCompanies((prev) => prev.filter((c) => c.id !== id));
+      }
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setPurgingKind(null);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="h-14 rounded-2xl border border-espark-border bg-espark-surface animate-pulse"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-900">
+        Items in the Trash are never deleted automatically. Use <em>Restore</em> to bring anything back.
+      </div>
+
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      {/* Companies section */}
+      <section>
+        <h2 className="text-sm font-semibold text-espark-ink/80 mb-2">
+          Companies ({companies.length})
+        </h2>
+        {companies.length === 0 ? (
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 text-sm text-espark-ink/40">
+            No companies in trash.
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="text-espark-primary text-xs uppercase bg-espark-soft/20">
+                <tr>
+                  <th className="p-3 text-left">Name</th>
+                  <th className="p-3 text-left">Industry</th>
+                  <th className="p-3 text-left">Website</th>
+                  <th className="p-3 text-left">Deleted</th>
+                  <th className="p-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {companies.map((c) => {
+                  const key = `company:${c.id}`;
+                  return (
+                    <tr
+                      key={c.id}
+                      className="border-t border-espark-border hover:bg-espark-soft/10"
+                    >
+                      <td className="p-3 font-semibold">{c.name}</td>
+                      <td className="p-3 text-espark-ink/70">{c.industry || "—"}</td>
+                      <td className="p-3 text-espark-ink/70">{c.website || "—"}</td>
+                      <td className="p-3 text-xs text-espark-ink/60">
+                        {formatDateTime(c.deleted_at)}
+                      </td>
+                      <td className="p-3 text-right whitespace-nowrap">
+                        <button
+                          onClick={() => restore("company", c.id)}
+                          disabled={restoringKind === key || purgingKind === key}
+                          className="text-xs font-medium text-green-700 hover:underline disabled:opacity-50"
+                        >
+                          {restoringKind === key ? "Restoring…" : "Restore"}
+                        </button>
+                        <button
+                          onClick={() => purge("company", c.id, c.name)}
+                          disabled={restoringKind === key || purgingKind === key}
+                          className="ml-3 text-xs font-medium text-red-700 hover:underline disabled:opacity-50"
+                        >
+                          {purgingKind === key ? "Deleting…" : "Delete forever"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Clients / folders section */}
+      <section>
+        <h2 className="text-sm font-semibold text-espark-ink/80 mb-2">
+          Clients ({folders.length})
+        </h2>
+        {folders.length === 0 ? (
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 text-sm text-espark-ink/40">
+            No clients in trash.
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="text-espark-primary text-xs uppercase bg-espark-soft/20">
+                <tr>
+                  <th className="p-3 text-left">Name</th>
+                  <th className="p-3 text-left">Email</th>
+                  <th className="p-3 text-left">Phone</th>
+                  <th className="p-3 text-left">Company</th>
+                  <th className="p-3 text-left">Deleted</th>
+                  <th className="p-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {folders.map((f) => {
+                  const key = `folder:${f.id}`;
+                  return (
+                    <tr
+                      key={f.id}
+                      className="border-t border-espark-border hover:bg-espark-soft/10"
+                    >
+                      <td className="p-3 font-semibold">{f.name}</td>
+                      <td className="p-3 text-espark-ink/70">{f.client_email || "—"}</td>
+                      <td className="p-3 text-espark-ink/70">{f.client_phone || "—"}</td>
+                      <td className="p-3 text-espark-ink/70">{f.client_company || "—"}</td>
+                      <td className="p-3 text-xs text-espark-ink/60">
+                        {formatDateTime(f.deleted_at)}
+                      </td>
+                      <td className="p-3 text-right whitespace-nowrap">
+                        <button
+                          onClick={() => restore("folder", f.id)}
+                          disabled={restoringKind === key || purgingKind === key}
+                          className="text-xs font-medium text-green-700 hover:underline disabled:opacity-50"
+                        >
+                          {restoringKind === key ? "Restoring…" : "Restore"}
+                        </button>
+                        <button
+                          onClick={() => purge("folder", f.id, f.name)}
+                          disabled={restoringKind === key || purgingKind === key}
+                          className="ml-3 text-xs font-medium text-red-700 hover:underline disabled:opacity-50"
+                        >
+                          {purgingKind === key ? "Deleting…" : "Delete forever"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Quotations section */}
+      <section>
+        <h2 className="text-sm font-semibold text-espark-ink/80 mb-2">
+          Quotations ({quotations.length})
+        </h2>
+        {quotations.length === 0 ? (
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 text-sm text-espark-ink/40">
+            No quotations in trash.
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="text-espark-primary text-xs uppercase bg-espark-soft/20">
+                <tr>
+                  <th className="p-3 text-left">Ref</th>
+                  <th className="p-3 text-left">Project</th>
+                  <th className="p-3 text-left">Client</th>
+                  <th className="p-3 text-left">Site</th>
+                  <th className="p-3 text-left">Deleted</th>
+                  <th className="p-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {quotations.map((r) => {
+                  const key = `quotation:${r.id}`;
+                  return (
+                    <tr
+                      key={r.id}
+                      className="border-t border-espark-border hover:bg-espark-soft/10"
+                    >
+                      <td className="p-3 font-mono">
+                        <Link
+                          href={`/quotation?id=${r.id}`}
+                          className="text-espark-primary hover:underline"
+                        >
+                          {r.ref}
+                        </Link>
+                      </td>
+                      <td className="p-3">{r.project_name}</td>
+                      <td className="p-3">{r.client_name || "—"}</td>
+                      <td className="p-3">{r.site_name}</td>
+                      <td className="p-3 text-xs text-espark-ink/60">
+                        {formatDateTime(r.deleted_at)}
+                      </td>
+                      <td className="p-3 text-right whitespace-nowrap">
+                        <button
+                          onClick={() => restore("quotation", r.id)}
+                          disabled={restoringKind === key || purgingKind === key}
+                          className="text-xs font-medium text-green-700 hover:underline disabled:opacity-50"
+                        >
+                          {restoringKind === key ? "Restoring…" : "Restore"}
+                        </button>
+                        <button
+                          onClick={() => purge("quotation", r.id, r.ref)}
+                          disabled={restoringKind === key || purgingKind === key}
+                          className="ml-3 text-xs font-medium text-red-700 hover:underline disabled:opacity-50"
+                        >
+                          {purgingKind === key ? "Deleting…" : "Delete forever"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}

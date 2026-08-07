@@ -1,0 +1,1236 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { confirmDelete } from "@/lib/confirmDelete";
+import { redirectIfSessionExpired } from "@/lib/clientAuth";
+import Select from "@/components/Select";
+
+/**
+ * Admin → Users & Roles.
+ *
+ * A person can hold MULTIPLE job roles at once (e.g. both Presales and a
+ * Projects Engineer). The admin ticks any combination of job roles from a
+ * checklist; `Admin` and `Viewer` are exclusive top-level access levels that
+ * clear every job role. The (module, role) plumbing is hidden behind friendly
+ * names; assignment goes through POST /api/admin/assign-role, which takes the
+ * full set of roles and makes it authoritative in one call.
+ */
+
+interface U {
+  id: number;
+  username: string;
+  display_name: string;
+  role: string;
+  phone: string;
+  /** Work email printed on the user's quotations / financial proposals. */
+  email: string;
+  /** Admin-assigned department code — leads every quotation REF (e.g. "ITD1"). */
+  department_code: string;
+  created_at: string;
+}
+
+interface Grant {
+  user_id: number;
+  module: string;
+  role: string;
+}
+
+interface RoleOption {
+  value: string; // "admin" | "viewer" | "none" | "<module>.<role>"
+  label: string;
+}
+
+/** The single source of truth for what an admin can assign. */
+const ROLE_GROUPS: Array<{ group: string; options: RoleOption[] }> = [
+  {
+    group: "Administration",
+    options: [
+      { value: "admin", label: "Admin (full access)" },
+      { value: "viewer", label: "Viewer (read-only admin)" },
+    ],
+  },
+  {
+    group: "Sales & Presales",
+    options: [
+      { value: "crm.sales", label: "Sales" },
+      { value: "crm.sales_manager", label: "Sales Manager" },
+      { value: "crm.presales", label: "Presales" },
+      { value: "crm.presales_manager", label: "Presales Manager" },
+    ],
+  },
+  {
+    group: "Projects",
+    options: [
+      { value: "projects.manager", label: "Project Manager" },
+      { value: "projects.engineer", label: "Engineer" },
+      { value: "projects.technical", label: "Technician" },
+    ],
+  },
+  {
+    group: "Storage",
+    options: [
+      { value: "storage.worker", label: "Storage Worker" },
+      { value: "storage.manager", label: "Storage Manager" },
+    ],
+  },
+  {
+    group: "Delivery",
+    options: [
+      { value: "delivery.driver", label: "Delivery Driver" },
+      { value: "delivery.manager", label: "Delivery Manager" },
+    ],
+  },
+  {
+    group: "Showroom",
+    options: [
+      { value: "showroom.staff", label: "Showroom Staff" },
+      { value: "showroom.manager", label: "Showroom Manager" },
+    ],
+  },
+  {
+    group: "Accounting",
+    options: [
+      { value: "accountant.accountant", label: "Accountant" },
+      { value: "accountant.manager", label: "Accounting Manager" },
+    ],
+  },
+  {
+    // A capability rather than a job title: ticking it gives this one person
+    // the Catalogue Modifier (bulk Excel upload / export plus per-row price,
+    // model, spec and picture edits) on top of whatever else they do.
+    group: "Catalogue",
+    options: [
+      {
+        value: "catalogue.editor",
+        label: "Catalogue Editor (can modify the catalogue)",
+      },
+    ],
+  },
+  {
+    group: "—",
+    options: [{ value: "none", label: "No role yet" }],
+  },
+];
+
+const LABEL_BY_VALUE: Record<string, string> = Object.fromEntries(
+  ROLE_GROUPS.flatMap((g) => g.options.map((o) => [o.value, o.label])),
+);
+
+/** The full set of role values a user currently holds (for the checklist + chips). */
+function currentRolesFor(u: U, grants: Grant[]): string[] {
+  if (u.role === "admin") return ["admin"];
+  if (u.role === "viewer") return ["viewer"];
+  return grants.map((g) => `${g.module}.${g.role}`);
+}
+
+/** Job-role groups only (Administration access levels handled separately). */
+const JOB_ROLE_GROUPS = ROLE_GROUPS.filter(
+  (g) => g.group !== "Administration" && g.group !== "—",
+);
+
+export default function UsersAndRolesPanel({
+  readOnly = false,
+}: {
+  readOnly?: boolean;
+}) {
+  const [users, setUsers] = useState<U[]>([]);
+  const [grants, setGrants] = useState<Grant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [busyUserId, setBusyUserId] = useState<number | null>(null);
+  const [exportFormat, setExportFormat] = useState<"csv" | "xlsx" | "json">(
+    "xlsx",
+  );
+  const [importing, setImporting] = useState(false);
+  const [importMsg, setImportMsg] = useState<string | null>(null);
+
+  // Create-user form.
+  const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [newDept, setNewDept] = useState("");
+  const [newRoles, setNewRoles] = useState<string[]>(["crm.sales"]);
+  const [createRolesOpen, setCreateRolesOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createErr, setCreateErr] = useState<string | null>(null);
+
+  // Roles editor modal (multi-role checklist).
+  const [rolesUser, setRolesUser] = useState<U | null>(null);
+  const [rolesSaving, setRolesSaving] = useState(false);
+
+  // Edit modal (display name / phone / email / password).
+  const [editUser, setEditUser] = useState<U | null>(null);
+  const [editDisplayName, setEditDisplayName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editDept, setEditDept] = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [editErr, setEditErr] = useState<string | null>(null);
+  const [editSaving, setEditSaving] = useState(false);
+
+  const loadAll = useCallback(async () => {
+    setError(null);
+    try {
+      const [uRes, mRes] = await Promise.all([
+        fetch("/api/users", { cache: "no-store" }),
+        fetch("/api/admin/module-roles", { cache: "no-store" }),
+      ]);
+      // Session expired while this tab was open → bounce to login instead of
+      // rendering a wall of "UNAUTHENTICATED" errors.
+      if (redirectIfSessionExpired(uRes) || redirectIfSessionExpired(mRes)) return;
+      const uData = await uRes.json();
+      const mData = await mRes.json();
+      if (!uRes.ok) throw new Error(uData.error || `users HTTP ${uRes.status}`);
+      if (!mRes.ok) throw new Error(mData.error || `roles HTTP ${mRes.status}`);
+      setUsers(uData.users || []);
+      setGrants(mData.grants || []);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadAll();
+  }, [loadAll]);
+
+  const grantsByUser = useMemo(() => {
+    const m = new Map<number, Grant[]>();
+    for (const g of grants) {
+      const arr = m.get(g.user_id) ?? [];
+      arr.push(g);
+      m.set(g.user_id, arr);
+    }
+    return m;
+  }, [grants]);
+
+  const stats = useMemo(() => {
+    const admins = users.filter((u) => u.role === "admin").length;
+    const assigned = users.filter(
+      (u) =>
+        u.role === "admin" ||
+        u.role === "viewer" ||
+        (grantsByUser.get(u.id)?.length ?? 0) > 0,
+    ).length;
+    return { total: users.length, admins, assigned };
+  }, [users, grantsByUser]);
+
+  async function assignRoles(userId: number, roles: string[]) {
+    setRolesSaving(true);
+    setBusyUserId(userId);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/assign-role", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ user_id: userId, roles }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      setRolesUser(null);
+      await loadAll();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setRolesSaving(false);
+      setBusyUserId(null);
+    }
+  }
+
+  async function createUser(e: React.FormEvent) {
+    e.preventDefault();
+    setCreateErr(null);
+    setCreating(true);
+    try {
+      // Admin/Viewer are exclusive access levels; otherwise the account is a
+      // plain user that then receives the chosen job-role grants.
+      const accessLevel = newRoles.includes("admin")
+        ? "admin"
+        : newRoles.includes("viewer")
+          ? "viewer"
+          : "user";
+      // Create the account first, then apply the full role set authoritatively.
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          password,
+          role: accessLevel,
+          display_name: displayName,
+          phone,
+          email,
+          department_code: newDept,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "failed");
+      const newId = data.user?.id;
+      if (newId && newRoles.length > 0) {
+        await fetch("/api/admin/assign-role", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ user_id: newId, roles: newRoles }),
+        });
+      }
+      setUsername("");
+      setDisplayName("");
+      setPhone("");
+      setEmail("");
+      setPassword("");
+      setNewDept("");
+      setNewRoles(["crm.sales"]);
+      await loadAll();
+    } catch (e) {
+      setCreateErr((e as Error).message);
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  async function deleteUser(id: number) {
+    if (!confirmDelete("Permanently delete this user?")) return;
+    setBusyUserId(id);
+    try {
+      await fetch(`/api/users?id=${id}`, { method: "DELETE" });
+      await loadAll();
+    } finally {
+      setBusyUserId(null);
+    }
+  }
+
+  function openEdit(u: U) {
+    setEditUser(u);
+    setEditDisplayName(u.display_name || "");
+    setEditPhone(u.phone || "");
+    setEditEmail(u.email || "");
+    setEditDept(u.department_code || "");
+    setEditPassword("");
+    setEditErr(null);
+  }
+
+  async function saveEdit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editUser) return;
+    setEditErr(null);
+    setEditSaving(true);
+    try {
+      const body: Record<string, string> = {
+        display_name: editDisplayName,
+        phone: editPhone,
+        email: editEmail,
+        department_code: editDept,
+      };
+      if (editPassword) body.password = editPassword;
+      const res = await fetch(`/api/users?id=${editUser.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (redirectIfSessionExpired(res)) return;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "failed");
+      setEditUser(null);
+      await loadAll();
+    } catch (e) {
+      setEditErr((e as Error).message);
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
+  /**
+   * Export / import users. Columns are Username, Display name, Email, Phone,
+   * Department, Roles and Password — the access-level and created-date columns
+   * were dropped (access level is folded into Roles), and a deliberately EMPTY
+   * Password column is added so an admin can fill it in the sheet and re-import
+   * to set credentials in bulk. Passwords are never READ back from the DB (they
+   * are one-way hashed), so the column always exports blank. Three formats:
+   * CSV / Excel (styled) / JSON.
+   */
+  const EXPORT_COLS = [
+    "Username",
+    "Display name",
+    "Email",
+    "Phone",
+    "Department",
+    "Roles",
+    "Password",
+  ] as const;
+
+  /** Reverse of LABEL_BY_VALUE, lower-cased, so imports accept friendly labels. */
+  const VALUE_BY_LABEL: Record<string, string> = Object.fromEntries(
+    Object.entries(LABEL_BY_VALUE).map(([v, l]) => [l.toLowerCase(), v]),
+  );
+
+  function userRecords() {
+    return users.map((u) => {
+      const roleValues = currentRolesFor(u, grantsByUser.get(u.id) ?? []).filter(
+        (v) => v !== "none",
+      );
+      return {
+        username: u.username,
+        display_name: u.display_name || "",
+        email: u.email || "",
+        phone: u.phone || "",
+        department: u.department_code || "",
+        roles: roleValues,
+        roleLabels: roleValues.map((v) => LABEL_BY_VALUE[v] ?? v).join(" | "),
+      };
+    });
+  }
+
+  function downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function exportUsers(format: "csv" | "xlsx" | "json") {
+    const recs = userRecords();
+    const stamp = new Date().toISOString().slice(0, 10);
+
+    if (format === "json") {
+      const payload = recs.map((r) => ({
+        username: r.username,
+        display_name: r.display_name,
+        email: r.email,
+        phone: r.phone,
+        department: r.department,
+        roles: r.roles,
+        password: "",
+      }));
+      downloadBlob(
+        new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        }),
+        `users-${stamp}.json`,
+      );
+      return;
+    }
+
+    const rowValues = (r: (typeof recs)[number]) => [
+      r.username,
+      r.display_name,
+      r.email,
+      r.phone,
+      r.department,
+      r.roleLabels,
+      "", // Password — always blank; fill it in to set credentials on import.
+    ];
+
+    if (format === "xlsx") {
+      const ExcelJSmod = (await import("exceljs")) as unknown as {
+        Workbook?: new () => import("exceljs").Workbook;
+        default?: { Workbook: new () => import("exceljs").Workbook };
+      };
+      const Workbook = ExcelJSmod.Workbook ?? ExcelJSmod.default?.Workbook;
+      if (!Workbook) return;
+      const wb = new Workbook();
+      const ws = wb.addWorksheet("Users", {
+        views: [{ state: "frozen", ySplit: 1 }],
+      });
+      const header = ws.addRow([...EXPORT_COLS]);
+      header.eachCell?.((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF0F172A" },
+        };
+        cell.alignment = { vertical: "middle" };
+      });
+      for (const r of recs) ws.addRow(rowValues(r));
+      ws.columns.forEach((col, i) => {
+        col.width = [18, 22, 26, 16, 14, 34, 16][i] ?? 16;
+      });
+      ws.autoFilter = { from: "A1", to: "G1" };
+      const buf = await wb.xlsx.writeBuffer();
+      downloadBlob(
+        new Blob([buf], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        `users-${stamp}.xlsx`,
+      );
+      return;
+    }
+
+    // CSV (UTF-8 BOM keeps Arabic names readable in Excel).
+    const cell = (v: string) =>
+      /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    const lines = [
+      EXPORT_COLS.join(","),
+      ...recs.map((r) => rowValues(r).map((v) => cell(String(v))).join(",")),
+    ];
+    downloadBlob(
+      new Blob(["﻿" + lines.join("\r\n")], {
+        type: "text/csv;charset=utf-8;",
+      }),
+      `users-${stamp}.csv`,
+    );
+  }
+
+  /** Minimal RFC-4180 CSV parser (handles quoted fields, commas, newlines). */
+  function parseCsv(text: string): string[][] {
+    const rows: string[][] = [];
+    let row: string[] = [];
+    let field = "";
+    let inQuotes = false;
+    const s = text.replace(/^﻿/, "");
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (s[i + 1] === '"') {
+            field += '"';
+            i++;
+          } else inQuotes = false;
+        } else field += c;
+      } else if (c === '"') inQuotes = true;
+      else if (c === ",") {
+        row.push(field);
+        field = "";
+      } else if (c === "\n" || c === "\r") {
+        if (c === "\r" && s[i + 1] === "\n") i++;
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+      } else field += c;
+    }
+    if (field.length > 0 || row.length > 0) {
+      row.push(field);
+      rows.push(row);
+    }
+    return rows.filter((r) => r.some((c) => c.trim() !== ""));
+  }
+
+  /** Turn a Roles cell ("Sales | Presales" or "crm.sales|admin") into values. */
+  function parseRolesField(raw: string): string[] {
+    return raw
+      .split(/[|,]/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .map((t) => {
+        if (t === "admin" || t === "viewer" || /^[a-z_]+\.[a-z_]+$/.test(t)) {
+          return t;
+        }
+        return VALUE_BY_LABEL[t.toLowerCase()] ?? null;
+      })
+      .filter((v): v is string => Boolean(v));
+  }
+
+  async function importUsers(file: File) {
+    setImporting(true);
+    setImportMsg(null);
+    try {
+      const text = await file.text();
+      type Rec = {
+        username: string;
+        display_name?: string;
+        email?: string;
+        phone?: string;
+        department?: string;
+        password?: string;
+        roles: string[];
+      };
+      let records: Rec[];
+      if (/\.json$/i.test(file.name)) {
+        const parsed = JSON.parse(text) as Array<Record<string, unknown>>;
+        records = parsed.map((r) => ({
+          username: String(r.username ?? "").trim(),
+          display_name: r.display_name ? String(r.display_name) : "",
+          email: r.email ? String(r.email) : "",
+          phone: r.phone ? String(r.phone) : "",
+          department: r.department ? String(r.department) : "",
+          password: r.password ? String(r.password) : "",
+          roles: Array.isArray(r.roles)
+            ? (r.roles as unknown[]).map(String)
+            : parseRolesField(String(r.roles ?? "")),
+        }));
+      } else {
+        const grid = parseCsv(text);
+        const header = (grid[0] ?? []).map((h) => h.trim().toLowerCase());
+        const col = (names: string[]) =>
+          header.findIndex((h) => names.includes(h));
+        const iUser = col(["username"]);
+        const iName = col(["display name", "display_name"]);
+        const iEmail = col(["email"]);
+        const iPhone = col(["phone"]);
+        const iDept = col(["department", "department_code"]);
+        const iRoles = col(["roles"]);
+        const iPass = col(["password"]);
+        if (iUser < 0) throw new Error("CSV needs a Username column.");
+        records = grid.slice(1).map((r) => ({
+          username: (r[iUser] ?? "").trim(),
+          display_name: iName >= 0 ? r[iName] ?? "" : "",
+          email: iEmail >= 0 ? r[iEmail] ?? "" : "",
+          phone: iPhone >= 0 ? r[iPhone] ?? "" : "",
+          department: iDept >= 0 ? r[iDept] ?? "" : "",
+          password: iPass >= 0 ? r[iPass] ?? "" : "",
+          roles: iRoles >= 0 ? parseRolesField(r[iRoles] ?? "") : [],
+        }));
+      }
+
+      let created = 0;
+      let updated = 0;
+      const failures: string[] = [];
+      for (const rec of records) {
+        if (!rec.username) continue;
+        try {
+          const roles = rec.roles;
+          const accessLevel = roles.includes("admin")
+            ? "admin"
+            : roles.includes("viewer")
+              ? "viewer"
+              : "user";
+          const existing = users.find(
+            (u) => u.username.toLowerCase() === rec.username.toLowerCase(),
+          );
+          if (existing) {
+            const body: Record<string, string> = {
+              display_name: rec.display_name ?? "",
+              email: rec.email ?? "",
+              phone: rec.phone ?? "",
+              department_code: rec.department ?? "",
+            };
+            if (rec.password) body.password = rec.password;
+            const res = await fetch(`/api/users?id=${existing.id}`, {
+              method: "PATCH",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify(body),
+            });
+            if (!res.ok) throw new Error((await res.json()).error || "update failed");
+            await fetch("/api/admin/assign-role", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ user_id: existing.id, roles }),
+            });
+            updated++;
+          } else {
+            if (!rec.password) {
+              throw new Error("new user needs a password in the Password column");
+            }
+            const res = await fetch("/api/users", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({
+                username: rec.username,
+                password: rec.password,
+                role: accessLevel,
+                display_name: rec.display_name ?? "",
+                phone: rec.phone ?? "",
+                email: rec.email ?? "",
+                department_code: rec.department ?? "",
+              }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "create failed");
+            if (data.user?.id && roles.length > 0) {
+              await fetch("/api/admin/assign-role", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ user_id: data.user.id, roles }),
+              });
+            }
+            created++;
+          }
+        } catch (e) {
+          failures.push(`${rec.username}: ${(e as Error).message}`);
+        }
+      }
+      await loadAll();
+      setImportMsg(
+        `Imported — ${created} created, ${updated} updated` +
+          (failures.length
+            ? `, ${failures.length} skipped (${failures.slice(0, 3).join("; ")}${failures.length > 3 ? "…" : ""})`
+            : "."),
+      );
+    } catch (e) {
+      setImportMsg(`Import failed: ${(e as Error).message}`);
+    } finally {
+      setImporting(false);
+    }
+  }
+
+  if (loading) {
+    return <p className="text-sm text-espark-ink/60">Loading users &amp; roles…</p>;
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="text-sm font-semibold text-espark-ink">Users &amp; roles</h3>
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={exportFormat}
+            onChange={(next) =>
+              setExportFormat(next as "csv" | "xlsx" | "json")
+            }
+            className="rounded-lg border border-espark-border bg-espark-surface px-2 py-1.5 text-xs font-semibold text-espark-ink"
+            title="Choose the export format"
+          >
+            <option value="xlsx">Excel (.xlsx)</option>
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+          </Select>
+          <button
+            type="button"
+            onClick={() => void exportUsers(exportFormat)}
+            disabled={users.length === 0}
+            title="Download all users. The Password column is blank — fill it in and re-import to set credentials."
+            className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-ink hover:border-espark-primary/40 hover:text-espark-primary disabled:opacity-50"
+          >
+            Export
+          </button>
+          {!readOnly && (
+            <label
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-ink hover:border-espark-primary/40 hover:text-espark-primary ${
+                importing ? "pointer-events-none opacity-50" : ""
+              }`}
+              title="Import users from a CSV or JSON file (same columns as the export). Existing usernames are updated; new ones are created when a Password is provided."
+            >
+              {importing ? "Importing…" : "Import"}
+              <input
+                type="file"
+                accept=".csv,.json,application/json,text/csv"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) void importUsers(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          )}
+        </div>
+      </div>
+      {importMsg && (
+        <p className="rounded-lg border border-espark-border bg-espark-soft/40 px-3 py-2 text-xs text-espark-ink/70">
+          {importMsg}
+        </p>
+      )}
+      <div className="grid grid-cols-3 gap-3">
+        <StatCard label="Users" value={stats.total} />
+        <StatCard label="Admins" value={stats.admins} />
+        <StatCard label="With a role" value={stats.assigned} />
+      </div>
+
+      {!readOnly && (
+        <form
+          onSubmit={createUser}
+          className="rounded-2xl border border-espark-border bg-espark-surface p-4"
+        >
+          <h3 className="mb-3 text-sm font-semibold text-espark-ink">
+            Create user
+          </h3>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-8">
+            <input
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <input
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
+              placeholder="display name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
+            <input
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
+              type="tel"
+              placeholder="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <input
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
+              type="email"
+              placeholder="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
+              type="password"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <input
+              className="rounded-md border border-espark-border px-3 py-2 text-sm uppercase"
+              placeholder="department code"
+              title="Leads every quotation reference, formatted DEPT-FO<year>-<hex>"
+              value={newDept}
+              onChange={(e) => setNewDept(e.target.value.toUpperCase())}
+            />
+            <button
+              type="button"
+              onClick={() => setCreateRolesOpen(true)}
+              className="flex min-h-[38px] flex-wrap items-center gap-1 rounded-md border border-espark-border bg-espark-surface px-2 py-1 text-left text-xs hover:border-espark-primary/40"
+              title="Choose roles"
+            >
+              <RoleChips values={newRoles} />
+              <span className="ml-auto text-espark-ink/40">▾</span>
+            </button>
+            <button
+              disabled={creating}
+              className="rounded-md bg-espark-primary px-3 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
+            >
+              {creating ? "Creating…" : "Create user"}
+            </button>
+          </div>
+          {createErr && (
+            <div className="mt-2 text-xs text-red-600">{createErr}</div>
+          )}
+        </form>
+      )}
+
+      {error && (
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
+        </p>
+      )}
+
+      {/* Desktop table */}
+      <div className="hidden overflow-hidden rounded-2xl border border-espark-border bg-espark-surface lg:block">
+        <table className="w-full text-sm">
+          <thead className="bg-espark-header text-xs uppercase text-espark-primary">
+            <tr>
+              <th className="p-3 text-left">User</th>
+              <th className="p-3 text-left">Role</th>
+              <th className="p-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((u) => {
+              const roleValues = currentRolesFor(u, grantsByUser.get(u.id) ?? []);
+              const rowBusy = busyUserId === u.id;
+              return (
+                <tr key={u.id} className="border-t border-espark-border align-middle">
+                  <td className="p-3">
+                    <div className="font-semibold text-espark-ink">
+                      {u.username}
+                    </div>
+                    <div className="text-xs text-espark-ink/60">
+                      {u.display_name || "—"}
+                      {u.phone ? ` · ${u.phone}` : ""}
+                      {u.email ? ` · ${u.email}` : ""}
+                    </div>
+                    <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-espark-ink/40">
+                      <span>
+                        #{u.id} · {new Date(u.created_at).toLocaleDateString()}
+                      </span>
+                      {u.department_code && (
+                        <span
+                          className="rounded bg-espark-soft px-1.5 py-0.5 font-semibold text-espark-ink/70"
+                          title="Department code — leads this user's quotation refs"
+                        >
+                          {u.department_code}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-3">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <RoleChips values={roleValues} />
+                      {!readOnly && (
+                        <button
+                          onClick={() => setRolesUser(u)}
+                          disabled={rowBusy}
+                          className="rounded border border-espark-border px-2 py-1 text-[11px] font-medium text-espark-ink/70 hover:border-espark-primary/40 hover:text-espark-primary disabled:opacity-50"
+                        >
+                          Edit roles
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap p-3 text-right">
+                    {readOnly ? (
+                      <span className="text-xs text-espark-ink/40">—</span>
+                    ) : (
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => openEdit(u)}
+                          className="rounded border border-espark-border px-2 py-1 text-xs font-medium text-espark-ink/70 hover:bg-espark-soft"
+                        >
+                          Edit
+                        </button>
+                        {u.role !== "admin" && (
+                          <button
+                            onClick={() => deleteUser(u.id)}
+                            disabled={rowBusy}
+                            className="rounded border border-red-200 px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="space-y-3 lg:hidden">
+        {users.map((u) => {
+          const roleValues = currentRolesFor(u, grantsByUser.get(u.id) ?? []);
+          const rowBusy = busyUserId === u.id;
+          return (
+            <div
+              key={u.id}
+              className="space-y-3 rounded-2xl border border-espark-border bg-espark-surface p-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="truncate font-semibold text-espark-ink">
+                    {u.username}
+                  </div>
+                  <div className="truncate text-sm text-espark-ink/70">
+                    {u.display_name || "—"}
+                  </div>
+                  {(u.phone || u.email) && (
+                    <div className="mt-0.5 text-xs text-espark-ink/50">
+                      {[u.phone, u.email].filter(Boolean).join(" · ")}
+                    </div>
+                  )}
+                </div>
+                <span className="font-mono text-xs text-espark-ink/40">
+                  #{u.id}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-xs text-espark-ink/60">Roles</label>
+                <RoleChips values={roleValues} />
+                {!readOnly && (
+                  <button
+                    onClick={() => setRolesUser(u)}
+                    disabled={rowBusy}
+                    className="rounded border border-espark-border px-2 py-1 text-[11px] font-medium text-espark-ink/70 hover:border-espark-primary/40 hover:text-espark-primary disabled:opacity-50"
+                  >
+                    Edit roles
+                  </button>
+                )}
+              </div>
+
+              {!readOnly && (
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => openEdit(u)}
+                    className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink hover:bg-espark-soft"
+                  >
+                    Edit / password
+                  </button>
+                  {u.role !== "admin" && (
+                    <button
+                      onClick={() => deleteUser(u.id)}
+                      disabled={rowBusy}
+                      className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Roles editor modal (multi-role checklist) — existing user */}
+      {rolesUser && (
+        <RolesEditor
+          title={`Roles for ${rolesUser.username}`}
+          initial={currentRolesFor(
+            rolesUser,
+            grantsByUser.get(rolesUser.id) ?? [],
+          )}
+          saving={rolesSaving}
+          onCancel={() => setRolesUser(null)}
+          onSave={(roles) => void assignRoles(rolesUser.id, roles)}
+        />
+      )}
+
+      {/* Roles editor modal — choosing roles for a NEW user before creating */}
+      {createRolesOpen && (
+        <RolesEditor
+          title="Roles for the new user"
+          initial={newRoles}
+          saving={false}
+          onCancel={() => setCreateRolesOpen(false)}
+          onSave={(roles) => {
+            setNewRoles(roles);
+            setCreateRolesOpen(false);
+          }}
+        />
+      )}
+
+      {/* Edit modal */}
+      {editUser && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 md:items-center"
+          onClick={() => setEditUser(null)}
+        >
+          <form
+            onSubmit={saveEdit}
+            className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl bg-espark-surface p-5 md:rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>
+              <h3 className="font-semibold text-espark-ink">
+                Edit {editUser.username}
+              </h3>
+              <p className="mt-1 text-xs text-espark-ink/60">
+                Leave password blank to keep the current one.
+              </p>
+            </div>
+            <input
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
+              placeholder="display name"
+              value={editDisplayName}
+              onChange={(e) => setEditDisplayName(e.target.value)}
+            />
+            <input
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
+              type="tel"
+              placeholder="phone"
+              value={editPhone}
+              onChange={(e) => setEditPhone(e.target.value)}
+            />
+            <input
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
+              type="email"
+              placeholder="email (printed on quotations)"
+              value={editEmail}
+              onChange={(e) => setEditEmail(e.target.value)}
+            />
+            <input
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm uppercase"
+              placeholder="department code (leads quotation refs)"
+              title="Leads every quotation reference, formatted DEPT-FO<year>-<hex>"
+              value={editDept}
+              onChange={(e) => setEditDept(e.target.value.toUpperCase())}
+            />
+            <input
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
+              type="password"
+              placeholder="new password (optional)"
+              value={editPassword}
+              onChange={(e) => setEditPassword(e.target.value)}
+            />
+            {editErr && <div className="text-xs text-red-600">{editErr}</div>}
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setEditUser(null)}
+                className="rounded-md border border-espark-border px-3 py-2 text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={editSaving}
+                className="rounded-md bg-espark-primary px-3 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
+              >
+                {editSaving ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-xl border border-espark-border bg-espark-surface px-4 py-3">
+      <div className="text-2xl font-bold text-espark-ink">{value}</div>
+      <div className="text-xs text-espark-ink/50">{label}</div>
+    </div>
+  );
+}
+
+/** Read-only display of the roles a user holds, as small chips. */
+function RoleChips({ values }: { values: string[] }) {
+  if (values.length === 0) {
+    return (
+      <span className="rounded-md border border-espark-border bg-espark-soft px-2 py-1 text-xs text-espark-ink/50">
+        No role yet
+      </span>
+    );
+  }
+  const isGov = values.includes("admin") || values.includes("viewer");
+  return (
+    <>
+      {values.map((v) => (
+        <span
+          key={v}
+          className={`rounded-md px-2 py-1 text-xs ${
+            isGov
+              ? "border border-espark-ink/20 bg-espark-ink/5 font-medium text-espark-ink"
+              : "border border-espark-border bg-espark-surface text-espark-ink/75"
+          }`}
+        >
+          {LABEL_BY_VALUE[v] ?? v}
+        </span>
+      ))}
+    </>
+  );
+}
+
+/**
+ * Multi-role checklist. Admin / Viewer are exclusive access levels (ticking
+ * either clears all job roles and disables the rest); otherwise any
+ * combination of job roles can be selected.
+ */
+function RolesEditor({
+  title,
+  initial,
+  saving,
+  onCancel,
+  onSave,
+}: {
+  title: string;
+  initial: string[];
+  saving: boolean;
+  onCancel: () => void;
+  onSave: (roles: string[]) => void;
+}) {
+  const [sel, setSel] = useState<Set<string>>(() => new Set(initial));
+  const isAdmin = sel.has("admin");
+  const isViewer = sel.has("viewer");
+  const exclusive = isAdmin || isViewer;
+
+  function pickExclusive(which: "admin" | "viewer") {
+    setSel((prev) => {
+      // Ticking an already-sole selection unticks it (back to "no role").
+      if (prev.has(which) && prev.size === 1) return new Set();
+      return new Set([which]);
+    });
+  }
+  function toggleJob(value: string) {
+    setSel((prev) => {
+      const next = new Set(prev);
+      next.delete("admin");
+      next.delete("viewer");
+      if (next.has(value)) next.delete(value);
+      else next.add(value);
+      return next;
+    });
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 md:items-center"
+      onClick={onCancel}
+    >
+      <div
+        className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl bg-espark-surface p-5 md:rounded-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div>
+          <h3 className="font-semibold text-espark-ink">
+            {title}
+          </h3>
+          <p className="mt-1 text-xs text-espark-ink/60">
+            Tick any combination of job roles. Admin / Viewer are exclusive and
+            clear all job roles.
+          </p>
+        </div>
+
+        <div>
+          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-espark-ink/50">
+            Access level
+          </div>
+          <div className="space-y-1">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isAdmin}
+                onChange={() => pickExclusive("admin")}
+              />
+              Admin (full access)
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isViewer}
+                onChange={() => pickExclusive("viewer")}
+              />
+              Viewer (read-only admin)
+            </label>
+          </div>
+        </div>
+
+        <div
+          className={
+            exclusive ? "pointer-events-none opacity-40 transition-opacity" : ""
+          }
+        >
+          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-espark-ink/50">
+            Job roles (select any combination)
+          </div>
+          <div className="space-y-3">
+            {JOB_ROLE_GROUPS.map((g) => (
+              <div key={g.group}>
+                <div className="mb-1 text-xs font-medium text-espark-ink/60">
+                  {g.group}
+                </div>
+                <div className="grid grid-cols-2 gap-1">
+                  {g.options.map((o) => (
+                    <label
+                      key={o.value}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={sel.has(o.value)}
+                        disabled={exclusive}
+                        onChange={() => toggleJob(o.value)}
+                      />
+                      {o.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 pt-1">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md border border-espark-border px-3 py-2 text-sm"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            disabled={saving}
+            onClick={() => onSave(Array.from(sel))}
+            className="rounded-md bg-espark-primary px-3 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
+          >
+            {saving ? "Saving…" : "Save roles"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
