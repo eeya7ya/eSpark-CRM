@@ -1,4 +1,5 @@
 import { sql, ensureSchema } from "./db";
+import { getBoundWorkspace } from "./workspaceContext";
 import { DEFAULT_TERMS } from "./quotationDraft";
 import {
   BRAND_VARIANTS,
@@ -19,6 +20,33 @@ export {
 } from "./techProposalAssets";
 
 /**
+ * The company a workspace's printed documents belong to. Every field here was
+ * previously hardcoded, which meant every deployment printed one particular
+ * company's address and phone numbers whether or not these were its documents.
+ */
+export interface CompanyDetails {
+  legalName: string;
+  address: string;
+  phone: string;
+  fax: string;
+  email: string;
+  website: string;
+  taxNumber: string;
+  bankDetails: string;
+}
+
+export const EMPTY_COMPANY_DETAILS: CompanyDetails = {
+  legalName: "",
+  address: "",
+  phone: "",
+  fax: "",
+  email: "",
+  website: "",
+  taxNumber: "",
+  bankDetails: "",
+};
+
+/**
  * Global, admin-editable presets for every printable quotation.
  *
  * - `defaultTerms` populates the Terms and Conditions block whenever a new
@@ -28,6 +56,8 @@ export {
 export interface AppSettings {
   defaultTerms: string[];
   footerText: string;
+  /** Identity printed on quotations and proposals. */
+  companyDetails: CompanyDetails;
   /**
    * Admin-managed brand bundles. Each pairs a logo with the two full-bleed
    * "company profile" sheets (cover + about-us) printed before a quotation,
@@ -46,9 +76,42 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   // admin notices. Each workspace supplies its own via Admin → Settings
   // (and, once provisioned, from its `companyDetails`).
   footerText: "",
+  companyDetails: { ...EMPTY_COMPANY_DETAILS },
   brandVariants: [...BRAND_VARIANTS],
   techProposalAssets: { ...DEFAULT_TECH_PROPOSAL_ASSETS },
 };
+
+/** Coerce each company field to a string, defaulting to "". */
+function normalizeCompanyDetails(value: unknown): CompanyDetails {
+  const v = (value ?? {}) as Partial<CompanyDetails>;
+  const s = (x: unknown) => (typeof x === "string" ? x : "");
+  return {
+    legalName: s(v.legalName),
+    address: s(v.address),
+    phone: s(v.phone),
+    fax: s(v.fax),
+    email: s(v.email),
+    website: s(v.website),
+    taxNumber: s(v.taxNumber),
+    bankDetails: s(v.bankDetails),
+  };
+}
+
+/**
+ * The footer line for printed sheets: an explicitly-set `footerText` wins,
+ * otherwise one is composed from the company details so filling those in is
+ * enough to get a correct footer without also retyping it here.
+ */
+export function resolveFooterText(settings: AppSettings): string {
+  if (settings.footerText.trim()) return settings.footerText;
+  const c = settings.companyDetails;
+  const parts: string[] = [];
+  if (c.address) parts.push(`Address: ${c.address}`);
+  if (c.phone) parts.push(`Tel: ${c.phone}`);
+  if (c.fax) parts.push(`Fax: ${c.fax}`);
+  if (c.email) parts.push(c.email);
+  return parts.join(" · ");
+}
 
 const KEY = "global";
 
@@ -85,6 +148,7 @@ function normalize(value: unknown): AppSettings {
       typeof v.footerText === "string"
         ? v.footerText
         : DEFAULT_APP_SETTINGS.footerText,
+    companyDetails: normalizeCompanyDetails(v.companyDetails),
     // `sanitizeBrandVariants` falls back to the built-in defaults when the
     // field is missing (legacy rows) or empty, so printing always has at
     // least one brand bundle to resolve against.
@@ -115,10 +179,34 @@ const CACHE_TTL_MS = 5_000;
 // cached value if we have one; otherwise we assume DEFAULTS and let the
 // real fetch finish in the background for the next request.
 const READ_TIMEOUT_MS = 8_000;
+// Both caches are keyed PER WORKSPACE. One warm lambda serves several
+// workspaces, and a shared entry would hand workspace B the terms, footer,
+// logos and company details belonging to workspace A — a cross-workspace leak
+// of exactly the settings this feature exists to keep separate.
 const globalForSettings = globalThis as unknown as {
-  __mtAppSettingsCache?: { at: number; data: AppSettings };
-  __mtAppSettingsInFlight?: Promise<AppSettings>;
+  __mtAppSettingsCache?: Map<string, { at: number; data: AppSettings }>;
+  __mtAppSettingsInFlight?: Map<string, Promise<AppSettings>>;
 };
+
+/** Cache identity of the settings row being read. */
+function settingsKey(): string {
+  return getBoundWorkspace()?.slug ?? "single";
+}
+
+function cacheMap(): Map<string, { at: number; data: AppSettings }> {
+  if (!globalForSettings.__mtAppSettingsCache) {
+    globalForSettings.__mtAppSettingsCache = new Map();
+  }
+  return globalForSettings.__mtAppSettingsCache;
+}
+
+function readCached(): { at: number; data: AppSettings } | undefined {
+  return cacheMap().get(settingsKey());
+}
+
+function writeCached(data: AppSettings): void {
+  cacheMap().set(settingsKey(), { at: Date.now(), data });
+}
 
 async function queryDb(): Promise<AppSettings> {
   await ensureSchema();
@@ -128,19 +216,24 @@ async function queryDb(): Promise<AppSettings> {
   `) as Array<{ value: unknown }>;
   const data =
     rows.length === 0 ? { ...DEFAULT_APP_SETTINGS } : normalize(rows[0].value);
-  globalForSettings.__mtAppSettingsCache = { at: Date.now(), data };
+  writeCached(data);
   return data;
 }
 
 function readFromDb(): Promise<AppSettings> {
   // Coalesce concurrent callers onto a single in-flight query so multiple
   // callers hitting the same cold lambda don't each open a fresh round-trip.
-  let inflight = globalForSettings.__mtAppSettingsInFlight;
+  const key = settingsKey();
+  if (!globalForSettings.__mtAppSettingsInFlight) {
+    globalForSettings.__mtAppSettingsInFlight = new Map();
+  }
+  const pending = globalForSettings.__mtAppSettingsInFlight;
+  let inflight = pending.get(key);
   if (!inflight) {
     inflight = queryDb().finally(() => {
-      globalForSettings.__mtAppSettingsInFlight = undefined;
+      pending.delete(key);
     });
-    globalForSettings.__mtAppSettingsInFlight = inflight;
+    pending.set(key, inflight);
   }
   // Swallow the background rejection so unhandled-rejection noise doesn't
   // leak out; the raced copy below still surfaces errors to the caller.
@@ -163,7 +256,7 @@ function readFromDb(): Promise<AppSettings> {
 export async function getAppSettings(
   opts: { fresh?: boolean } = {},
 ): Promise<AppSettings> {
-  const cached = globalForSettings.__mtAppSettingsCache;
+  const cached = readCached();
   if (!opts.fresh && cached && Date.now() - cached.at < CACHE_TTL_MS) {
     return cached.data;
   }
@@ -213,6 +306,6 @@ export async function saveAppSettings(
     );
   }
   const saved = normalize(rows[0].value);
-  globalForSettings.__mtAppSettingsCache = { at: Date.now(), data: saved };
+  writeCached(saved);
   return saved;
 }

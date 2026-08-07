@@ -6,6 +6,7 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import ClickTracker from "@/components/ClickTracker";
 import IconProvider from "@/components/IconProvider";
 import { ThemeProvider, THEME_STORAGE_KEY } from "@/context/ThemeContext";
+import { getRequestBranding, paletteCss } from "@/lib/workspaceBranding";
 
 /**
  * Geist is the eSpark brand face. Self-hosted from `src/fonts` (the same
@@ -72,11 +73,17 @@ const themeScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify
   THEME_STORAGE_KEY,
 )});if(t!=="dark"&&t!=="light")t="light";var e=document.documentElement;e.classList.remove("light","dark");e.classList.add(t);e.style.colorScheme=t;}catch(_){}})();`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Server-rendered so the workspace's colours are in the very first response.
+  // The design tokens are consumed as `rgb(var(--espark-x) / <alpha>)`, so
+  // redefining them here restyles the entire app with no client JavaScript and
+  // no flash of the default palette. Empty for a single-company deployment.
+  const palette = paletteCss(await getRequestBranding());
+
   return (
     <html
       lang="en"
@@ -85,6 +92,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {palette && <style dangerouslySetInnerHTML={{ __html: palette }} />}
       </head>
       <body className="min-h-screen text-espark-ink antialiased selection:bg-espark-primary/20 selection:text-espark-ink">
         <ThemeProvider>

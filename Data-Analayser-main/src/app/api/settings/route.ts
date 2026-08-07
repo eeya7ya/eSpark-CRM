@@ -45,6 +45,20 @@ export async function PATCH(req: NextRequest) {
     if (typeof body.footerText === "string") {
       patch.footerText = body.footerText;
     }
+    if (body.companyDetails && typeof body.companyDetails === "object") {
+      const c = body.companyDetails as unknown as Record<string, unknown>;
+      const s = (x: unknown) => (typeof x === "string" ? x.trim() : "");
+      patch.companyDetails = {
+        legalName: s(c.legalName),
+        address: s(c.address),
+        phone: s(c.phone),
+        fax: s(c.fax),
+        email: s(c.email),
+        website: s(c.website),
+        taxNumber: s(c.taxNumber),
+        bankDetails: s(c.bankDetails),
+      };
+    }
     if (Array.isArray(body.brandVariants)) {
       // Sanitise here too (not just on read) so a malformed entry can never
       // reach the jsonb column and so the admin gets back exactly what will

@@ -13,9 +13,29 @@
  */
 
 import { createHash, createHmac } from "node:crypto";
+import { getBoundWorkspace } from "./workspaceContext";
 
 const SERVICE = "s3";
 const REGION = "auto";
+
+/**
+ * Map a logical object key to its physical key in the shared bucket.
+ *
+ * Every workspace's files live under its own prefix, so two clients can both
+ * have `projects/12/boq.xlsx` without colliding or being able to guess at each
+ * other's objects.
+ *
+ * The mapping is applied on EVERY access — put, get, head, delete, presign —
+ * and never stored. What goes into the database is always the logical key, so
+ * the physical layout stays an implementation detail of this module and old
+ * rows keep working unchanged: the original workspace carries an empty prefix,
+ * so its keys map to themselves and no existing object has to move.
+ */
+function physicalKey(key: string): string {
+  const prefix = getBoundWorkspace()?.r2Prefix || "";
+  if (!prefix) return key;
+  return `${prefix.replace(/\/+$/, "")}/${key.replace(/^\/+/, "")}`;
+}
 
 type R2Config = {
   accountId: string;
@@ -166,7 +186,15 @@ export async function r2PutObject(
   body: Buffer | string,
   contentType = "application/octet-stream",
 ): Promise<{ bucket: string; key: string; size: number }> {
-  return putObjectWithConfig(readR2Config(), key, body, contentType);
+  const written = await putObjectWithConfig(
+    readR2Config(),
+    physicalKey(key),
+    body,
+    contentType,
+  );
+  // Return the LOGICAL key: it is what callers persist, and re-deriving the
+  // physical key on each access is what keeps the prefix an internal detail.
+  return { ...written, key };
 }
 
 /**
@@ -178,7 +206,13 @@ export async function r2PutObjectOffsite(
   body: Buffer | string,
   contentType = "application/octet-stream",
 ): Promise<{ bucket: string; key: string; size: number }> {
-  return putObjectWithConfig(readOffsiteR2Config(), key, body, contentType);
+  const written = await putObjectWithConfig(
+    readOffsiteR2Config(),
+    physicalKey(key),
+    body,
+    contentType,
+  );
+  return { ...written, key };
 }
 
 /** Core SigV4 PUT against an explicit R2 config (primary or off-site). */
@@ -274,7 +308,8 @@ export type R2Overflow = {
  * GET a single object from R2 and return its body as a UTF-8 string. Used
  * to resolve `__r2_overflow__` references stored in D1.
  */
-export async function r2GetObject(key: string): Promise<string> {
+export async function r2GetObject(logicalKey: string): Promise<string> {
+  const key = physicalKey(logicalKey);
   const { accountId, accessKeyId, secretAccessKey, bucket } = readR2Config();
   const host = `${accountId}.r2.cloudflarestorage.com`;
   const encodedKey = awsUriEncode(key, false);
@@ -341,8 +376,9 @@ export async function r2GetObject(key: string): Promise<string> {
  * backup is cheap and idempotent — no needless Supabase egress or R2 PUTs.
  */
 export async function r2HeadObject(
-  key: string,
+  logicalKey: string,
 ): Promise<{ exists: boolean; size: number | null }> {
+  const key = physicalKey(logicalKey);
   const { accountId, accessKeyId, secretAccessKey, bucket } = readR2Config();
   const host = `${accountId}.r2.cloudflarestorage.com`;
   const encodedKey = awsUriEncode(key, false);
@@ -422,9 +458,13 @@ export async function r2HeadObject(
  */
 export function r2PresignUrl(
   method: "GET" | "PUT",
-  key: string,
+  logicalKey: string,
   opts?: { expiresSeconds?: number; responseContentDisposition?: string },
 ): string {
+  // Presigned URLs are handed to the browser, so the prefix has to be baked in
+  // here — the client never sees, and cannot influence, which workspace's
+  // prefix it gets.
+  const key = physicalKey(logicalKey);
   const { accountId, accessKeyId, secretAccessKey, bucket } = readR2Config();
   const host = `${accountId}.r2.cloudflarestorage.com`;
   const encodedKey = awsUriEncode(key, false);
@@ -487,7 +527,8 @@ export function r2PresignUrl(
  * missing key as success — S3/R2 return 204 either way — so deleting a file
  * whose blob is already gone doesn't error.
  */
-export async function r2DeleteObject(key: string): Promise<void> {
+export async function r2DeleteObject(logicalKey: string): Promise<void> {
+  const key = physicalKey(logicalKey);
   const { accountId, accessKeyId, secretAccessKey, bucket } = readR2Config();
   const host = `${accountId}.r2.cloudflarestorage.com`;
   const encodedKey = awsUriEncode(key, false);
