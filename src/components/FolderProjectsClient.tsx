@@ -607,7 +607,7 @@ function NewProjectButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-md bg-espark-primary text-white px-2.5 py-1 text-xs font-semibold hover:bg-red-700"
+        className="rounded-md bg-espark-primary text-white px-2.5 py-1 text-xs font-semibold hover:bg-espark-primary/85"
       >
         + New
       </button>
@@ -668,7 +668,7 @@ function NewProjectButton({
             type="button"
             onClick={submit}
             disabled={busy || !name.trim()}
-            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700 disabled:opacity-50"
+            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/85 disabled:opacity-50"
           >
             {busy ? "Creating…" : "Create"}
           </button>
@@ -931,7 +931,7 @@ function ProjectHeader({
             type="button"
             onClick={save}
             disabled={busy || !name.trim()}
-            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700 disabled:opacity-50"
+            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/85 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save"}
           </button>
@@ -1066,7 +1066,7 @@ function QuotationsTab({
         {showAuthoring && (
           <Link
             href={`/designer?folder=${project.folder_id}&project=${project.id}`}
-            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700"
+            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/85"
           >
             + New quotation in this project
           </Link>
@@ -1622,7 +1622,7 @@ function FileUploader({
   return (
     <div className="rounded-lg border border-dashed border-espark-border bg-espark-soft/30 p-4">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold cursor-pointer hover:bg-red-700">
+        <label className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold cursor-pointer hover:bg-espark-primary/85">
           {busy ? "Uploading…" : buttonLabel}
           <input
             type="file"
@@ -1991,7 +1991,7 @@ function ProposalsListTab({
             type="button"
             onClick={() => void createBlank()}
             disabled={creating}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
           >
             {creating && <Spinner size={12} className="text-white" />}
             + {newLabel}
@@ -2071,7 +2071,7 @@ function ProposalsListTab({
                   href={openHref(q.id)}
                   target="_blank"
                   rel="noopener"
-                  className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+                  className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/85"
                 >
                   {ctaLabel}
                 </a>

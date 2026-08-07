@@ -253,7 +253,7 @@ export default function QuotationViewer({
         <div className="mt-3 flex items-center gap-2">
           <button
             onClick={() => load()}
-            className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+            className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/85"
           >
             Retry
           </button>
@@ -536,7 +536,7 @@ export default function QuotationViewer({
               <button
                 onClick={() => void submitChangeRequest()}
                 disabled={requestBusy || !requestNote.trim()}
-                className="rounded-md bg-espark-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-md bg-espark-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-50"
               >
                 {requestBusy ? "Sending…" : "Send request"}
               </button>

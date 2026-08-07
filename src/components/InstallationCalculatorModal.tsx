@@ -332,7 +332,7 @@ export default function InstallationCalculatorModal({
               <button
                 onClick={submit}
                 disabled={calc.selling <= 0 || !system.trim()}
-                className="rounded-md bg-espark-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-md bg-espark-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-50"
               >
                 Add row to quotation
               </button>

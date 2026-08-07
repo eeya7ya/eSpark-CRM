@@ -1293,7 +1293,7 @@ export default function QuotationPreview({
             <div className="no-print flex flex-wrap items-center justify-center gap-2">
               <button
                 onClick={addNewTable}
-                className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-[11px] font-semibold hover:bg-red-700"
+                className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-[11px] font-semibold hover:bg-espark-primary/85"
                 title="Create a new table (system page) and start it with a blank row you can fill in by hand"
               >
                 + Add a new table

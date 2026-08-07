@@ -495,7 +495,7 @@ export default function ExcelImportModal({
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-lg bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700"
+            className="rounded-lg bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-espark-primary/85"
           >
             {fileName ? "Choose a different file" : "Choose Excel / CSV file"}
           </button>
@@ -720,7 +720,7 @@ export default function ExcelImportModal({
           <button
             onClick={handleImport}
             disabled={!canImport}
-            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Import {rows.length > 0 ? `${rows.length} row${rows.length === 1 ? "" : "s"}` : ""}
           </button>

@@ -66,7 +66,7 @@ export default function ActionMenu({
   const sizeCls = size === "md" ? "px-4 py-2 text-sm" : "px-3 py-1.5 text-xs";
   const variantCls =
     variant === "primary"
-      ? "bg-espark-primary text-white hover:bg-red-700"
+      ? "bg-espark-primary text-white hover:bg-espark-primary/85"
       : "border border-espark-primary text-espark-primary hover:bg-espark-primary hover:text-white";
 
   return (
