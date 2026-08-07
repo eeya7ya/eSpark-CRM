@@ -73,7 +73,7 @@ export function ProjectSelector({
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium",
+          "flex items-center gap-2 rounded-lg border border-gray-200 bg-espark-surface px-3.5 py-2 text-sm font-medium",
           "transition-colors hover:border-gray-300 hover:bg-gray-50",
           "focus:outline-none focus:ring-2 focus:ring-cyan-500/30",
           open && "border-gray-300 bg-gray-50"
@@ -104,7 +104,7 @@ export function ProjectSelector({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1.5 min-w-[260px] rounded-xl border border-gray-200 bg-white shadow-lg shadow-gray-200">
+        <div className="absolute left-0 top-full z-50 mt-1.5 min-w-[260px] rounded-xl border border-gray-200 bg-espark-surface shadow-lg shadow-gray-200">
           {/* Create new project option */}
           <div className="border-b border-gray-100 p-1">
             {creating ? (

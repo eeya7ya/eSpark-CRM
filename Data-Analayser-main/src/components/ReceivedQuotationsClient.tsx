@@ -132,7 +132,7 @@ export default function ReceivedQuotationsClient() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8 text-center text-sm text-magic-ink/50">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center text-sm text-espark-ink/50">
         Loading received quotations…
       </div>
     );
@@ -146,7 +146,7 @@ export default function ReceivedQuotationsClient() {
   }
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8 text-center text-sm text-magic-ink/50">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center text-sm text-espark-ink/50">
         Nothing here yet — quotations presales send to you will show up in this
         queue.
       </div>
@@ -205,15 +205,15 @@ function Group({
 }) {
   return (
     <section>
-      <h2 className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-magic-ink/60">
+      <h2 className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-espark-ink/60">
         {title}
-        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-magic-soft px-1.5 text-[10px] font-semibold text-magic-ink/60">
+        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-espark-soft px-1.5 text-[10px] font-semibold text-espark-ink/60">
           {count}
         </span>
       </h2>
       {count === 0 ? (
         empty ? (
-          <p className="rounded-xl border border-dashed border-magic-border bg-white/60 px-4 py-3 text-xs text-magic-ink/45">
+          <p className="rounded-xl border border-dashed border-espark-border bg-espark-surface/60 px-4 py-3 text-xs text-espark-ink/45">
             {empty}
           </p>
         ) : null
@@ -243,25 +243,25 @@ function ReceivedRow({
     : "";
   const version = versionBadge(item);
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-magic-border bg-white px-4 py-3 shadow-sm">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-espark-border bg-espark-surface px-4 py-3 shadow-sm">
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="font-mono text-xs font-semibold text-magic-red">
+          <span className="font-mono text-xs font-semibold text-espark-primary">
             {item.ref}
           </span>
-          <span className="truncate text-sm font-semibold text-magic-ink">
+          <span className="truncate text-sm font-semibold text-espark-ink">
             {item.project_name || "Untitled"}
           </span>
           {version && (
             <span
               title="A newer version of a quotation you already have — it walks the same cycle as the original"
-              className="rounded-full border border-magic-accent/40 bg-magic-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-magic-accent"
+              className="rounded-full border border-espark-accent/40 bg-espark-accent/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-espark-accent"
             >
               {version}
             </span>
           )}
         </div>
-        <p className="mt-0.5 text-[11px] text-magic-ink/55">
+        <p className="mt-0.5 text-[11px] text-espark-ink/55">
           {item.client_name ? `${item.client_name} · ` : ""}
           {item.sent_by ? `sent by ${item.sent_by}` : "sent to sales"}
           {sentAt ? ` · ${sentAt}` : ""}
@@ -270,7 +270,7 @@ function ReceivedRow({
       <button
         type="button"
         onClick={() => router.push(`/quotation?id=${item.id}`)}
-        className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+        className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
       >
         Open
       </button>
@@ -279,7 +279,7 @@ function ReceivedRow({
         onClick={onRequestMod}
         disabled={busy}
         title="Send it back to presales with a note describing the change"
-        className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+        className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
       >
         Request modification
       </button>
@@ -288,7 +288,7 @@ function ReceivedRow({
         onClick={onJunk}
         disabled={busy}
         title="Remove this quotation from your queue for good (presales must re-send to bring it back)"
-        className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/60 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 disabled:opacity-50"
+        className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/60 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 disabled:opacity-50"
       >
         Junk
       </button>
@@ -296,7 +296,7 @@ function ReceivedRow({
         type="button"
         onClick={onFile}
         disabled={busy}
-        className="rounded-lg bg-magic-red px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-magic-red/90 disabled:opacity-50"
+        className="rounded-lg bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-espark-primary/90 disabled:opacity-50"
       >
         File / assign →
       </button>
@@ -465,7 +465,7 @@ function FileModal({
   }
 
   const fieldCls =
-    "w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red";
+    "w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary";
 
   return (
     <div
@@ -473,22 +473,22 @@ function FileModal({
       onClick={onClose}
     >
       <div
-        className="my-8 w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"
+        className="my-8 w-full max-w-2xl rounded-2xl bg-espark-surface p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-magic-ink">
+            <h2 className="text-lg font-bold text-espark-ink">
               File {item.ref}
             </h2>
-            <p className="mt-0.5 text-xs text-magic-ink/60">
+            <p className="mt-0.5 text-xs text-espark-ink/60">
               Pick or create the company, client and project this quotation
               belongs to.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-lg text-magic-ink/50 hover:text-magic-red"
+            className="text-lg text-espark-ink/50 hover:text-espark-primary"
             aria-label="Close"
           >
             ✕
@@ -671,7 +671,7 @@ function FileModal({
               type="button"
               onClick={onClose}
               disabled={busy}
-              className="rounded-lg border border-magic-border bg-white px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+              className="rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
             >
               Cancel
             </button>
@@ -679,7 +679,7 @@ function FileModal({
               type="button"
               onClick={() => void submit()}
               disabled={busy}
-              className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90 disabled:opacity-50"
+              className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90 disabled:opacity-50"
             >
               {busy ? "Filing…" : "File quotation"}
             </button>
@@ -701,11 +701,11 @@ function Section({
 }) {
   return (
     <section>
-      <h4 className="text-xs font-bold uppercase tracking-wide text-magic-ink/70">
+      <h4 className="text-xs font-bold uppercase tracking-wide text-espark-ink/70">
         {title}
       </h4>
       {subtitle && (
-        <p className="mt-0.5 text-[11px] text-magic-ink/55">{subtitle}</p>
+        <p className="mt-0.5 text-[11px] text-espark-ink/55">{subtitle}</p>
       )}
       <div className="mt-2">{children}</div>
     </section>
@@ -722,7 +722,7 @@ function Segmented({
   options: Array<{ value: string; label: string }>;
 }) {
   return (
-    <div className="inline-flex w-full items-center gap-0.5 rounded-lg border border-magic-border bg-white p-0.5">
+    <div className="inline-flex w-full items-center gap-0.5 rounded-lg border border-espark-border bg-espark-surface p-0.5">
       {options.map((o) => (
         <button
           key={o.value}
@@ -730,8 +730,8 @@ function Segmented({
           onClick={() => onChange(o.value)}
           className={`flex-1 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
             value === o.value
-              ? "bg-magic-red text-white shadow-sm"
-              : "text-magic-ink/60 hover:text-magic-ink"
+              ? "bg-espark-primary text-white shadow-sm"
+              : "text-espark-ink/60 hover:text-espark-ink"
           }`}
         >
           {o.label}

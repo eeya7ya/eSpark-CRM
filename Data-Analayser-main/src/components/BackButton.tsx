@@ -19,7 +19,7 @@ export default function BackButton({
 }) {
   const router = useRouter();
   const baseClass =
-    "inline-flex items-center gap-1 text-xs text-magic-ink/60 hover:text-magic-red transition-colors";
+    "inline-flex items-center gap-1 text-xs text-espark-ink/60 hover:text-espark-primary transition-colors";
   return (
     <button
       type="button"

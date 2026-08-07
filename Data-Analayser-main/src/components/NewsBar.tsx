@@ -59,8 +59,8 @@ export default function NewsBar() {
           key={p.id}
           className={`rounded-xl border px-4 py-3 ${
             p.pinned
-              ? "border-magic-red/40 bg-magic-red/5"
-              : "border-magic-border bg-white"
+              ? "border-espark-primary/40 bg-espark-primary/5"
+              : "border-espark-border bg-espark-surface"
           }`}
         >
           <button
@@ -68,18 +68,18 @@ export default function NewsBar() {
             className="w-full text-left flex items-start justify-between gap-3"
           >
             <div className="min-w-0">
-              <h3 className="font-semibold text-magic-ink flex items-center gap-2">
+              <h3 className="font-semibold text-espark-ink flex items-center gap-2">
                 {p.pinned && (
                   <span
                     aria-label="pinned"
-                    className="inline-block rounded-full bg-magic-red/15 text-magic-red px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                    className="inline-block rounded-full bg-espark-primary/15 text-espark-primary px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
                   >
                     Pinned
                   </span>
                 )}
                 {p.title}
               </h3>
-              <div className="text-xs text-magic-ink/50 mt-0.5">
+              <div className="text-xs text-espark-ink/50 mt-0.5">
                 {p.created_by_username && <>by @{p.created_by_username} · </>}
                 {new Date(p.created_at).toLocaleDateString()}
                 {p.expires_at && (
@@ -90,12 +90,12 @@ export default function NewsBar() {
                 )}
               </div>
             </div>
-            <span className="text-magic-ink/40 text-sm">
+            <span className="text-espark-ink/40 text-sm">
               {expanded.has(p.id) ? "−" : "+"}
             </span>
           </button>
           {expanded.has(p.id) && (
-            <p className="mt-2 text-sm text-magic-ink/80 whitespace-pre-line">
+            <p className="mt-2 text-sm text-espark-ink/80 whitespace-pre-line">
               {p.body}
             </p>
           )}

@@ -140,15 +140,15 @@ export default function ClientListClient({
           placeholder={searchPlaceholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 min-w-0 rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+          className="flex-1 min-w-0 rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
-        <label className="flex items-center gap-1.5 text-xs text-magic-ink/60">
+        <label className="flex items-center gap-1.5 text-xs text-espark-ink/60">
           <span className="hidden sm:inline">Sort</span>
           <Select
             value={sortKey}
             onChange={(next) => setSortKey(next as ListSortKey)}
             aria-label="Sort clients"
-            className="rounded-lg border border-magic-border bg-white px-2 py-2 text-sm text-magic-ink"
+            className="rounded-lg border border-espark-border bg-espark-surface px-2 py-2 text-sm text-espark-ink"
           >
             {LIST_SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -159,13 +159,13 @@ export default function ClientListClient({
         </label>
         <Link
           href={`/crm/trash${backTool}`}
-          className="rounded-lg border border-magic-border px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+          className="rounded-lg border border-espark-border px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
         >
           Trash
         </Link>
         <button
           onClick={() => setCreating(true)}
-          className="rounded-lg bg-magic-red text-white px-3 py-2 text-sm font-semibold hover:bg-magic-red/90 transition-colors"
+          className="rounded-lg bg-espark-primary text-white px-3 py-2 text-sm font-semibold hover:bg-espark-primary/90 transition-colors"
         >
           {newLabel}
         </button>
@@ -178,8 +178,8 @@ export default function ClientListClient({
       )}
 
       {visible.length === 0 ? (
-        <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-          <p className="text-sm text-magic-ink/60">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+          <p className="text-sm text-espark-ink/60">
             {query ? `No matches for "${query}".` : emptyHint}
           </p>
         </div>
@@ -188,22 +188,22 @@ export default function ClientListClient({
           {visible.map((f) => (
             <li
               key={f.id}
-              className="rounded-xl border border-magic-border bg-white p-4 hover:shadow-md transition-shadow"
+              className="rounded-xl border border-espark-border bg-espark-surface p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <Link
                     href={`${linkBase}/${f.id}${backTool}`}
-                    className="font-semibold text-magic-ink hover:text-magic-red"
+                    className="font-semibold text-espark-ink hover:text-espark-primary"
                   >
                     {f.name}
                   </Link>
-                  <div className="text-xs text-magic-ink/60 mt-0.5">
+                  <div className="text-xs text-espark-ink/60 mt-0.5">
                     {f.client_email && <>{f.client_email} · </>}
                     {f.client_phone && <>{f.client_phone} · </>}
                     {f.owner_username && <>owner @{f.owner_username}</>}
                   </div>
-                  <div className="text-xs text-magic-ink/50 mt-1">
+                  <div className="text-xs text-espark-ink/50 mt-1">
                     {f.project_count} project
                     {f.project_count === 1 ? "" : "s"} · {f.quotation_count}{" "}
                     quotation{f.quotation_count === 1 ? "" : "s"} ·{" "}
@@ -220,21 +220,21 @@ export default function ClientListClient({
                 <div className="flex items-center gap-1.5 shrink-0">
                   <Link
                     href={`${linkBase}/${f.id}${backTool}`}
-                    className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+                    className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
                   >
                     Open
                   </Link>
                   <button
                     onClick={() => setEditing(f)}
                     disabled={busy}
-                    className="px-2 py-1.5 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                    className="px-2 py-1.5 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => void softDelete(f.id)}
                     disabled={busy}
-                    className="px-2 py-1.5 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
+                    className="px-2 py-1.5 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
                   >
                     Delete
                   </button>
@@ -341,20 +341,20 @@ function NewClientModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl space-y-3"
+        className="w-full max-w-md rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-magic-ink">
+          <h3 className="font-semibold text-espark-ink">
             {kind === "company" ? "New client at this company" : "New individual client"}
           </h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
           >
             ×
           </button>
@@ -366,7 +366,7 @@ function NewClientModal({
           onChange={(e) => setName(e.target.value)}
           disabled={busy}
           autoFocus
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         {conflicts.length > 0 && (
           <p className="rounded border border-amber-300 bg-amber-50 px-2 py-1.5 text-xs text-amber-800">
@@ -380,7 +380,7 @@ function NewClientModal({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <input
           type="tel"
@@ -388,7 +388,7 @@ function NewClientModal({
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <div>
           <input
@@ -397,9 +397,9 @@ function NewClientModal({
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
             disabled={busy}
-            className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
-          <p className="mt-1 text-[11px] text-magic-ink/50">
+          <p className="mt-1 text-[11px] text-espark-ink/50">
             Names the first project created for this client. Leave blank for a
             generic “Default Project” you can rename later.
           </p>
@@ -413,14 +413,14 @@ function NewClientModal({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+            className="rounded border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy || !name.trim() || conflicts.length > 0}
-            className="rounded bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+            className="rounded bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
           >
             {busy ? "Creating…" : "Create client"}
           </button>

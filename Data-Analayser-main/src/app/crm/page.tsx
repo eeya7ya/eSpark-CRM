@@ -106,15 +106,15 @@ export default async function CrmLandingPage({
   };
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto max-w-screen-2xl space-y-5 px-4 py-6 sm:px-6 lg:px-8">
         <div>
-          <Link href="/" className="text-xs text-magic-ink/50 hover:text-magic-red">
+          <Link href="/" className="text-xs text-espark-ink/50 hover:text-espark-primary">
             ← Dashboard
           </Link>
-          <h1 className="mt-1 text-2xl font-bold text-magic-ink">CRM</h1>
-          <p className="mt-0.5 text-sm text-magic-ink/60">
+          <h1 className="mt-1 text-2xl font-bold text-espark-ink">CRM</h1>
+          <p className="mt-0.5 text-sm text-espark-ink/60">
             Your workspace. The tools you see reflect your role; clients live
             inside the Sales, Presales and Projects tools.
           </p>

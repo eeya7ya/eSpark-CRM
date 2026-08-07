@@ -120,11 +120,11 @@ export default function ExecutionReportsPanel({
   }
 
   return (
-    <section className="rounded-2xl border border-magic-border bg-white p-5">
-      <h2 className="text-lg font-semibold text-magic-ink mb-1">
+    <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
+      <h2 className="text-lg font-semibold text-espark-ink mb-1">
         Execution report
       </h2>
-      <p className="text-xs text-magic-ink/60 mb-3">
+      <p className="text-xs text-espark-ink/60 mb-3">
         The assigned member's checklist progress and the running feed of
         updates, blockers and completion notes.
       </p>
@@ -137,16 +137,16 @@ export default function ExecutionReportsPanel({
           const done = checklist.filter((t) => t.done).length;
           const pct = Math.round((done / total) * 100);
           return (
-            <div className="mb-4 rounded-lg border border-magic-border bg-magic-soft/20 p-3">
+            <div className="mb-4 rounded-lg border border-espark-border bg-espark-soft/20 p-3">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wide text-magic-ink/60">
+                <span className="text-xs font-bold uppercase tracking-wide text-espark-ink/60">
                   Checklist
                 </span>
-                <span className="text-xs font-semibold tabular-nums text-magic-ink/70">
+                <span className="text-xs font-semibold tabular-nums text-espark-ink/70">
                   {done}/{total} · {pct}%
                 </span>
               </div>
-              <div className="mb-2.5 h-2 overflow-hidden rounded-full bg-magic-soft">
+              <div className="mb-2.5 h-2 overflow-hidden rounded-full bg-espark-soft">
                 <div
                   className={`h-full rounded-full ${pct >= 100 ? "bg-emerald-500" : "bg-violet-500"}`}
                   style={{ width: `${pct}%` }}
@@ -159,7 +159,7 @@ export default function ExecutionReportsPanel({
                       className={`inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${
                         t.done
                           ? "bg-emerald-500 text-white"
-                          : "border border-magic-border text-transparent"
+                          : "border border-espark-border text-transparent"
                       }`}
                     >
                       ✓
@@ -167,14 +167,14 @@ export default function ExecutionReportsPanel({
                     <span
                       className={
                         t.done
-                          ? "text-magic-ink/45 line-through"
-                          : "text-magic-ink/80"
+                          ? "text-espark-ink/45 line-through"
+                          : "text-espark-ink/80"
                       }
                     >
                       {t.title}
                     </span>
                     {t.done && (t.done_by_name || t.done_by_username) && (
-                      <span className="ml-auto text-[10px] text-magic-ink/35">
+                      <span className="ml-auto text-[10px] text-espark-ink/35">
                         {t.done_by_name || t.done_by_username}
                         {t.done_at
                           ? ` · ${new Date(t.done_at).toLocaleDateString()}`
@@ -189,14 +189,14 @@ export default function ExecutionReportsPanel({
         })()}
 
       {canPost && (
-        <div className="mb-4 rounded-lg border border-dashed border-magic-border bg-magic-soft/30 p-3 space-y-2">
+        <div className="mb-4 rounded-lg border border-dashed border-espark-border bg-espark-soft/30 p-3 space-y-2">
           <div className="grid gap-2 sm:grid-cols-2">
             <Select
               value={kind}
               onChange={(next) =>
                 setKind(next as "update" | "blocker" | "done")
               }
-              className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+              className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
             >
               <option value="update">Progress update</option>
               <option value="blocker">Blocker / issue</option>
@@ -209,7 +209,7 @@ export default function ExecutionReportsPanel({
               value={progress}
               onChange={(e) => setProgress(e.target.value)}
               placeholder="Progress % (optional)"
-              className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+              className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
             />
           </div>
           <textarea
@@ -217,13 +217,13 @@ export default function ExecutionReportsPanel({
             value={body}
             onChange={(e) => setBody(e.target.value)}
             placeholder="What's the status? Any blockers, photos to follow, parts needed, estimated finish…"
-            className="w-full rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+            className="w-full rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
           />
           <div className="flex justify-end">
             <button
               onClick={() => void submit()}
               disabled={busy || !body.trim()}
-              className="rounded-md bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+              className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
             >
               {busy ? "Posting…" : "Post report"}
             </button>
@@ -238,9 +238,9 @@ export default function ExecutionReportsPanel({
       )}
 
       {loading ? (
-        <p className="text-sm text-magic-ink/50">Loading reports…</p>
+        <p className="text-sm text-espark-ink/50">Loading reports…</p>
       ) : reports.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           No execution reports yet.
         </p>
       ) : (
@@ -248,7 +248,7 @@ export default function ExecutionReportsPanel({
           {reports.map((r) => (
             <li
               key={r.id}
-              className="rounded-lg border border-magic-border/60 p-3"
+              className="rounded-lg border border-espark-border/60 p-3"
             >
               <div className="flex items-center gap-2">
                 <span
@@ -257,18 +257,18 @@ export default function ExecutionReportsPanel({
                   {KIND_LABEL[r.kind] ?? r.kind}
                 </span>
                 {r.progress !== null && (
-                  <span className="text-[11px] font-semibold text-magic-ink/70">
+                  <span className="text-[11px] font-semibold text-espark-ink/70">
                     {r.progress}%
                   </span>
                 )}
-                <span className="ml-auto text-[11px] text-magic-ink/40">
+                <span className="ml-auto text-[11px] text-espark-ink/40">
                   {new Date(r.created_at).toLocaleString()}
                 </span>
               </div>
-              <p className="mt-1.5 whitespace-pre-wrap text-sm text-magic-ink/80">
+              <p className="mt-1.5 whitespace-pre-wrap text-sm text-espark-ink/80">
                 {r.body}
               </p>
-              <p className="mt-1 text-[11px] text-magic-ink/40">
+              <p className="mt-1 text-[11px] text-espark-ink/40">
                 by {r.author_name || r.author_username || "—"}
               </p>
             </li>

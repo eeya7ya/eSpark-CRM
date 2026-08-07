@@ -75,16 +75,16 @@ export default async function ProjectBoqsTabSection({
   const canShare = tier === "full";
 
   return (
-    <section className="rounded-2xl border border-magic-border bg-white p-5">
+    <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <div>
-          <h2 className="text-lg font-semibold text-magic-ink">
+          <h2 className="text-lg font-semibold text-espark-ink">
             BOQs / Files
-            <span className="ml-2 text-xs font-normal text-magic-ink/60">
+            <span className="ml-2 text-xs font-normal text-espark-ink/60">
               ({rows.length})
             </span>
           </h2>
-          <p className="text-xs text-magic-ink/60">
+          <p className="text-xs text-espark-ink/60">
             {sharedOnly
               ? "Files the sales / presales team shared with projects for this job."
               : "Files uploaded under this project. Use “Share to projects” on a BOQ to let the projects team read it."}
@@ -93,7 +93,7 @@ export default async function ProjectBoqsTabSection({
         {tier === "full" && (
           <Link
             href={`/folder/${folderId}`}
-            className="rounded-lg border border-magic-red text-magic-red px-3 py-1.5 text-xs font-semibold hover:bg-magic-red hover:text-white transition-colors"
+            className="rounded-lg border border-espark-primary text-espark-primary px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary hover:text-white transition-colors"
           >
             Upload files (legacy folder view) →
           </Link>

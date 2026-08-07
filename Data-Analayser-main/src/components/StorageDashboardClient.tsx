@@ -37,10 +37,10 @@ export default function StorageDashboardClient({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
           Welcome back, {greetingName}.
         </h1>
-        <p className="mt-0.5 text-sm text-magic-ink/60">
+        <p className="mt-0.5 text-sm text-espark-ink/60">
           Your stock-check inbox at a glance — BoM availability requests from
           quotations.
         </p>
@@ -65,20 +65,20 @@ export default function StorageDashboardClient({
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border border-magic-border bg-white/80 p-4 shadow-mt-soft backdrop-blur-sm">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface/80 p-4 shadow-es-soft backdrop-blur-sm">
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-magic-ink">
+                <h3 className="text-sm font-bold text-espark-ink">
                   Pending stock checks
                 </h3>
-                <p className="text-xs text-magic-ink/50">
+                <p className="text-xs text-espark-ink/50">
                   BoM availability requested by presales — open Storage to
                   answer.
                 </p>
               </div>
               <Link
                 href="/storage"
-                className="text-xs font-semibold text-magic-red hover:underline"
+                className="text-xs font-semibold text-espark-primary hover:underline"
               >
                 Open storage →
               </Link>
@@ -86,27 +86,27 @@ export default function StorageDashboardClient({
 
             {checks.length === 0 ? (
               <div className="flex h-40 items-center justify-center text-center">
-                <p className="text-sm text-magic-ink/40">
+                <p className="text-sm text-espark-ink/40">
                   No pending checks. Inbox zero.
                 </p>
               </div>
             ) : (
-              <ul className="divide-y divide-magic-border/50">
+              <ul className="divide-y divide-espark-border/50">
                 {checks.map((c) => (
                   <li
                     key={c.id}
                     className="flex items-center justify-between gap-3 py-2.5"
                   >
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold text-magic-ink">
+                      <div className="truncate text-sm font-semibold text-espark-ink">
                         {c.quotation_ref}
                       </div>
-                      <div className="truncate text-xs text-magic-ink/55">
+                      <div className="truncate text-xs text-espark-ink/55">
                         {c.project_name || "Unassigned project"} ·{" "}
                         {new Date(c.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    <span className="shrink-0 rounded-full bg-magic-soft px-2 py-0.5 text-xs font-semibold text-magic-ink/70">
+                    <span className="shrink-0 rounded-full bg-espark-soft px-2 py-0.5 text-xs font-semibold text-espark-ink/70">
                       {c.item_count} items
                     </span>
                   </li>
@@ -127,9 +127,9 @@ export default function StorageDashboardClient({
 }
 
 const TONES: Record<string, { ring: string; icon: string }> = {
-  amber: { ring: "from-amber-100 to-white", icon: "bg-amber-100 text-amber-600" },
+  amber: { ring: "from-amber-100 to-espark-surface", icon: "bg-amber-100 text-amber-600" },
   emerald: {
-    ring: "from-emerald-100 to-white",
+    ring: "from-emerald-100 to-espark-surface",
     icon: "bg-emerald-100 text-emerald-600",
   },
 };
@@ -155,13 +155,13 @@ function Kpi({
       >
         <Icon className="h-[18px] w-[18px]" />
       </span>
-      <p className="mt-3 text-3xl font-bold tracking-tight text-magic-ink">
+      <p className="mt-3 text-3xl font-bold tracking-tight text-espark-ink">
         {value}
       </p>
-      <p className="mt-0.5 text-xs font-medium text-magic-ink/55">{label}</p>
+      <p className="mt-0.5 text-xs font-medium text-espark-ink/55">{label}</p>
     </>
   );
-  const cls = `block rounded-2xl border border-magic-border bg-gradient-to-br ${t.ring} p-4 shadow-mt-soft transition-shadow hover:shadow-mt-lift`;
+  const cls = `block rounded-2xl border border-espark-border bg-gradient-to-br ${t.ring} p-4 shadow-es-soft transition-shadow hover:shadow-es-lift`;
   return href ? (
     <Link href={href} className={cls}>
       {inner}

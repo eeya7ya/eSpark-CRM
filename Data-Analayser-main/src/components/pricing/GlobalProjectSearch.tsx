@@ -137,7 +137,7 @@ export function GlobalProjectSearch({
           }}
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
-          className="w-64 rounded-lg border border-gray-200 bg-white py-2 pl-8 pr-8 text-sm text-gray-700 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+          className="w-64 rounded-lg border border-gray-200 bg-espark-surface py-2 pl-8 pr-8 text-sm text-gray-700 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
         />
         {loading ? (
           <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
@@ -158,7 +158,7 @@ export function GlobalProjectSearch({
       </div>
 
       {open && query.trim().length > 0 && (
-        <div className="absolute left-0 top-full z-40 mt-1.5 w-[360px] max-w-[90vw] rounded-xl border border-gray-200 bg-white shadow-lg shadow-gray-200">
+        <div className="absolute left-0 top-full z-40 mt-1.5 w-[360px] max-w-[90vw] rounded-xl border border-gray-200 bg-espark-surface shadow-lg shadow-gray-200">
           {/* Scope toggle */}
           {canScopeLocal && (
             <div className="flex items-center gap-1 border-b border-gray-100 p-1">

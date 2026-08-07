@@ -29,19 +29,19 @@ export default async function CrmStoragePage() {
 
   if (!hasStorage) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-3xl mx-auto px-6 py-10 text-center">
-          <h1 className="text-xl font-bold text-magic-ink mb-2">Storage</h1>
-          <p className="text-sm text-magic-ink/60">
+          <h1 className="text-xl font-bold text-espark-ink mb-2">Storage</h1>
+          <p className="text-sm text-espark-ink/60">
             You need{" "}
-            <code className="text-xs bg-magic-soft px-1 rounded">storage.*</code>{" "}
+            <code className="text-xs bg-espark-soft px-1 rounded">storage.*</code>{" "}
             access to open the Storage workspace. Ask an admin in the Modules
             tab.
           </p>
           <Link
             href="/crm"
-            className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft"
+            className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft"
           >
             Back to CRM
           </Link>
@@ -51,18 +51,18 @@ export default async function CrmStoragePage() {
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-screen-2xl mx-auto px-6 py-6 lg:px-10">
         <header className="mb-4">
           <Link
             href="/crm?tool=storage"
-            className="text-xs text-magic-ink/50 hover:text-magic-red"
+            className="text-xs text-espark-ink/50 hover:text-espark-primary"
           >
             ← CRM
           </Link>
-          <h1 className="mt-1 text-2xl font-bold text-magic-ink">Storage</h1>
-          <p className="mt-0.5 text-sm text-magic-ink/60">
+          <h1 className="mt-1 text-2xl font-bold text-espark-ink">Storage</h1>
+          <p className="mt-0.5 text-sm text-espark-ink/60">
             Track stock levels, locations, and movements.
           </p>
         </header>

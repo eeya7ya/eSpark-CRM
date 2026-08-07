@@ -14,7 +14,7 @@ import type { NotificationItem } from "@/app/api/notifications/route";
  */
 
 const SEVERITY_DOT: Record<NotificationItem["severity"], string> = {
-  critical: "bg-magic-red",
+  critical: "bg-espark-primary",
   warning: "bg-amber-500",
   info: "bg-blue-500",
 };
@@ -92,8 +92,8 @@ export default function MessagesPanel() {
   const unreadMessages = messages.filter((i) => !i.read).length;
 
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-magic-border bg-white/80 backdrop-blur-sm shadow-mt-soft">
-      <div className="flex items-center gap-1 border-b border-magic-border/70 p-2">
+    <div className="flex h-full flex-col rounded-2xl border border-espark-border bg-espark-surface/80 backdrop-blur-sm shadow-es-soft">
+      <div className="flex items-center gap-1 border-b border-espark-border/70 p-2">
         <TabButton
           active={tab === "alarms"}
           onClick={() => setTab("alarms")}
@@ -110,7 +110,7 @@ export default function MessagesPanel() {
         />
         <button
           onClick={() => void markAllRead()}
-          className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-magic-ink/55 hover:bg-magic-soft hover:text-magic-ink transition-colors"
+          className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-espark-ink/55 hover:bg-espark-soft hover:text-espark-ink transition-colors"
         >
           <CheckCheck className="h-3.5 w-3.5" />
           Mark all read
@@ -124,10 +124,10 @@ export default function MessagesPanel() {
           </div>
         ) : list.length === 0 ? (
           <div className="flex h-32 flex-col items-center justify-center text-center">
-            <p className="text-sm font-medium text-magic-ink/60">
+            <p className="text-sm font-medium text-espark-ink/60">
               {tab === "alarms" ? "No active alarms." : "No messages."}
             </p>
-            <p className="mt-0.5 text-xs text-magic-ink/40">You&apos;re all caught up.</p>
+            <p className="mt-0.5 text-xs text-espark-ink/40">You&apos;re all caught up.</p>
           </div>
         ) : (
           <ul className="space-y-1.5">
@@ -136,8 +136,8 @@ export default function MessagesPanel() {
                 key={n.id}
                 className={`group rounded-xl border p-3 transition-colors ${
                   n.read
-                    ? "border-magic-border/50 bg-magic-soft/30 opacity-70"
-                    : "border-magic-border bg-white hover:border-magic-red/30"
+                    ? "border-espark-border/50 bg-espark-soft/30 opacity-70"
+                    : "border-espark-border bg-espark-surface hover:border-espark-primary/30"
                 }`}
               >
                 <div className="flex items-start gap-2">
@@ -145,18 +145,18 @@ export default function MessagesPanel() {
                     className={`mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full ${SEVERITY_DOT[n.severity]}`}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold leading-snug text-magic-ink">
+                    <p className="text-xs font-semibold leading-snug text-espark-ink">
                       {n.title}
                     </p>
                     {n.body && (
-                      <p className="mt-0.5 text-[11px] leading-snug text-magic-ink/60">
+                      <p className="mt-0.5 text-[11px] leading-snug text-espark-ink/60">
                         {n.body}
                       </p>
                     )}
                     {n.action && (
                       <Link
                         href={n.action.href}
-                        className="mt-1.5 inline-flex items-center text-[11px] font-semibold text-magic-red hover:underline"
+                        className="mt-1.5 inline-flex items-center text-[11px] font-semibold text-espark-primary hover:underline"
                       >
                         {n.action.label} →
                       </Link>
@@ -169,7 +169,7 @@ export default function MessagesPanel() {
                         disabled={busyKey === n.id}
                         aria-label="Mark as read"
                         title="Mark as read"
-                        className="inline-flex h-6 w-6 items-center justify-center rounded-md text-magic-ink/40 hover:bg-magic-soft hover:text-emerald-600 transition-colors"
+                        className="inline-flex h-6 w-6 items-center justify-center rounded-md text-espark-ink/40 hover:bg-espark-soft hover:text-emerald-600 transition-colors"
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
@@ -179,7 +179,7 @@ export default function MessagesPanel() {
                       disabled={busyKey === n.id}
                       aria-label="Remove"
                       title="Remove"
-                      className="inline-flex h-6 w-6 items-center justify-center rounded-md text-magic-ink/40 hover:bg-red-50 hover:text-red-600 transition-colors"
+                      className="inline-flex h-6 w-6 items-center justify-center rounded-md text-espark-ink/40 hover:bg-red-50 hover:text-red-600 transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -212,14 +212,14 @@ function TabButton({
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors ${
         active
-          ? "bg-magic-red/10 text-magic-red"
-          : "text-magic-ink/60 hover:bg-magic-soft hover:text-magic-ink"
+          ? "bg-espark-primary/10 text-espark-primary"
+          : "text-espark-ink/60 hover:bg-espark-soft hover:text-espark-ink"
       }`}
     >
       {icon}
       {label}
       {badge > 0 && (
-        <span className="inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-magic-red px-1 text-[9px] font-bold text-white">
+        <span className="inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-espark-primary px-1 text-[9px] font-bold text-white">
           {badge > 99 ? "99+" : badge}
         </span>
       )}

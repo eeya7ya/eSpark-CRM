@@ -82,7 +82,7 @@ const COLUMNS: {
   { key: "quoting", label: "Quoting", icon: FileText, accent: "text-slate-500" },
   { key: "approved", label: "With client", icon: Send, accent: "text-sky-600" },
   { key: "won", label: "Won", icon: Trophy, accent: "text-emerald-600" },
-  { key: "held", label: "On hold", icon: PauseCircle, accent: "text-magic-red" },
+  { key: "held", label: "On hold", icon: PauseCircle, accent: "text-espark-primary" },
   { key: "execution", label: "In Execution", icon: HardHat, accent: "text-violet-600" },
   { key: "delivered", label: "Completed", icon: CheckCircle2, accent: "text-emerald-700" },
   { key: "lost", label: "Lost", icon: XCircle, accent: "text-amber-600" },
@@ -260,15 +260,15 @@ export default function PipelineBoardClient({
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 text-xs text-magic-ink/60">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-espark-ink/60">
         <Link
           href="/leads"
-          className="rounded-full border border-magic-border bg-white px-3 py-1 font-semibold hover:text-magic-red"
+          className="rounded-full border border-espark-border bg-espark-surface px-3 py-1 font-semibold hover:text-espark-primary"
         >
           {m.leadsOpen} open lead{m.leadsOpen === 1 ? "" : "s"} →
         </Link>
         {m.winRate !== null && (
-          <span className="rounded-full border border-magic-border bg-white px-3 py-1 font-semibold">
+          <span className="rounded-full border border-espark-border bg-espark-surface px-3 py-1 font-semibold">
             Win rate {m.winRate}%
           </span>
         )}
@@ -283,7 +283,7 @@ export default function PipelineBoardClient({
             className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 font-semibold ${
               m.markupPct < 0
                 ? "border-red-300 bg-red-50 text-red-700"
-                : "border-magic-border bg-white"
+                : "border-espark-border bg-espark-surface"
             }`}
             title={`How far above the System-Installer base price the pipeline is sold${
               m.marginCoverage !== null && m.marginCoverage < 100
@@ -296,18 +296,18 @@ export default function PipelineBoardClient({
             {m.markupPct}% over SI base
           </span>
         )}
-        <span className="rounded-full border border-magic-border bg-white px-3 py-1">
+        <span className="rounded-full border border-espark-border bg-espark-surface px-3 py-1">
           {m.totalDeals} live deals
         </span>
         {readOnly && (
-          <span className="rounded-full border border-magic-border bg-magic-soft px-3 py-1 font-semibold text-magic-ink/60">
+          <span className="rounded-full border border-espark-border bg-espark-soft px-3 py-1 font-semibold text-espark-ink/60">
             Read-only
           </span>
         )}
         <button
           onClick={runBriefing}
           disabled={briefingBusy}
-          className="inline-flex items-center gap-1.5 rounded-full bg-magic-red px-3 py-1 font-semibold text-white hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-full bg-espark-primary px-3 py-1 font-semibold text-white hover:opacity-90 disabled:opacity-50"
         >
           <Sparkles className="h-3.5 w-3.5" />
           {briefingBusy ? "Briefing…" : "AI briefing"}
@@ -315,17 +315,17 @@ export default function PipelineBoardClient({
       </div>
 
       {(briefingBusy || briefing) && (
-        <div className="rounded-2xl border border-magic-red/30 bg-magic-red/5 p-4">
-          <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-magic-red">
+        <div className="rounded-2xl border border-espark-primary/30 bg-espark-primary/5 p-4">
+          <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-espark-primary">
             <Sparkles className="h-4 w-4" />
             AI pipeline briefing
           </div>
           {briefingBusy ? (
-            <div className="flex items-center gap-2 text-sm text-magic-ink/55">
+            <div className="flex items-center gap-2 text-sm text-espark-ink/55">
               <Spinner /> Reading your pipeline…
             </div>
           ) : (
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-magic-ink/80">
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-espark-ink/80">
               {briefing}
             </p>
           )}
@@ -356,24 +356,24 @@ export default function PipelineBoardClient({
                 setDragId(null);
                 setDragOver(null);
               }}
-              className={`flex w-72 shrink-0 flex-col rounded-2xl border bg-magic-soft/40 p-2 transition-colors ${
+              className={`flex w-72 shrink-0 flex-col rounded-2xl border bg-espark-soft/40 p-2 transition-colors ${
                 active
-                  ? "border-magic-red bg-magic-red/5"
-                  : "border-magic-border"
+                  ? "border-espark-primary bg-espark-primary/5"
+                  : "border-espark-border"
               }`}
             >
               <div className="flex items-center justify-between px-2 py-1.5">
                 <div className="flex items-center gap-1.5">
                   <Icon className={`h-4 w-4 ${col.accent}`} />
-                  <span className="text-sm font-semibold text-magic-ink">
+                  <span className="text-sm font-semibold text-espark-ink">
                     {col.label}
                   </span>
                 </div>
-                <span className="rounded-full bg-white px-1.5 py-0.5 text-[11px] font-bold text-magic-ink/70">
+                <span className="rounded-full bg-espark-surface px-1.5 py-0.5 text-[11px] font-bold text-espark-ink/70">
                   {cards.length}
                 </span>
               </div>
-              <div className="px-2 pb-1 text-[11px] font-medium text-magic-ink/45">
+              <div className="px-2 pb-1 text-[11px] font-medium text-espark-ink/45">
                 {col.key === "lost"
                   ? "—"
                   : `${fmtMoney(columnValue(cards))} · ${Math.round(
@@ -383,7 +383,7 @@ export default function PipelineBoardClient({
 
               <div className="flex flex-1 flex-col gap-2 px-0.5 pt-1">
                 {cards.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-magic-border/70 px-3 py-6 text-center text-[11px] text-magic-ink/40">
+                  <div className="rounded-xl border border-dashed border-espark-border/70 px-3 py-6 text-center text-[11px] text-espark-ink/40">
                     Empty
                   </div>
                 ) : (
@@ -402,7 +402,7 @@ export default function PipelineBoardClient({
                           setDragId(null);
                           setDragOver(null);
                         }}
-                        className={`rounded-xl border border-magic-border bg-white px-3 py-2 shadow-mt-soft transition-shadow hover:shadow-mt-lift ${
+                        className={`rounded-xl border border-espark-border bg-espark-surface px-3 py-2 shadow-es-soft transition-shadow hover:shadow-es-lift ${
                           card.attention ? "border-l-4 border-l-amber-400" : ""
                         } ${
                           draggable ? "cursor-grab active:cursor-grabbing" : ""
@@ -410,11 +410,11 @@ export default function PipelineBoardClient({
                       >
                         <Link
                           href={`/quotation?id=${card.id}`}
-                          className="block truncate text-sm font-semibold text-magic-ink hover:text-magic-red"
+                          className="block truncate text-sm font-semibold text-espark-ink hover:text-espark-primary"
                         >
                           {card.projectName || card.ref}
                         </Link>
-                        <div className="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-magic-ink/55">
+                        <div className="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-espark-ink/55">
                           <span className="truncate">
                             {card.clientName || card.ownerName || card.ref}
                           </span>
@@ -441,18 +441,18 @@ export default function PipelineBoardClient({
                                 {card.markupPct}% SI
                               </span>
                             )}
-                            <span className="font-semibold text-magic-ink/80">
+                            <span className="font-semibold text-espark-ink/80">
                               {card.value > 0 ? fmtMoney(card.value) : "—"}
                             </span>
                           </span>
                         </div>
-                        <div className="mt-1 flex items-center justify-between text-[10px] text-magic-ink/40">
+                        <div className="mt-1 flex items-center justify-between text-[10px] text-espark-ink/40">
                           <span className="font-mono">{card.ref}</span>
                           <span className="flex items-center gap-1.5">
                             {card.stage !== "lost" &&
                               card.stage !== "delivered" && (
                                 <span
-                                  className={`font-semibold text-magic-ink/55 ${
+                                  className={`font-semibold text-espark-ink/55 ${
                                     card.probabilityDrivers.length
                                       ? "underline decoration-dotted underline-offset-2"
                                       : ""
@@ -506,7 +506,7 @@ export default function PipelineBoardClient({
                                 disabled={busyId === card.id}
                                 onClick={() => markOutcome(card.id, "held")}
                                 title="No decision yet — put this lead on hold"
-                                className="flex-1 rounded-lg bg-magic-red px-2 py-1 text-[11px] font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                                className="flex-1 rounded-lg bg-espark-primary px-2 py-1 text-[11px] font-semibold text-white hover:opacity-90 disabled:opacity-50"
                               >
                                 Hold
                               </button>
@@ -515,7 +515,7 @@ export default function PipelineBoardClient({
                               disabled={busyId === card.id}
                               onClick={() => markOutcome(card.id, "rejected")}
                               title="The client passed — record why and mark it Lost"
-                              className="flex-1 rounded-lg border border-magic-border bg-white px-2 py-1 text-[11px] font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+                              className="flex-1 rounded-lg border border-espark-border bg-espark-surface px-2 py-1 text-[11px] font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
                             >
                               Lost
                             </button>
@@ -551,16 +551,16 @@ function Kpi({
     <div
       className={`rounded-2xl border p-3.5 ${
         highlight
-          ? "border-magic-red/30 bg-magic-red/5"
-          : "border-magic-border bg-white"
+          ? "border-espark-primary/30 bg-espark-primary/5"
+          : "border-espark-border bg-espark-surface"
       }`}
     >
-      <div className="flex items-center gap-1.5 text-xs font-semibold text-magic-ink/60">
-        <Icon className={`h-4 w-4 ${highlight ? "text-magic-red" : ""}`} />
+      <div className="flex items-center gap-1.5 text-xs font-semibold text-espark-ink/60">
+        <Icon className={`h-4 w-4 ${highlight ? "text-espark-primary" : ""}`} />
         {label}
       </div>
-      <div className="mt-1 text-2xl font-bold text-magic-ink">{value}</div>
-      <div className="mt-0.5 text-[11px] text-magic-ink/45">{hint}</div>
+      <div className="mt-1 text-2xl font-bold text-espark-ink">{value}</div>
+      <div className="mt-0.5 text-[11px] text-espark-ink/45">{hint}</div>
     </div>
   );
 }

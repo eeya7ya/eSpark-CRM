@@ -200,14 +200,14 @@ export default function CalendarMarkerClient() {
       {/* Header */}
       <div className="relative mb-5 flex flex-wrap items-end justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-400 to-magic-red text-white shadow-lg shadow-rose-300/40">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-400 to-espark-primary text-white shadow-lg shadow-rose-300/40">
             <CalendarHeart className="h-6 w-6" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+            <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
               Calendar Marker
             </h1>
-            <p className="text-sm text-magic-ink/55">
+            <p className="text-sm text-espark-ink/55">
               {rangeLabel}
               {markedCount > 0 && (
                 <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-semibold text-rose-600">
@@ -218,24 +218,24 @@ export default function CalendarMarkerClient() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 rounded-2xl border border-white bg-white/70 p-1 shadow-sm backdrop-blur">
+        <div className="flex items-center gap-1.5 rounded-2xl border border-white bg-espark-surface/70 p-1 shadow-sm backdrop-blur">
           <button
             onClick={() => setWeekStart((w) => addDays(w, -7))}
             aria-label="Previous week"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-magic-ink/60 transition-colors hover:bg-rose-50 hover:text-magic-red"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-espark-ink/60 transition-colors hover:bg-rose-50 hover:text-espark-primary"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={() => setWeekStart(startOfWeek(new Date()))}
-            className="rounded-xl px-3.5 py-1.5 text-sm font-semibold text-magic-ink/75 transition-colors hover:bg-rose-50 hover:text-magic-red"
+            className="rounded-xl px-3.5 py-1.5 text-sm font-semibold text-espark-ink/75 transition-colors hover:bg-rose-50 hover:text-espark-primary"
           >
             Today
           </button>
           <button
             onClick={() => setWeekStart((w) => addDays(w, 7))}
             aria-label="Next week"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-magic-ink/60 transition-colors hover:bg-rose-50 hover:text-magic-red"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-espark-ink/60 transition-colors hover:bg-rose-50 hover:text-espark-primary"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -258,10 +258,10 @@ export default function CalendarMarkerClient() {
                 c
                   ? `bg-gradient-to-br ${c.grad} ${c.border} shadow-md shadow-rose-100/40`
                   : isToday
-                    ? "border-rose-200 bg-gradient-to-br from-rose-50 to-white shadow-md shadow-rose-200/40 ring-2 ring-rose-300/50"
+                    ? "border-rose-200 bg-gradient-to-br from-rose-50 to-espark-surface shadow-md shadow-rose-200/40 ring-2 ring-rose-300/50"
                     : isWeekend
-                      ? "border-violet-100 bg-gradient-to-br from-violet-50/50 to-white shadow-sm"
-                      : "border-white bg-gradient-to-br from-white to-slate-50/60 shadow-sm"
+                      ? "border-violet-100 bg-gradient-to-br from-violet-50/50 to-espark-surface shadow-sm"
+                      : "border-white bg-gradient-to-br from-espark-surface to-slate-50/60 shadow-sm"
               }`}
             >
               {c && (
@@ -273,7 +273,7 @@ export default function CalendarMarkerClient() {
               <div className="flex items-center justify-between">
                 <span
                   className={`text-[11px] font-bold uppercase tracking-widest ${
-                    isToday ? "text-magic-red/70" : "text-magic-ink/40"
+                    isToday ? "text-espark-primary/70" : "text-espark-ink/40"
                   }`}
                 >
                   {WEEKDAYS[d.getDay()]}
@@ -281,8 +281,8 @@ export default function CalendarMarkerClient() {
                 <span
                   className={`inline-flex h-8 min-w-8 items-center justify-center rounded-2xl px-2 text-sm font-bold transition-colors ${
                     isToday
-                      ? "bg-gradient-to-br from-rose-400 to-magic-red text-white shadow-md shadow-rose-300/50"
-                      : "bg-white/70 text-magic-ink/75"
+                      ? "bg-gradient-to-br from-rose-400 to-espark-primary text-white shadow-md shadow-rose-300/50"
+                      : "bg-espark-surface/70 text-espark-ink/75"
                   }`}
                 >
                   {d.getDate()}
@@ -303,8 +303,8 @@ export default function CalendarMarkerClient() {
                     </p>
                   </div>
                 ) : (
-                  <div className="flex flex-1 flex-col items-center justify-center gap-2 text-magic-ink/30">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-dashed border-magic-ink/20 bg-white/60 transition-colors group-hover:border-magic-red/40 group-hover:bg-rose-50 group-hover:text-magic-red">
+                  <div className="flex flex-1 flex-col items-center justify-center gap-2 text-espark-ink/30">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-dashed border-espark-ink/20 bg-espark-surface/60 transition-colors group-hover:border-espark-primary/40 group-hover:bg-rose-50 group-hover:text-espark-primary">
                       <Plus className="h-4 w-4" />
                     </span>
                     <span className="text-[11px] font-medium opacity-60 transition-opacity group-hover:opacity-100">
@@ -319,7 +319,7 @@ export default function CalendarMarkerClient() {
       </div>
 
       {loading && (
-        <p className="relative mt-3 text-center text-xs text-magic-ink/40">
+        <p className="relative mt-3 text-center text-xs text-espark-ink/40">
           Syncing…
         </p>
       )}
@@ -366,22 +366,22 @@ function DayEditor({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/30 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/30 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-[1.75rem] border border-white bg-white/95 p-6 shadow-2xl"
+        className="w-full max-w-md rounded-[1.75rem] border border-white bg-espark-surface/95 p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h2 className="text-lg font-bold text-magic-ink">{pretty}</h2>
-            <p className="text-xs text-magic-ink/50">A little note for this day.</p>
+            <h2 className="text-lg font-bold text-espark-ink">{pretty}</h2>
+            <p className="text-xs text-espark-ink/50">A little note for this day.</p>
           </div>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-magic-ink/50 hover:bg-rose-50 hover:text-magic-red"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-espark-ink/50 hover:bg-rose-50 hover:text-espark-primary"
           >
             <X className="h-4 w-4" />
           </button>
@@ -393,11 +393,11 @@ function DayEditor({
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="What's happening this day? ✿"
-          className="w-full resize-none rounded-2xl border border-magic-border bg-rose-50/30 px-4 py-3 text-sm text-magic-ink placeholder:text-magic-ink/35 focus:border-rose-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-200"
+          className="w-full resize-none rounded-2xl border border-espark-border bg-rose-50/30 px-4 py-3 text-sm text-espark-ink placeholder:text-espark-ink/35 focus:border-rose-300 focus:bg-espark-surface focus:outline-none focus:ring-2 focus:ring-rose-200"
         />
 
         <div className="mt-4 flex items-center gap-2.5">
-          <span className="text-xs font-semibold text-magic-ink/55">Colour</span>
+          <span className="text-xs font-semibold text-espark-ink/55">Colour</span>
           <div className="flex items-center gap-2">
             {(Object.keys(COLORS) as ColorKey[]).map((k) => (
               <button
@@ -407,7 +407,7 @@ function DayEditor({
                 aria-label={COLORS[k].label}
                 className={`h-7 w-7 rounded-full ${COLORS[k].swatch} transition-transform hover:scale-110 ${
                   color === k
-                    ? "scale-110 ring-2 ring-magic-ink/40 ring-offset-2"
+                    ? "scale-110 ring-2 ring-espark-ink/40 ring-offset-2"
                     : "ring-1 ring-black/5"
                 }`}
               />
@@ -419,7 +419,7 @@ function DayEditor({
           {initial ? (
             <button
               onClick={() => onDelete(dateKey)}
-              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-magic-red hover:bg-rose-50"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-espark-primary hover:bg-rose-50"
             >
               <Trash2 className="h-4 w-4" />
               Clear
@@ -430,13 +430,13 @@ function DayEditor({
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="rounded-xl border border-magic-border bg-white px-4 py-2 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft"
+              className="rounded-xl border border-espark-border bg-espark-surface px-4 py-2 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft"
             >
               Cancel
             </button>
             <button
               onClick={() => onSave(dateKey, note, color)}
-              className="rounded-xl bg-gradient-to-br from-rose-400 to-magic-red px-5 py-2 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition-transform hover:scale-105"
+              className="rounded-xl bg-gradient-to-br from-rose-400 to-espark-primary px-5 py-2 text-sm font-semibold text-white shadow-md shadow-rose-300/40 transition-transform hover:scale-105"
             >
               Save
             </button>

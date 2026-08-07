@@ -38,16 +38,16 @@ export default async function ProjectQuotationsTabSection({
   const canCreate = user ? await canAuthorQuotation(user) : false;
 
   return (
-    <section className="rounded-2xl border border-magic-border bg-white p-5">
+    <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <div>
-          <h2 className="text-lg font-semibold text-magic-ink">
+          <h2 className="text-lg font-semibold text-espark-ink">
             Quotations
-            <span className="ml-2 text-xs font-normal text-magic-ink/60">
+            <span className="ml-2 text-xs font-normal text-espark-ink/60">
               ({rows.length})
             </span>
           </h2>
-          <p className="text-xs text-magic-ink/60">
+          <p className="text-xs text-espark-ink/60">
             Every quotation filed under this project. Use Designer / AI
             Designer / Catalogue to compose new ones.
           </p>
@@ -56,19 +56,19 @@ export default async function ProjectQuotationsTabSection({
           <div className="flex flex-wrap items-center gap-1.5">
             <Link
               href={`${base}/quotations/new`}
-              className="rounded-lg bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 transition-colors"
+              className="rounded-lg bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 transition-colors"
             >
               + Designer
             </Link>
             <Link
               href={`${base}/quotations/ai`}
-              className="rounded-lg border border-magic-red text-magic-red px-3 py-1.5 text-xs font-semibold hover:bg-magic-red hover:text-white transition-colors"
+              className="rounded-lg border border-espark-primary text-espark-primary px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary hover:text-white transition-colors"
             >
               AI Designer
             </Link>
             <Link
               href={`${base}/quotations/catalogue`}
-              className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+              className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
             >
               Catalogue
             </Link>
@@ -78,7 +78,7 @@ export default async function ProjectQuotationsTabSection({
 
       <ProjectQuotationsList rows={rows} base={base} />
 
-      <p className="mt-3 text-[10px] text-magic-ink/40">
+      <p className="mt-3 text-[10px] text-espark-ink/40">
         Same rows are also reachable via the legacy /quotation viewer for
         any old bookmark.
       </p>

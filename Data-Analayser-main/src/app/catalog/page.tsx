@@ -109,7 +109,7 @@ export default async function CatalogPage() {
   const systemCount = initialSystems.length;
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-screen-2xl mx-auto px-6 py-6 lg:px-10">
         <CatalogHeader

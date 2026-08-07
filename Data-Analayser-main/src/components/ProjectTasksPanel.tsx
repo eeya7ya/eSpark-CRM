@@ -120,21 +120,21 @@ export default function ProjectTasksPanel({ projectId }: { projectId: number }) 
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
-    <section className="rounded-2xl border border-magic-border bg-white p-5">
+    <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-magic-ink">
-          <ListChecks className="h-5 w-5 text-magic-red" />
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-espark-ink">
+          <ListChecks className="h-5 w-5 text-espark-primary" />
           Checklist
         </h2>
         {total > 0 && (
-          <span className="text-sm font-semibold tabular-nums text-magic-ink/60">
+          <span className="text-sm font-semibold tabular-nums text-espark-ink/60">
             {done}/{total} · {pct}%
           </span>
         )}
       </div>
 
       {total > 0 && (
-        <div className="mb-4 h-2 overflow-hidden rounded-full bg-magic-soft">
+        <div className="mb-4 h-2 overflow-hidden rounded-full bg-espark-soft">
           <div
             className={`h-full rounded-full transition-all ${
               pct >= 100 ? "bg-emerald-500" : "bg-violet-500"
@@ -151,9 +151,9 @@ export default function ProjectTasksPanel({ projectId }: { projectId: number }) 
       )}
 
       {loading && tasks.length === 0 ? (
-        <p className="py-4 text-center text-sm text-magic-ink/40">Loading…</p>
+        <p className="py-4 text-center text-sm text-espark-ink/40">Loading…</p>
       ) : tasks.length === 0 ? (
-        <p className="py-2 text-sm italic text-magic-ink/50">
+        <p className="py-2 text-sm italic text-espark-ink/50">
           No checklist items yet.
           {canAuthor
             ? " Add the steps below — they'll reach the assigned member."
@@ -164,26 +164,26 @@ export default function ProjectTasksPanel({ projectId }: { projectId: number }) 
           {tasks.map((t) => (
             <li
               key={t.id}
-              className="group flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-magic-soft/40"
+              className="group flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-espark-soft/40"
             >
               <input
                 type="checkbox"
                 checked={t.done}
                 disabled={!canCheck}
                 onChange={() => toggle(t)}
-                className="h-4 w-4 shrink-0 rounded border-magic-border text-magic-red focus:ring-magic-red disabled:opacity-50"
+                className="h-4 w-4 shrink-0 rounded border-espark-border text-espark-primary focus:ring-espark-primary disabled:opacity-50"
               />
               <span
                 className={`flex-1 text-sm ${
                   t.done
-                    ? "text-magic-ink/40 line-through"
-                    : "text-magic-ink/85"
+                    ? "text-espark-ink/40 line-through"
+                    : "text-espark-ink/85"
                 }`}
               >
                 {t.title}
               </span>
               {t.done && (t.done_by_name || t.done_by_username) && (
-                <span className="hidden text-[11px] text-magic-ink/35 sm:inline">
+                <span className="hidden text-[11px] text-espark-ink/35 sm:inline">
                   {t.done_by_name || t.done_by_username}
                 </span>
               )}
@@ -192,7 +192,7 @@ export default function ProjectTasksPanel({ projectId }: { projectId: number }) 
                   type="button"
                   onClick={() => remove(t.id)}
                   aria-label="Delete item"
-                  className="shrink-0 rounded p-1 text-magic-ink/30 opacity-0 transition-opacity hover:text-rose-600 group-hover:opacity-100"
+                  className="shrink-0 rounded p-1 text-espark-ink/30 opacity-0 transition-opacity hover:text-rose-600 group-hover:opacity-100"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -209,12 +209,12 @@ export default function ProjectTasksPanel({ projectId }: { projectId: number }) 
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Add a checklist item…"
             maxLength={500}
-            className="flex-1 rounded-lg border border-magic-border px-3 py-1.5 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+            className="flex-1 rounded-lg border border-espark-border px-3 py-1.5 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
           />
           <button
             type="submit"
             disabled={adding || !newTitle.trim()}
-            className="inline-flex items-center gap-1 rounded-lg bg-magic-red px-3 py-1.5 text-sm font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+            className="inline-flex items-center gap-1 rounded-lg bg-espark-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
           >
             <Plus className="h-4 w-4" /> Add
           </button>

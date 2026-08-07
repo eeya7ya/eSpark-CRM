@@ -77,7 +77,7 @@ export default function LeadCreateForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="space-y-4 rounded-xl border border-magic-border bg-white p-5 shadow-sm"
+      className="space-y-4 rounded-xl border border-espark-border bg-espark-surface p-5 shadow-sm"
     >
       {isRfq && (
         <div className="rounded-lg border border-indigo-200 bg-indigo-50/60 px-3 py-2.5">
@@ -86,12 +86,12 @@ export default function LeadCreateForm({
           </p>
           <div className="mt-1.5 flex flex-wrap gap-1.5 text-xs">
             {context?.companyName && (
-              <span className="inline-flex items-center rounded-full bg-white px-2 py-0.5 font-semibold text-indigo-700 ring-1 ring-indigo-200">
+              <span className="inline-flex items-center rounded-full bg-espark-surface px-2 py-0.5 font-semibold text-indigo-700 ring-1 ring-indigo-200">
                 Company: {context.companyName}
               </span>
             )}
             {context?.clientName && (
-              <span className="inline-flex items-center rounded-full bg-white px-2 py-0.5 font-semibold text-indigo-700 ring-1 ring-indigo-200">
+              <span className="inline-flex items-center rounded-full bg-espark-surface px-2 py-0.5 font-semibold text-indigo-700 ring-1 ring-indigo-200">
                 Client: {context.clientName}
               </span>
             )}
@@ -103,8 +103,8 @@ export default function LeadCreateForm({
         </div>
       )}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wide text-magic-ink/60">
-          Title <span className="text-magic-red">*</span>
+        <label className="block text-xs font-semibold uppercase tracking-wide text-espark-ink/60">
+          Title <span className="text-espark-primary">*</span>
         </label>
         <input
           type="text"
@@ -112,12 +112,12 @@ export default function LeadCreateForm({
           onChange={(e) => setTitle(e.target.value)}
           required
           placeholder="e.g. Acme Corp — Office HVAC refit"
-          className="mt-1 w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+          className="mt-1 w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wide text-magic-ink/60">
+        <label className="block text-xs font-semibold uppercase tracking-wide text-espark-ink/60">
           Description / scope
         </label>
         <textarea
@@ -125,19 +125,19 @@ export default function LeadCreateForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="What does the client need? Any known constraints, budget hints, technical scope, …"
-          className="mt-1 w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+          className="mt-1 w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wide text-magic-ink/60">
+          <label className="block text-xs font-semibold uppercase tracking-wide text-espark-ink/60">
             Priority
           </label>
           <Select
             value={priority}
             onChange={(next) => setPriority(next)}
-            className="mt-1 w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+            className="mt-1 w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
           >
             {LEAD_PRIORITIES.map((p) => (
               <option key={p} value={p}>
@@ -147,7 +147,7 @@ export default function LeadCreateForm({
           </Select>
         </div>
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wide text-magic-ink/60">
+          <label className="block text-xs font-semibold uppercase tracking-wide text-espark-ink/60">
             Source
           </label>
           <input
@@ -155,7 +155,7 @@ export default function LeadCreateForm({
             value={source}
             onChange={(e) => setSource(e.target.value)}
             placeholder="referral, website, cold call…"
-            className="mt-1 w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+            className="mt-1 w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
           />
         </div>
       </div>
@@ -166,19 +166,19 @@ export default function LeadCreateForm({
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-2 border-t border-magic-border/60 pt-3">
+      <div className="flex items-center justify-end gap-2 border-t border-espark-border/60 pt-3">
         <button
           type="button"
           onClick={() => router.push("/leads")}
           disabled={busy}
-          className="rounded-lg border border-magic-border bg-white px-3 py-1.5 text-sm font-semibold text-magic-ink hover:bg-magic-soft disabled:opacity-50"
+          className="rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-sm font-semibold text-espark-ink hover:bg-espark-soft disabled:opacity-50"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={busy}
-          className="rounded-lg bg-magic-red px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90 disabled:opacity-50"
+          className="rounded-lg bg-espark-primary px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90 disabled:opacity-50"
         >
           {busy ? "Opening…" : "Open lead"}
         </button>

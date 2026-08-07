@@ -43,7 +43,7 @@ export function ManufacturerCard({ id, name, color, tag, projectCount, ownerUser
     <div
       className={cn(
         "group relative rounded-2xl p-5",
-        "border border-gray-200 border-l-4 bg-white",
+        "border border-gray-200 border-l-4 bg-espark-surface",
         palette.border,
         "transition-all duration-300",
         "hover:border-cyan-200 hover:shadow-lg hover:shadow-gray-200"
@@ -66,7 +66,7 @@ export function ManufacturerCard({ id, name, color, tag, projectCount, ownerUser
 
       {/* Two-stage delete confirmation overlay */}
       {onDelete && stage > 0 && (
-        <div className="absolute inset-0 z-20 flex flex-col justify-center rounded-2xl border border-rose-200 bg-white/97 p-5 backdrop-blur-sm">
+        <div className="absolute inset-0 z-20 flex flex-col justify-center rounded-2xl border border-rose-200 bg-espark-surface/97 p-5 backdrop-blur-sm">
           <div className="mb-2 flex items-center gap-2 text-rose-600">
             <AlertTriangle className="h-5 w-5 flex-shrink-0" />
             <span className="text-sm font-semibold">
@@ -95,7 +95,7 @@ export function ManufacturerCard({ id, name, color, tag, projectCount, ownerUser
                 e.preventDefault();
                 setStage(0);
               }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-40"
+              className="rounded-lg border border-gray-200 bg-espark-surface px-3 py-1.5 text-xs font-medium text-gray-600 transition-all hover:bg-gray-50 disabled:opacity-40"
             >
               Cancel
             </button>

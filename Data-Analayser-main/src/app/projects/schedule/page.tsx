@@ -24,20 +24,20 @@ export default async function ProjectSchedulePage() {
 
   if (!isManager) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="mx-auto max-w-3xl px-6 py-10 text-center">
-          <h1 className="mb-2 text-xl font-bold text-magic-ink">Schedule</h1>
-          <p className="text-sm text-magic-ink/60">
+          <h1 className="mb-2 text-xl font-bold text-espark-ink">Schedule</h1>
+          <p className="text-sm text-espark-ink/60">
             The day scheduler is for project managers. You need{" "}
-            <code className="rounded bg-magic-soft px-1 text-xs">
+            <code className="rounded bg-espark-soft px-1 text-xs">
               projects.manager
             </code>{" "}
             access. Ask an admin in the Modules tab.
           </p>
           <Link
             href="/projects"
-            className="mt-4 inline-block rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft"
+            className="mt-4 inline-block rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft"
           >
             Back to projects
           </Link>
@@ -47,12 +47,12 @@ export default async function ProjectSchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6 lg:px-8">
         <header className="mb-4">
-          <h1 className="text-2xl font-bold text-magic-ink">Day schedule</h1>
-          <p className="mt-0.5 text-sm text-magic-ink/60">
+          <h1 className="text-2xl font-bold text-espark-ink">Day schedule</h1>
+          <p className="mt-0.5 text-sm text-espark-ink/60">
             Arrange who works which project on which day. Drag to reschedule or
             reassign; double-bookings are flagged.
           </p>

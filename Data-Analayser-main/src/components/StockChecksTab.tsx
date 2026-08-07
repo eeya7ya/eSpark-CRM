@@ -110,24 +110,24 @@ export default function StockChecksTab({
         </FilterChip>
         <button
           onClick={() => void refresh()}
-          className="ml-auto text-xs text-magic-ink/60 hover:text-magic-red"
+          className="ml-auto text-xs text-espark-ink/60 hover:text-espark-primary"
         >
           Refresh
         </button>
       </div>
 
       {loading ? (
-        <p className="text-sm text-magic-ink/60">Loading…</p>
+        <p className="text-sm text-espark-ink/60">Loading…</p>
       ) : rows.length === 0 ? (
-        <p className="text-sm text-magic-ink/60">
+        <p className="text-sm text-espark-ink/60">
           {filter === "pending"
             ? "No pending checks. Inbox zero."
             : "Nothing answered recently."}
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-magic-border">
+        <div className="overflow-x-auto rounded-lg border border-espark-border">
           <table className="min-w-full text-sm">
-            <thead className="bg-magic-soft text-magic-ink/70">
+            <thead className="bg-espark-soft text-espark-ink/70">
               <tr>
                 <th className="p-2 text-left">Ref</th>
                 <th className="p-2 text-left">Project / client</th>
@@ -137,16 +137,16 @@ export default function StockChecksTab({
                 <th className="p-2"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-magic-border/60">
+            <tbody className="divide-y divide-espark-border/60">
               {rows.map((r) => (
-                <tr key={r.id} className="hover:bg-magic-soft/30">
+                <tr key={r.id} className="hover:bg-espark-soft/30">
                   <td className="p-2 font-mono text-xs">{r.quotation_ref}</td>
                   <td className="p-2">
-                    <div className="font-medium text-magic-ink">
+                    <div className="font-medium text-espark-ink">
                       {r.project_name || "—"}
                     </div>
                     {r.client_name && (
-                      <div className="text-xs text-magic-ink/60">
+                      <div className="text-xs text-espark-ink/60">
                         {r.client_name}
                       </div>
                     )}
@@ -159,13 +159,13 @@ export default function StockChecksTab({
                   <td className="p-2 text-right tabular-nums">
                     {r.items_json.length}
                   </td>
-                  <td className="p-2 text-xs text-magic-ink/60">
+                  <td className="p-2 text-xs text-espark-ink/60">
                     {new Date(r.created_at).toLocaleString()}
                   </td>
                   <td className="p-2 text-right">
                     <button
                       onClick={() => setSelectedId(r.id)}
-                      className="rounded-md border border-magic-border px-3 py-1 text-xs font-semibold hover:bg-magic-soft"
+                      className="rounded-md border border-espark-border px-3 py-1 text-xs font-semibold hover:bg-espark-soft"
                     >
                       {r.status === "pending" ? "Answer" : "View"}
                     </button>
@@ -195,8 +195,8 @@ function FilterChip({
       className={
         "rounded-full border px-3 py-1 text-xs font-semibold transition-colors " +
         (active
-          ? "border-magic-red bg-magic-red text-white"
-          : "border-magic-border text-magic-ink/70 hover:bg-magic-soft")
+          ? "border-espark-primary bg-espark-primary text-white"
+          : "border-espark-border text-espark-ink/70 hover:bg-espark-soft")
       }
     >
       {children}
@@ -295,11 +295,11 @@ function CheckAnswerView({
       <div>
         <button
           onClick={onClose}
-          className="text-xs text-magic-ink/60 hover:text-magic-red mb-3"
+          className="text-xs text-espark-ink/60 hover:text-espark-primary mb-3"
         >
           ← Back to inbox
         </button>
-        <p className="text-sm text-magic-ink/60">Loading…</p>
+        <p className="text-sm text-espark-ink/60">Loading…</p>
       </div>
     );
   }
@@ -311,16 +311,16 @@ function CheckAnswerView({
     <div>
       <button
         onClick={onClose}
-        className="text-xs text-magic-ink/60 hover:text-magic-red mb-3"
+        className="text-xs text-espark-ink/60 hover:text-espark-primary mb-3"
       >
         ← Back to inbox
       </button>
 
       <header className="mb-3">
-        <h3 className="text-base font-semibold text-magic-ink">
+        <h3 className="text-base font-semibold text-espark-ink">
           Stock check · {check.quotation_ref}
         </h3>
-        <p className="text-xs text-magic-ink/60 mt-0.5">
+        <p className="text-xs text-espark-ink/60 mt-0.5">
           Requested by{" "}
           <strong>
             {check.requested_by_display_name ||
@@ -345,9 +345,9 @@ function CheckAnswerView({
         </p>
       </header>
 
-      <div className="overflow-x-auto rounded-lg border border-magic-border">
+      <div className="overflow-x-auto rounded-lg border border-espark-border">
         <table className="min-w-full text-sm">
-          <thead className="bg-magic-soft text-magic-ink/70">
+          <thead className="bg-espark-soft text-espark-ink/70">
             <tr>
               <th className="p-2 text-left">#</th>
               <th className="p-2 text-left">Item</th>
@@ -356,18 +356,18 @@ function CheckAnswerView({
               <th className="p-2 text-left">Note</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-magic-border/60">
+          <tbody className="divide-y divide-espark-border/60">
             {check.items_json.map((it) => {
               const r = reply.get(it.no);
               return (
                 <tr key={it.no}>
-                  <td className="p-2 text-xs text-magic-ink/60">{it.no}</td>
+                  <td className="p-2 text-xs text-espark-ink/60">{it.no}</td>
                   <td className="p-2">
-                    <div className="font-medium text-magic-ink">
+                    <div className="font-medium text-espark-ink">
                       {it.brand} {it.model}
                     </div>
                     {it.description && (
-                      <div className="text-xs text-magic-ink/60">
+                      <div className="text-xs text-espark-ink/60">
                         {it.description}
                       </div>
                     )}
@@ -391,7 +391,7 @@ function CheckAnswerView({
                                   : s === "partial"
                                     ? "border-amber-400 bg-amber-100 text-amber-800"
                                     : "border-red-400 bg-red-100 text-red-700"
-                                : "border-magic-border text-magic-ink/60 hover:bg-magic-soft disabled:opacity-60")
+                                : "border-espark-border text-espark-ink/60 hover:bg-espark-soft disabled:opacity-60")
                             }
                           >
                             {s === "available"
@@ -413,7 +413,7 @@ function CheckAnswerView({
                         setItem(it.no, { note: e.target.value })
                       }
                       placeholder="optional"
-                      className="w-full rounded-md border border-magic-border px-2 py-1 text-xs disabled:opacity-60"
+                      className="w-full rounded-md border border-espark-border px-2 py-1 text-xs disabled:opacity-60"
                     />
                   </td>
                 </tr>
@@ -424,7 +424,7 @@ function CheckAnswerView({
       </div>
 
       <div className="mt-3">
-        <label className="block text-xs font-semibold text-magic-ink/70 mb-1">
+        <label className="block text-xs font-semibold text-espark-ink/70 mb-1">
           Notes for requester (optional)
         </label>
         <textarea
@@ -433,7 +433,7 @@ function CheckAnswerView({
           disabled={readOnly}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="E.g. ETA on the out-of-stock items, alternative SKUs…"
-          className="w-full rounded-md border border-magic-border px-2 py-1 text-sm disabled:opacity-60"
+          className="w-full rounded-md border border-espark-border px-2 py-1 text-sm disabled:opacity-60"
         />
       </div>
 
@@ -442,7 +442,7 @@ function CheckAnswerView({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded-md border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft"
+            className="rounded-md border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft"
           >
             Cancel
           </button>
@@ -450,7 +450,7 @@ function CheckAnswerView({
             onClick={submit}
             disabled={busy || !allMarked}
             title={allMarked ? "" : "Mark every item before submitting"}
-            className="rounded-md bg-magic-red text-white px-4 py-1.5 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+            className="rounded-md bg-espark-primary text-white px-4 py-1.5 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
           >
             {busy ? "Sending…" : "Send reply"}
           </button>

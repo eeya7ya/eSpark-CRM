@@ -20,9 +20,9 @@ export default async function LeadDetailPage({
   const leadId = Number(id);
   if (!Number.isFinite(leadId) || leadId <= 0) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
-        <main className="mx-auto max-w-2xl px-6 py-10 text-center text-sm text-magic-ink/60">
+        <main className="mx-auto max-w-2xl px-6 py-10 text-center text-sm text-espark-ink/60">
           Invalid lead id.
         </main>
       </div>
@@ -30,13 +30,13 @@ export default async function LeadDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/30">
+    <div className="min-h-screen bg-espark-soft/30">
       <TopBar user={user} />
       <main className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6">
         <header className="mb-5">
           <Link
             href="/leads"
-            className="text-xs font-semibold uppercase tracking-wide text-magic-ink/50 hover:text-magic-red"
+            className="text-xs font-semibold uppercase tracking-wide text-espark-ink/50 hover:text-espark-primary"
           >
             ← Back to leads
           </Link>

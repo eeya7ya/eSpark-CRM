@@ -113,18 +113,18 @@ export default function ClientProjectsList({
           placeholder="Search projects by name, description, status…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 min-w-0 rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+          className="flex-1 min-w-0 rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <button
           onClick={() => setCreating((v) => !v)}
-          className="rounded-lg bg-magic-red text-white px-3 py-2 text-sm font-semibold hover:bg-magic-red/90 transition-colors"
+          className="rounded-lg bg-espark-primary text-white px-3 py-2 text-sm font-semibold hover:bg-espark-primary/90 transition-colors"
         >
           {creating ? "Cancel" : "+ New project"}
         </button>
       </div>
 
       {creating && (
-        <div className="rounded-xl border border-dashed border-magic-border bg-white p-3 space-y-2">
+        <div className="rounded-xl border border-dashed border-espark-border bg-espark-surface p-3 space-y-2">
           <input
             type="text"
             placeholder="Project name (required)"
@@ -132,7 +132,7 @@ export default function ClientProjectsList({
             onChange={(e) => setDraftName(e.target.value)}
             disabled={busy}
             autoFocus
-            className="w-full rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+            className="w-full rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
           />
           <textarea
             placeholder="Description (optional)"
@@ -140,13 +140,13 @@ export default function ClientProjectsList({
             onChange={(e) => setDraftDescription(e.target.value)}
             disabled={busy}
             rows={2}
-            className="w-full rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+            className="w-full rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
           />
           <div className="flex items-center justify-end">
             <button
               onClick={() => void createProject()}
               disabled={busy || !draftName.trim()}
-              className="rounded bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+              className="rounded bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
             >
               {busy ? "Creating…" : "Create"}
             </button>
@@ -161,8 +161,8 @@ export default function ClientProjectsList({
       )}
 
       {visible.length === 0 ? (
-        <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-          <p className="text-sm text-magic-ink/60">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+          <p className="text-sm text-espark-ink/60">
             {query
               ? `No projects match "${query}".`
               : "No projects yet. Use + New project to add the first one."}
@@ -173,29 +173,29 @@ export default function ClientProjectsList({
           {visible.map((p) => (
             <li
               key={p.id}
-              className="rounded-xl border border-magic-border bg-white p-3 hover:shadow-md transition-shadow"
+              className="rounded-xl border border-espark-border bg-espark-surface p-3 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <Link
                     href={`${linkBase}/${p.id}`}
-                    className="font-semibold text-magic-ink hover:text-magic-red"
+                    className="font-semibold text-espark-ink hover:text-espark-primary"
                   >
                     {p.name}
                   </Link>
                   {p.description && (
-                    <p className="text-xs text-magic-ink/60 mt-0.5 line-clamp-2">
+                    <p className="text-xs text-espark-ink/60 mt-0.5 line-clamp-2">
                       {p.description}
                     </p>
                   )}
-                  <div className="mt-1 text-xs text-magic-ink/50">
+                  <div className="mt-1 text-xs text-espark-ink/50">
                     status: {p.status} · updated{" "}
                     {new Date(p.updated_at).toLocaleDateString()}
                   </div>
                 </div>
                 <Link
                   href={`${linkBase}/${p.id}`}
-                  className="shrink-0 rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+                  className="shrink-0 rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
                 >
                   Open
                 </Link>

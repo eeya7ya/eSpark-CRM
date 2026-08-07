@@ -66,7 +66,7 @@ export default function SyslogPanel({ readOnly = false }: { readOnly?: boolean }
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-magic-ink/60">
+        <p className="text-sm text-espark-ink/60">
           Every click across the app is recorded here and{" "}
           <strong>automatically removed after {retentionDays} day{retentionDays === 1 ? "" : "s"}</strong>.
           Showing the {events.length} most recent.
@@ -75,7 +75,7 @@ export default function SyslogPanel({ readOnly = false }: { readOnly?: boolean }
           <button
             onClick={() => void load()}
             disabled={loading}
-            className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+            className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
           >
             {loading ? "Refreshing…" : "Refresh"}
           </button>
@@ -97,10 +97,10 @@ export default function SyslogPanel({ readOnly = false }: { readOnly?: boolean }
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-xl border border-magic-border bg-white">
+      <div className="overflow-x-auto rounded-xl border border-espark-border bg-espark-surface">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-magic-border text-left text-xs text-magic-ink/50">
+            <tr className="border-b border-espark-border text-left text-xs text-espark-ink/50">
               <th className="px-3 py-2 font-semibold">When</th>
               <th className="px-3 py-2 font-semibold">User</th>
               <th className="px-3 py-2 font-semibold">Clicked</th>
@@ -111,7 +111,7 @@ export default function SyslogPanel({ readOnly = false }: { readOnly?: boolean }
           <tbody>
             {events.length === 0 && !loading ? (
               <tr>
-                <td colSpan={5} className="px-3 py-6 text-center text-xs text-magic-ink/40">
+                <td colSpan={5} className="px-3 py-6 text-center text-xs text-espark-ink/40">
                   No clicks recorded yet.
                 </td>
               </tr>
@@ -119,21 +119,21 @@ export default function SyslogPanel({ readOnly = false }: { readOnly?: boolean }
               events.map((e) => (
                 <tr
                   key={e.id}
-                  className="border-b border-magic-border/60 last:border-0 align-top"
+                  className="border-b border-espark-border/60 last:border-0 align-top"
                 >
-                  <td className="whitespace-nowrap px-3 py-2 text-magic-ink/70">
+                  <td className="whitespace-nowrap px-3 py-2 text-espark-ink/70">
                     {formatWhen(e.created_at)}
                   </td>
-                  <td className="px-3 py-2 font-medium text-magic-ink">
+                  <td className="px-3 py-2 font-medium text-espark-ink">
                     {e.username || (e.user_id ? `#${e.user_id}` : "—")}
                   </td>
-                  <td className="px-3 py-2 text-magic-ink/80">{e.label || "—"}</td>
+                  <td className="px-3 py-2 text-espark-ink/80">{e.label || "—"}</td>
                   <td className="px-3 py-2">
-                    <code className="rounded bg-magic-soft px-1.5 py-0.5 text-[11px] text-magic-ink/70">
+                    <code className="rounded bg-espark-soft px-1.5 py-0.5 text-[11px] text-espark-ink/70">
                       {e.tag || "—"}
                     </code>
                   </td>
-                  <td className="px-3 py-2 font-mono text-[11px] text-magic-ink/60">
+                  <td className="px-3 py-2 font-mono text-[11px] text-espark-ink/60">
                     {e.path}
                   </td>
                 </tr>

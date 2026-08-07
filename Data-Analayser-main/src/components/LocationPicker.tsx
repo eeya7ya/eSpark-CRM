@@ -53,7 +53,7 @@ export default function LocationPicker({
 
       const pin = L.divIcon({
         className: "",
-        html: '<div style="width:18px;height:18px;border-radius:50% 50% 50% 0;background:#E2231A;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);transform:rotate(-45deg)"></div>',
+        html: '<div style="width:18px;height:18px;border-radius:50% 50% 50% 0;background:#4C626A;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);transform:rotate(-45deg)"></div>',
         iconSize: [18, 18],
         iconAnchor: [9, 18],
       });
@@ -112,19 +112,19 @@ export default function LocationPicker({
     <div className="space-y-2">
       <div
         ref={containerRef}
-        className="h-56 w-full overflow-hidden rounded-xl border border-magic-border"
+        className="h-56 w-full overflow-hidden rounded-xl border border-espark-border"
         style={{ background: "#e8eef5" }}
       />
       <div className="flex items-center justify-between gap-2">
         <button
           type="button"
           onClick={useMyLocation}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-magic-border px-2.5 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border px-2.5 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
         >
           <Crosshair className="h-3.5 w-3.5" />
           Use my location
         </button>
-        <span className="text-[11px] text-magic-ink/50">
+        <span className="text-[11px] text-espark-ink/50">
           {lat != null && lng != null
             ? `${lat.toFixed(5)}, ${lng.toFixed(5)}`
             : "Click the map to drop a pin"}

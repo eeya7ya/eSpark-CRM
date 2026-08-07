@@ -109,18 +109,18 @@ export default async function QuotationPage({
   // (the viewer already locks editing for sales).
   const appSettings = await getAppSettings();
   return (
-    <div className="min-h-screen bg-magic-soft/40 print-root">
+    <div className="min-h-screen bg-espark-soft/40 print-root">
       <div className="no-print">
         <TopBar user={user} />
       </div>
       <main className="mx-auto max-w-screen-xl px-4 py-4 sm:px-6 print-main">
         <div className="no-print mb-3 flex items-center justify-between gap-3">
           <BackButton fallbackHref="/crm" fallbackLabel="Back" />
-          <span className="inline-flex items-center rounded-full border border-magic-border bg-white px-2.5 py-1 text-xs font-semibold text-magic-ink/60">
+          <span className="inline-flex items-center rounded-full border border-espark-border bg-espark-surface px-2.5 py-1 text-xs font-semibold text-espark-ink/60">
             View only
           </span>
         </div>
-        <section className="rounded-2xl border border-magic-border bg-white p-5">
+        <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
           <QuotationViewer quotationId={quotationId} appSettings={appSettings} />
         </section>
       </main>

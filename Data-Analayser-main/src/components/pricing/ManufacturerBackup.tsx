@@ -132,7 +132,7 @@ export function PricingBackupToolbar({
             onClick={() => setFormat(f)}
             className={cn(
               "px-2.5 py-1.5 font-semibold uppercase transition-colors",
-              format === f ? "bg-cyan-500 text-white" : "bg-white text-gray-500 hover:bg-gray-50",
+              format === f ? "bg-cyan-500 text-white" : "bg-espark-surface text-gray-500 hover:bg-gray-50",
             )}
           >
             {f}

@@ -15,7 +15,7 @@
  *   - Sales name     ← quotation.sales_engineer or owner/session display_name
  *   - Sales phone    ← config.salesPhone or owner/session phone
  *   - Sales email    ← quotation owner's users.email; falls back to the
- *                     <username>@magictech-jo.com template convention when
+ *                     <username>@espark.dev template convention when
  *                     the admin hasn't filed an address for that user yet
  *
  * Everything else (About Us paragraph, disclaimer, T&C sections) defaults
@@ -89,46 +89,46 @@ interface FpOverrides {
   gainFactor?: number;
 }
 
+/*
+ * ─── Default proposal copy ────────────────────────────────────────────────
+ *
+ * Editable placeholders, not statements of fact — overridable per-proposal in
+ * the Designer, with a house default in the admin panel.
+ *
+ * The prior deployment's defaults asserted a 2003 founding, ICT/low-current
+ * specialisation and vendor-specific warranty and payment terms belonging to
+ * that brand's supply chain. Those do not transfer to eSpark and would be
+ * inaccurate in a customer-facing commercial document, so they were removed
+ * rather than re-badged. What remains comes from eSpark's published identity.
+ *
+ * ACTION REQUIRED: fill in every `TODO(espark)` block before sending a
+ * proposal to a customer.
+ */
+
 const DEFAULT_ABOUT_US =
-  "Magic Tech, a leading Jordanian technology company established in 2003, " +
-  "specializes in delivering advanced Information and Communication " +
-  "Technology (ICT) and low-current solutions across a wide range of " +
-  "industries. With a strong commitment to innovation, quality, and " +
-  "customer satisfaction, Magic Tech provides comprehensive technology " +
-  "services that help organizations enhance security, efficiency, and " +
-  "operational performance.\n\n" +
-  "Our expertise covers the design, supply, installation, and maintenance " +
-  "of integrated technology solutions, including surveillance systems, " +
-  "access control and time attendance solutions, smart locks, intrusion " +
-  "alarm systems, fire alarm systems, video intercom systems, garage door " +
-  "automation, UPS and power backup systems, sound and public address " +
-  "solutions, networking infrastructure, as well as computer hardware and " +
-  "software solutions.\n\n" +
-  "At Magic Tech, we believe that technology is most effective when " +
-  "supported by professional expertise. Our team of highly qualified " +
-  "engineers and technicians brings extensive industry experience and " +
-  "continuously develops their skills through specialized training " +
-  "programs and certifications from leading international technology " +
-  "vendors. This enables us to deliver reliable, scalable, and " +
-  "future-ready solutions tailored to the unique requirements of each " +
-  "client.\n\n" +
-  "Over the years, Magic Tech has earned a strong reputation as a trusted " +
-  "technology partner by consistently providing high-quality products, " +
-  "professional implementation services, and exceptional after-sales " +
-  "support. Through our dedication to excellence and continuous " +
-  "innovation, we strive to build long-term partnerships and deliver " +
-  "complete technology solutions that empower businesses, institutions, " +
-  "and residential communities throughout Jordan and beyond.";
+  "eSpark provides professional support across education, digital marketing, " +
+  "and engineering solutions. We combine expertise across these disciplines " +
+  "to deliver accurate, well-engineered work for clients worldwide.\n\n" +
+  "Our work is organised into four departments. eSpark Academy delivers " +
+  "expert-led courses and mentoring across engineering, AI, marketing and " +
+  "design. eSpark Marketing covers content creation, search engine " +
+  "optimisation and graphic design. eSpark Engineering provides drawings and " +
+  "design, electrical system design and protection studies. eSpark " +
+  "Networking covers network design, system administration, secure " +
+  "connectivity and web solutions.\n\n" +
+  "Each engagement is delivered by specialists in the relevant discipline, " +
+  "with the scope, deliverables and acceptance criteria agreed in writing " +
+  "before work begins.";
 
 const DEFAULT_DISCLAIMER = [
   "The information contained in this document is the sole property of " +
-    "MagicTech and its affiliated companies. Such information is provided " +
+    "eSpark and its affiliated companies. Such information is provided " +
     "in response to specific requests and is based on the information " +
-    "available at the time of preparation, as well as MagicTech's standard " +
+    "available at the time of preparation, as well as eSpark's standard " +
     "terms and conditions. It is intended solely for the purpose for which " +
     "it has been supplied and should not be relied upon for any other " +
     "purpose.",
-  "This document is submitted exclusively for the evaluation of MagicTech " +
+  "This document is submitted exclusively for the evaluation of eSpark " +
     "products, services, and solutions and may only be disclosed to " +
     "employees or authorized representatives of the intended recipient " +
     "who have a legitimate need to access such information.",
@@ -136,47 +136,54 @@ const DEFAULT_DISCLAIMER = [
     "this document is accurate and up to date at the time of publication. " +
     "However, products, specifications, services, and other content " +
     "described herein are subject to continuous development and " +
-    "improvement. MagicTech reserves the right to modify, update, or " +
+    "improvement. eSpark reserves the right to modify, update, or " +
     "discontinue any information, product, or service at any time without " +
     "prior notice.",
-  "MagicTech shall not be liable for any loss, damage, or consequences " +
+  "eSpark shall not be liable for any loss, damage, or consequences " +
     "arising from the use of, or reliance upon, information that may have " +
     "become outdated or inaccurate after publication.",
   "No part of this document may be copied, reproduced, distributed, " +
     "transmitted, stored in a retrieval system, or translated into any " +
-    "form or by any means without the prior written consent of MagicTech.",
+    "form or by any means without the prior written consent of eSpark.",
 ];
 
 const DEFAULT_SECTIONS: FpSection[] = [
   {
     heading: "NOTES",
-    bullets: ["Any additional clarification or information needed you can contact us."],
+    bullets: [
+      "For any additional clarification or information, please contact us at it-support@espark.dev.",
+    ],
   },
   {
     heading: "PRICES",
     bullets: [
-      "The above prices are in Jordanian Dinar, and the mentioned items and services are excluding sales tax (16%).",
-      "Prices of professional services on the mentioned items/systems are Excluded.",
+      "The above prices are in Jordanian Dinar, and the mentioned items and services exclude sales tax (16%).",
+      "TODO(espark): state what is excluded from the quoted price (professional services, licences, consumables).",
     ],
   },
   {
     heading: "WARRANTY",
     bullets: [
-      "Hikvision Warranty",
-      "3 years hardware warranty and advanced replacement at no additional cost, a replacement part within Next-Business-Day (NBD) after receipt of the RMA request if available, and otherwise 12-20 weeks, exclude any misusing.",
+      // The prior default quoted a named manufacturer's RMA terms.
+      "TODO(espark): state the warranty period and replacement terms for this project's deliverables.",
     ],
   },
   {
     heading: "VALIDITY",
-    bullets: ["This offer is valid for 30 days."],
+    bullets: ["This offer is valid for 30 days from the date of issuance."],
   },
   {
     heading: "DELIVERY",
-    bullets: ["10-14 weeks from the PO date."],
+    bullets: [
+      "TODO(espark): delivery window, measured from the Purchase Order date.",
+    ],
   },
   {
     heading: "PAYMENT TERMS",
-    bullets: ["As per Islamic International Arab Bank payment terms."],
+    bullets: [
+      // The prior default named the previous brand's bank.
+      "TODO(espark): state eSpark's payment terms and banking details.",
+    ],
   },
 ];
 
@@ -400,7 +407,7 @@ export default function FinancialProposalView({
   const salesUsername = owner?.username || me?.username || "";
   const defaultSalesEmail =
     owner?.email ||
-    (salesUsername ? `${salesUsername}@magictech-jo.com` : "");
+    (salesUsername ? `${salesUsername}@espark.dev` : "");
 
   const salesName = overrides.salesName ?? defaultSalesName;
   const salesPhone = overrides.salesPhone ?? defaultSalesPhone;
@@ -473,7 +480,7 @@ export default function FinancialProposalView({
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8">
         <PageLoader label={`Loading financial proposal #${quotationId}…`} />
       </div>
     );
@@ -490,14 +497,14 @@ export default function FinancialProposalView({
 
   return (
     <div>
-      <div className="no-print sticky top-[60px] z-30 mx-auto mb-4 flex w-full max-w-[210mm] flex-wrap items-center justify-between gap-2 rounded-xl border border-magic-border bg-white px-4 py-2.5 shadow-md">
-        <div className="text-xs text-magic-ink/60">
+      <div className="no-print sticky top-[60px] z-30 mx-auto mb-4 flex w-full max-w-[210mm] flex-wrap items-center justify-between gap-2 rounded-xl border border-espark-border bg-espark-surface px-4 py-2.5 shadow-md">
+        <div className="text-xs text-espark-ink/60">
           Sales-editable fields underlined; values default to the template /
           quotation data. Edits are remembered for this proposal only.
         </div>
         <div className="flex items-center gap-2">
           <label
-            className="flex items-center gap-1.5 rounded-md border border-magic-border px-2 py-1.5 text-xs font-semibold text-magic-ink/80"
+            className="flex items-center gap-1.5 rounded-md border border-espark-border px-2 py-1.5 text-xs font-semibold text-espark-ink/80"
             title="Optional margin multiplier — every unit price in this proposal is multiplied by it (e.g. 1.10 = +10%). Only this document changes; the quotation itself keeps its original prices."
           >
             Gain factor
@@ -521,22 +528,22 @@ export default function FinancialProposalView({
                 if (Number.isFinite(n) && n > 0) setOverrides({ gainFactor: n });
               }}
               onBlur={() => setGainDraft(null)}
-              className="w-16 rounded border border-magic-border px-1.5 py-0.5 text-xs font-normal"
+              className="w-16 rounded border border-espark-border px-1.5 py-0.5 text-xs font-normal"
             />
             {gainFactor !== 1 && (
-              <span className="font-normal text-magic-red">×{gainFactor}</span>
+              <span className="font-normal text-espark-primary">×{gainFactor}</span>
             )}
           </label>
           <button
             onClick={resetOverrides}
-            className="rounded-md border border-magic-border px-3 py-1.5 text-xs font-semibold hover:bg-magic-soft"
+            className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold hover:bg-espark-soft"
             title="Restore every field on this page back to its automatic / template default"
           >
             Reset to defaults
           </button>
           <button
             onClick={runPrint}
-            className="rounded-md bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+            className="rounded-md bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
           >
             Print / PDF
           </button>
@@ -549,7 +556,7 @@ export default function FinancialProposalView({
           <section className="quotation-sheet fp-sheet fp-cover page-break-after">
             <div className="fp-cover-inner">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Magic Tech" className="fp-cover-logo" />
+              <img src="/logo.png" alt="eSpark" className="fp-cover-logo" />
               <div className="fp-cover-middle">
                 <div className="fp-cover-band">
                   <div className="fp-cover-title">
@@ -650,7 +657,7 @@ export default function FinancialProposalView({
                 <FpInline
                   value={salesEmail}
                   onChange={(v) => setOverrides({ salesEmail: v })}
-                  placeholder="name@magictech-jo.com"
+                  placeholder="name@espark.dev"
                 />
               </div>
             </div>
@@ -840,7 +847,7 @@ function FpSheet({
             <td>
               <div className="fp-brand-strip">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Magic Tech" />
+                <img src="/logo.png" alt="eSpark" />
               </div>
             </td>
           </tr>
@@ -854,8 +861,11 @@ function FpSheet({
           <tr>
             <td>
               <div className="footer-address">
-                COPYRIGHT © 2003-{new Date().getFullYear()} MAGIC TECH FOR
-                COMPUTERS. ALL RIGHTS RESERVED.
+                {/* Year runs from the current year only: the prior
+                    brand's 2003 founding date does not transfer, and the
+                    legal entity name is eSpark's to confirm. */}
+                COPYRIGHT © {new Date().getFullYear()} eSPARK. ALL RIGHTS
+                RESERVED.
               </div>
             </td>
           </tr>

@@ -139,7 +139,7 @@ export default function SideNav({
       <div
         aria-hidden={!open}
         onClick={onClose}
-        className={`fixed inset-0 z-50 bg-magic-ink/40 transition-opacity duration-200 ${
+        className={`fixed inset-0 z-50 bg-espark-scrim/40 transition-opacity duration-200 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -150,18 +150,18 @@ export default function SideNav({
         role="dialog"
         aria-label="Navigation"
         aria-hidden={!open}
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-magic-border/60 bg-white shadow-2xl transition-transform duration-200 ease-out will-change-transform ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-espark-border/60 bg-espark-surface shadow-2xl transition-transform duration-200 ease-out will-change-transform ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex items-center justify-between px-4 py-4">
-          <span className="text-sm font-bold tracking-tight text-magic-ink">
+          <span className="text-sm font-bold tracking-tight text-espark-ink">
             Navigate
           </span>
           <button
             onClick={onClose}
             aria-label="Close navigation"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-magic-ink/60 hover:bg-magic-soft hover:text-magic-ink transition-colors"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-espark-ink/60 hover:bg-espark-soft hover:text-espark-ink transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -179,8 +179,8 @@ export default function SideNav({
                     onClick={onClose}
                     className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                       active
-                        ? "bg-gradient-to-r from-magic-red/12 to-magic-accent/10 text-magic-red shadow-sm"
-                        : "text-magic-ink/75 hover:bg-magic-soft hover:text-magic-ink"
+                        ? "bg-gradient-to-r from-espark-primary/12 to-espark-accent/10 text-espark-primary shadow-sm"
+                        : "text-espark-ink/75 hover:bg-espark-soft hover:text-espark-ink"
                     }`}
                   >
                     <Icon className="h-[18px] w-[18px] shrink-0" />
@@ -194,14 +194,14 @@ export default function SideNav({
 
         {/* Admin — the LHS toggle entry, gated to admins. */}
         {isAdmin && (
-          <div className="border-t border-magic-border/60 p-3">
+          <div className="border-t border-espark-border/60 p-3">
             <Link
               href="/admin"
               onClick={onClose}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
                 isActive("/admin")
-                  ? "bg-magic-ink text-white shadow-sm"
-                  : "bg-magic-ink/5 text-magic-ink hover:bg-magic-ink hover:text-white"
+                  ? "bg-espark-ink text-espark-on-ink shadow-sm"
+                  : "bg-espark-ink/5 text-espark-ink hover:bg-espark-ink hover:text-espark-on-ink"
               }`}
             >
               <ShieldCheck className="h-[18px] w-[18px] shrink-0" />

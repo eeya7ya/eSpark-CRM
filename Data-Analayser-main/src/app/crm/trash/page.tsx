@@ -18,25 +18,25 @@ export default async function CrmTrashPage() {
   await ensureSchema();
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-5xl mx-auto px-6 py-8 lg:px-10 space-y-5">
         <div>
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm" className="hover:text-magic-red">
+            <Link href="/crm" className="hover:text-espark-primary">
               CRM
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm/company" className="hover:text-magic-red">
+            <Link href="/crm/company" className="hover:text-espark-primary">
               Companies
             </Link>
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-magic-ink">Trash</h1>
-          <p className="mt-1 text-sm text-magic-ink/60">
+          <h1 className="mt-1 text-2xl font-bold text-espark-ink">Trash</h1>
+          <p className="mt-1 text-sm text-espark-ink/60">
             Restore a deleted company, client or quotation — or remove it for
             good. Nothing here auto-purges.
           </p>

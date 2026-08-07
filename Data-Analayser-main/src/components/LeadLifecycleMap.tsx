@@ -149,18 +149,18 @@ export default function LeadLifecycleMap({ lead }: { lead: LifecycleLead }) {
     .at(-1);
 
   return (
-    <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
       <div className="mb-4 flex items-baseline justify-between">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-espark-ink/70">
           Lifecycle
         </h3>
-        <span className="text-[11px] text-magic-ink/40">
+        <span className="text-[11px] text-espark-ink/40">
           {steps.filter((s) => s.relevant && s.at).length}/
           {steps.filter((s) => s.relevant).length} steps done
         </span>
       </div>
 
-      <ol className="relative space-y-4 border-l border-magic-border/60 pl-5">
+      <ol className="relative space-y-4 border-l border-espark-border/60 pl-5">
         {steps.map((step, idx) => {
           const done = Boolean(step.at);
           const isCurrent = idx === currentIdx;
@@ -183,12 +183,12 @@ export default function LeadLifecycleMap({ lead }: { lead: LifecycleLead }) {
               : null;
 
           const dot = muted
-            ? "bg-magic-ink/20"
+            ? "bg-espark-ink/20"
             : done
               ? "bg-emerald-500"
               : isCurrent
                 ? "bg-amber-500"
-                : "bg-magic-ink/25";
+                : "bg-espark-ink/25";
 
           return (
             <li key={step.key} className="relative">
@@ -199,23 +199,23 @@ export default function LeadLifecycleMap({ lead }: { lead: LifecycleLead }) {
                 <span
                   className={`text-xs font-semibold uppercase tracking-wide ${
                     muted
-                      ? "text-magic-ink/30"
+                      ? "text-espark-ink/30"
                       : done
-                        ? "text-magic-ink/75"
+                        ? "text-espark-ink/75"
                         : isCurrent
                           ? "text-amber-700"
-                          : "text-magic-ink/40"
+                          : "text-espark-ink/40"
                   }`}
                 >
                   {step.label}
                 </span>
                 {done && (
-                  <span className="text-[11px] text-magic-ink/40">
+                  <span className="text-[11px] text-espark-ink/40">
                     {new Date(step.at as string).toLocaleString()}
                   </span>
                 )}
                 {done && gap && (
-                  <span className="text-[11px] text-magic-ink/40">
+                  <span className="text-[11px] text-espark-ink/40">
                     · {gap} after previous
                   </span>
                 )}
@@ -226,7 +226,7 @@ export default function LeadLifecycleMap({ lead }: { lead: LifecycleLead }) {
                 )}
               </div>
               {(step.who || step.detail) && !muted && (
-                <p className="mt-0.5 text-[11px] text-magic-ink/45">
+                <p className="mt-0.5 text-[11px] text-espark-ink/45">
                   {[step.who, step.detail].filter(Boolean).join(" · ")}
                 </p>
               )}
@@ -236,13 +236,13 @@ export default function LeadLifecycleMap({ lead }: { lead: LifecycleLead }) {
       </ol>
 
       {lost && lead.outcome_at && (
-        <p className="mt-4 rounded-lg border border-dashed border-magic-border/70 px-3 py-2 text-[11px] text-magic-ink/50">
+        <p className="mt-4 rounded-lg border border-dashed border-espark-border/70 px-3 py-2 text-[11px] text-espark-ink/50">
           This lead was lost at the sales decision — the execution steps don&apos;t
           apply.
         </p>
       )}
       {won && !lead.completed_at && (
-        <p className="mt-4 text-[11px] text-magic-ink/40">
+        <p className="mt-4 text-[11px] text-espark-ink/40">
           Won — tracking through execution.
         </p>
       )}

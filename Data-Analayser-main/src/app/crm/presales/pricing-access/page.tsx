@@ -44,24 +44,24 @@ export default async function PresalesPricingAccessPage() {
   `) as PresalesMember[];
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto max-w-3xl space-y-5 px-6 py-8 lg:px-10">
         <div>
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm?tool=presales" className="hover:text-magic-red">
+            <Link href="/crm?tool=presales" className="hover:text-espark-primary">
               CRM
             </Link>{" "}
             <span>→</span> Presales
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-magic-ink">
+          <h1 className="mt-1 text-2xl font-bold text-espark-ink">
             Pricing access
           </h1>
-          <p className="mt-0.5 text-sm text-magic-ink/60">
+          <p className="mt-0.5 text-sm text-espark-ink/60">
             Choose which presales members can open the Pricing module. You (and
             other presales managers) always have access.
           </p>

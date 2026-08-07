@@ -77,11 +77,11 @@ export default function CatalogUploadSection() {
   }, [includePictures]);
 
   return (
-    <section className="mb-5 rounded-2xl border border-magic-border bg-white p-5 shadow-mt-soft">
+    <section className="mb-5 rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-es-soft">
       <div className="mb-4 flex items-center gap-2">
-        <FileSpreadsheet className="h-4 w-4 text-magic-red" />
-        <h2 className="text-sm font-bold text-magic-ink">Bulk Excel tools</h2>
-        <span className="text-[11px] text-magic-ink/45">
+        <FileSpreadsheet className="h-4 w-4 text-espark-primary" />
+        <h2 className="text-sm font-bold text-espark-ink">Bulk Excel tools</h2>
+        <span className="text-[11px] text-espark-ink/45">
           for changing many products at once
         </span>
       </div>
@@ -89,16 +89,16 @@ export default function CatalogUploadSection() {
       {/* Two halves of one round-trip: export → edit in Excel → upload back. */}
       <div className="grid gap-3 md:grid-cols-2">
         {/* ── Export ── */}
-        <div className="flex flex-col rounded-xl border border-magic-border bg-magic-soft/40 p-4">
+        <div className="flex flex-col rounded-xl border border-espark-border bg-espark-soft/40 p-4">
           <div className="flex items-start gap-3">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-magic-ink/70 shadow-sm">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-espark-surface text-espark-ink/70 shadow-sm">
               <Download className="h-4 w-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-magic-ink">
+              <p className="text-[13px] font-semibold text-espark-ink">
                 Export catalogue
               </p>
-              <p className="mt-0.5 text-[11.5px] leading-relaxed text-magic-ink/55">
+              <p className="mt-0.5 text-[11.5px] leading-relaxed text-espark-ink/55">
                 Download every product as .xlsx, ready to edit.
               </p>
             </div>
@@ -111,21 +111,21 @@ export default function CatalogUploadSection() {
             aria-checked={includePictures}
             disabled={exporting}
             onClick={() => setIncludePictures((v) => !v)}
-            className="mt-3 flex w-full items-center gap-2.5 rounded-lg border border-magic-border bg-white px-3 py-2 text-left transition-colors hover:border-magic-red/40 disabled:opacity-50"
+            className="mt-3 flex w-full items-center gap-2.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-left transition-colors hover:border-espark-primary/40 disabled:opacity-50"
           >
             <span
               className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${
-                includePictures ? "bg-magic-red" : "bg-magic-ink/20"
+                includePictures ? "bg-espark-primary" : "bg-espark-ink/20"
               }`}
             >
               <span
-                className={`absolute top-0.5 h-3 w-3 rounded-full bg-white shadow-sm transition-transform ${
+                className={`absolute top-0.5 h-3 w-3 rounded-full bg-espark-surface shadow-sm transition-transform ${
                   includePictures ? "translate-x-3.5" : "translate-x-0.5"
                 }`}
               />
             </span>
-            <Camera className="h-3.5 w-3.5 shrink-0 text-magic-ink/45" />
-            <span className="text-[11.5px] font-medium text-magic-ink/75">
+            <Camera className="h-3.5 w-3.5 shrink-0 text-espark-ink/45" />
+            <span className="text-[11.5px] font-medium text-espark-ink/75">
               Embed pictures into the workbook
             </span>
           </button>
@@ -134,7 +134,7 @@ export default function CatalogUploadSection() {
             onClick={exportCatalogue}
             disabled={exporting}
             title="Download the current catalogue as an Excel file. Edit it and re-upload to apply your changes."
-            className="mt-2.5 inline-flex items-center justify-center gap-2 rounded-lg bg-magic-ink px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-magic-ink/85 disabled:opacity-60"
+            className="mt-2.5 inline-flex items-center justify-center gap-2 rounded-lg bg-espark-ink px-4 py-2.5 text-[13px] font-semibold text-espark-on-ink shadow-sm transition-colors hover:bg-espark-ink/85 disabled:opacity-60"
           >
             {exporting ? (
               <>
@@ -151,16 +151,16 @@ export default function CatalogUploadSection() {
         </div>
 
         {/* ── Upload ── */}
-        <div className="flex flex-col rounded-xl border border-magic-border bg-magic-soft/40 p-4">
+        <div className="flex flex-col rounded-xl border border-espark-border bg-espark-soft/40 p-4">
           <div className="flex items-start gap-3">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-magic-ink/70 shadow-sm">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-espark-surface text-espark-ink/70 shadow-sm">
               <Upload className="h-4 w-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-magic-ink">
+              <p className="text-[13px] font-semibold text-espark-ink">
                 Upload Excel catalogue
               </p>
-              <p className="mt-0.5 text-[11.5px] leading-relaxed text-magic-ink/55">
+              <p className="mt-0.5 text-[11.5px] leading-relaxed text-espark-ink/55">
                 Push an edited workbook back into the live catalogue.
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function CatalogUploadSection() {
           <button
             onClick={() => setShow((v) => !v)}
             aria-expanded={show}
-            className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg border border-magic-border bg-white px-4 py-2.5 text-[13px] font-semibold text-magic-ink shadow-sm transition-colors hover:border-magic-red/40 hover:text-magic-red"
+            className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg border border-espark-border bg-espark-surface px-4 py-2.5 text-[13px] font-semibold text-espark-ink shadow-sm transition-colors hover:border-espark-primary/40 hover:text-espark-primary"
           >
             {show ? (
               <>
@@ -186,7 +186,7 @@ export default function CatalogUploadSection() {
         </div>
       </div>
 
-      <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-magic-ink/50">
+      <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-espark-ink/50">
         <Info className="mt-px h-3.5 w-3.5 shrink-0" />
         <span>
           Exported rows are matched by <b className="font-semibold">model</b> on
@@ -203,7 +203,7 @@ export default function CatalogUploadSection() {
       )}
 
       {show && (
-        <div className="mt-4 border-t border-magic-border pt-4">
+        <div className="mt-4 border-t border-espark-border pt-4">
           <CatalogueUpload
             onDone={() => {
               setShow(false);
@@ -301,7 +301,7 @@ async function exportWithPictures(
   const ExcelJS = (await import("exceljs")).default;
 
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = "MagicTech Catalogue Export";
+  workbook.creator = "eSpark Catalogue Export";
   workbook.created = new Date();
   const sheet = workbook.addWorksheet("Catalogue");
 
@@ -443,7 +443,7 @@ function decodeDataUrl(
 function downloadName(): string {
   const d = new Date();
   const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  return `magictech-catalogue-${stamp}.xlsx`;
+  return `espark-catalogue-${stamp}.xlsx`;
 }
 
 function triggerDownload(blob: Blob, filename: string): void {

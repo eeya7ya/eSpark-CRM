@@ -2,49 +2,327 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   eSpark design tokens
+   ═══════════════════════════════════════════════════════════════════════════
+   Two independent palettes live here, and keeping them separate is the whole
+   trick behind supporting a dark theme in an app that also prints:
+
+   1. `--espark-*`     — the APP CHROME. Space-separated RGB channels, consumed
+                         by Tailwind as `rgb(var(--x) / <alpha-value>)`. These
+                         flip wholesale when `.dark` lands on <html>.
+   2. `--espark-doc-*` — the PRINTED DOCUMENT (quotations, technical and
+                         financial proposals). Fixed hex, never themed. A
+                         quotation is printed on white paper, so its sheet must
+                         look identical whether the operator is working in light
+                         or dark mode. Anything inside `.quotation-sheet` /
+                         `.fp-sheet` reads from this set only.
+
+   Palette source: the eSpark brand site — St. Pauls Blue, Arctic Grey, Minty
+   Breeze, Tender Grey, Band Stone and Classic White.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  /* Brand primary — unchanged, so printed quotation PDFs render identically. */
-  --mt-red: #e2231a;
-  /* App UI palette — modernized. A warmer ink, cooler surfaces, and
-     a pair of accent hues that drive the new gradient backgrounds. */
-  --mt-ink: #111827;
-  --mt-soft: #f5f6fb;
-  --mt-border: #e4e7f1;
-  --mt-header: #eef1fa;
-  --mt-highlight: #fff200;
-  --mt-accent: #6366f1;
-  --mt-accent-2: #06b6d4;
+  /* ── Light theme (default) — Classic White / warm Band Stone base ──────── */
+  --espark-canvas: 234 229 225; /* #eae5e1 page canvas */
+  --espark-surface: 244 240 236; /* #f4f0ec cards (replaces plain white) */
+  --espark-soft: 227 221 215; /* #e3ddd7 panels one step off the card */
+  --espark-header: 222 215 208; /* #ded7d0 table headers / raised strips */
+  --espark-border: 207 200 193; /* #cfc8c1 hairlines */
+  --espark-ink: 43 47 48; /* #2b2f30 primary text */
+  --espark-muted: 95 102 104; /* #5f6668 secondary text */
+  --espark-primary: 76 98 106; /* #4c626a St. Pauls Blue, deepened */
+  --espark-primary-light: 98 120 127; /* #62787f */
+  --espark-accent: 107 124 110; /* #6b7c6e Minty Breeze, deepened */
+  --espark-accent2: 132 148 127; /* #84947f */
+  --espark-highlight: 223 208 138; /* #dfd08a search-match sand */
+  --espark-shadow: 43 47 48;
+  /* Text that sits ON an `espark-ink` fill. `ink` inverts between themes, so a
+     literal `text-white` label on an ink button would disappear in dark mode —
+     this token inverts with it and always contrasts. */
+  --espark-on-ink: 244 240 236;
+  /* Modal / drawer backdrop. Always dark: a scrim exists to push the page
+     behind the dialog, which a light wash cannot do on a dark canvas. */
+  --espark-scrim: 12 14 15;
+
+  /* ── Warm grey ramp ────────────────────────────────────────────────────
+     Re-points Tailwind's cool `gray-*`/`slate-*` at eSpark's warm greys so
+     the hundreds of existing `text-gray-500` / `border-gray-200` usages land
+     on-brand without touching a component. */
+  --c-gray-50: 244 240 236;
+  --c-gray-100: 235 230 225;
+  --c-gray-200: 221 215 208;
+  --c-gray-300: 207 200 193;
+  --c-gray-400: 164 157 150;
+  --c-gray-500: 125 119 114;
+  --c-gray-600: 95 90 86;
+  --c-gray-700: 70 66 63;
+  --c-gray-800: 51 47 45;
+  --c-gray-900: 43 47 48;
+
+  /* ── Status ramps (light) — stock Tailwind values ──────────────────────── */
+  --c-red-50: 254 242 242;
+  --c-red-100: 254 226 226;
+  --c-red-200: 254 202 202;
+  --c-red-300: 252 165 165;
+  --c-red-400: 248 113 113;
+  --c-red-500: 239 68 68;
+  --c-red-600: 220 38 38;
+  --c-red-700: 185 28 28;
+  --c-red-800: 153 27 27;
+  --c-red-900: 127 29 29;
+
+  --c-emerald-50: 236 253 245;
+  --c-emerald-100: 209 250 229;
+  --c-emerald-200: 167 243 208;
+  --c-emerald-300: 110 231 183;
+  --c-emerald-400: 52 211 153;
+  --c-emerald-500: 16 185 129;
+  --c-emerald-600: 5 150 105;
+  --c-emerald-700: 4 120 87;
+  --c-emerald-800: 6 95 70;
+  --c-emerald-900: 6 78 59;
+
+  --c-amber-50: 255 251 235;
+  --c-amber-100: 254 243 199;
+  --c-amber-200: 253 230 138;
+  --c-amber-300: 252 211 77;
+  --c-amber-400: 251 191 36;
+  --c-amber-500: 245 158 11;
+  --c-amber-600: 217 119 6;
+  --c-amber-700: 180 83 9;
+  --c-amber-800: 146 64 14;
+  --c-amber-900: 120 53 15;
+
+  --c-cyan-50: 236 254 255;
+  --c-cyan-100: 207 250 254;
+  --c-cyan-200: 165 243 252;
+  --c-cyan-300: 103 232 249;
+  --c-cyan-400: 34 211 238;
+  --c-cyan-500: 6 182 212;
+  --c-cyan-600: 8 145 178;
+  --c-cyan-700: 14 116 144;
+  --c-cyan-800: 21 94 117;
+  --c-cyan-900: 22 78 99;
+
+  --c-rose-50: 255 241 242;
+  --c-rose-100: 255 228 230;
+  --c-rose-200: 254 205 211;
+  --c-rose-300: 253 164 175;
+  --c-rose-400: 251 113 133;
+  --c-rose-500: 244 63 94;
+  --c-rose-600: 225 29 72;
+  --c-rose-700: 190 18 60;
+  --c-rose-800: 159 18 57;
+  --c-rose-900: 136 19 55;
+
+  /* ── Printed-document palette — fixed, never themed ────────────────────── */
+  --espark-doc-primary: #4c626a;
+  --espark-doc-ink: #2b2f30;
+  --espark-doc-header: #e3ddd7;
+  --espark-doc-highlight: #dfd08a;
+  --espark-doc-border: #cfc8c1;
+  --espark-doc-soft: #f4f0ec;
+  --espark-doc-paper: #ffffff;
+}
+
+.dark {
+  /* ── Dark theme — charcoal grey base, the eSpark site default ──────────── */
+  --espark-canvas: 27 30 32; /* #1b1e20 */
+  --espark-surface: 35 39 41; /* #232729 */
+  --espark-soft: 45 50 52; /* #2d3234 */
+  --espark-header: 58 65 67; /* #3a4143 */
+  --espark-border: 58 65 67; /* #3a4143 */
+  --espark-ink: 233 228 224; /* #e9e4e0 */
+  --espark-muted: 154 149 145; /* #9a9591 */
+  --espark-primary: 91 120 132; /* #5b7884 St. Pauls Blue */
+  --espark-primary-light: 147 163 164; /* #93a3a4 Arctic Grey */
+  --espark-accent: 138 155 141; /* #8a9b8d Minty Breeze */
+  --espark-accent2: 174 188 171; /* #aebcab */
+  --espark-highlight: 176 156 88; /* muted sand that reads on charcoal */
+  --espark-shadow: 0 0 0;
+  /* ink is light here, so its contrasting label flips to the dark canvas. */
+  --espark-on-ink: 27 30 32;
+  /* Scrim stays dark — deliberately not inverted. */
+  --espark-scrim: 0 0 0;
+
+  /* Grey ramp inverts: `50` stays the subtlest background, `900` stays the
+     highest-contrast text — so existing usage keeps its intent. */
+  --c-gray-50: 35 39 41;
+  --c-gray-100: 42 46 48;
+  --c-gray-200: 58 65 67;
+  --c-gray-300: 74 81 83;
+  --c-gray-400: 139 146 148;
+  --c-gray-500: 163 169 171;
+  --c-gray-600: 188 193 194;
+  --c-gray-700: 210 214 215;
+  --c-gray-800: 224 227 228;
+  --c-gray-900: 233 228 224;
+
+  /* Status ramps invert the same way: the `50–200` tints become deep,
+     desaturated washes; `600–900` become legible light text. */
+  --c-red-50: 42 28 28;
+  --c-red-100: 58 34 34;
+  --c-red-200: 77 43 43;
+  --c-red-300: 107 56 56;
+  --c-red-400: 176 106 106;
+  --c-red-500: 224 112 112;
+  --c-red-600: 240 133 133;
+  --c-red-700: 244 161 161;
+  --c-red-800: 248 188 188;
+  --c-red-900: 252 214 214;
+
+  --c-emerald-50: 22 40 31;
+  --c-emerald-100: 27 51 39;
+  --c-emerald-200: 36 69 51;
+  --c-emerald-300: 47 92 68;
+  --c-emerald-400: 79 158 120;
+  --c-emerald-500: 86 192 143;
+  --c-emerald-600: 110 210 163;
+  --c-emerald-700: 144 223 186;
+  --c-emerald-800: 179 233 207;
+  --c-emerald-900: 211 242 227;
+
+  --c-amber-50: 43 35 23;
+  --c-amber-100: 56 45 27;
+  --c-amber-200: 74 59 34;
+  --c-amber-300: 99 80 44;
+  --c-amber-400: 184 145 63;
+  --c-amber-500: 212 168 75;
+  --c-amber-600: 226 186 99;
+  --c-amber-700: 237 205 138;
+  --c-amber-800: 244 220 174;
+  --c-amber-900: 249 233 205;
+
+  --c-cyan-50: 22 38 43;
+  --c-cyan-100: 27 48 56;
+  --c-cyan-200: 35 64 73;
+  --c-cyan-300: 46 85 97;
+  --c-cyan-400: 78 151 171;
+  --c-cyan-500: 92 173 196;
+  --c-cyan-600: 116 190 211;
+  --c-cyan-700: 152 210 226;
+  --c-cyan-800: 187 226 237;
+  --c-cyan-900: 215 239 245;
+
+  --c-rose-50: 43 26 32;
+  --c-rose-100: 58 32 40;
+  --c-rose-200: 77 41 52;
+  --c-rose-300: 104 54 68;
+  --c-rose-400: 176 104 121;
+  --c-rose-500: 209 121 140;
+  --c-rose-600: 224 143 161;
+  --c-rose-700: 234 171 185;
+  --c-rose-800: 242 198 208;
+  --c-rose-900: 248 222 228;
 }
 
 html,
 body {
-  color: var(--mt-ink);
-  /* Ambient gradient canvas for the whole app. Layered radial glows
-     give a subtle, modern "aurora" effect without distracting from
-     content. Kept static (no animation) to stay performant and CLS-safe. */
+  color: rgb(var(--espark-ink));
+  /* Ambient gradient canvas for the whole app. Layered radial glows in the
+     eSpark primary/accent pair give a subtle depth without distracting from
+     content. Kept static (no animation) to stay performant and CLS-safe.
+     Because every stop reads from a variable, the canvas re-tints itself when
+     the theme flips — no second gradient definition needed. */
   background:
     radial-gradient(
       1200px 600px at 10% -10%,
-      rgba(226, 35, 26, 0.10),
+      rgb(var(--espark-primary) / 0.1),
       transparent 60%
     ),
     radial-gradient(
       900px 500px at 100% 10%,
-      rgba(99, 102, 241, 0.10),
+      rgb(var(--espark-accent) / 0.1),
       transparent 60%
     ),
     radial-gradient(
       800px 500px at 50% 110%,
-      rgba(6, 182, 212, 0.08),
+      rgb(var(--espark-accent2) / 0.08),
       transparent 60%
     ),
-    linear-gradient(180deg, #f8faff 0%, #f3f5fb 100%);
+    linear-gradient(
+      180deg,
+      rgb(var(--espark-surface)) 0%,
+      rgb(var(--espark-canvas)) 100%
+    );
   background-attachment: fixed;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   /* Reserve space for the fixed AppFooter (version bar) so the last row
      of any page is never hidden behind it. */
   padding-bottom: 2.25rem;
+}
+
+/* Arabic copy switches to Cairo; Geist has no Arabic coverage. */
+[dir="rtl"],
+[lang="ar"] {
+  font-family: var(--font-cairo), "Cairo", "Segoe UI", Tahoma, sans-serif;
+}
+
+/* Suppress transitions while the theme swaps, so the whole page doesn't
+   cross-fade colour by colour (which reads as a flicker). */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Print + document isolation.
+
+   A printed sheet is always light. Re-declaring the app variables to their
+   light values inside document containers means any chrome that leaks into a
+   sheet (a badge, a status pill) prints legibly even when the operator has the
+   app in dark mode.
+   ─────────────────────────────────────────────────────────────────────────── */
+.quotation-doc,
+.quotation-sheet,
+.fp-sheet,
+.tp-sheet {
+  --espark-canvas: 255 255 255;
+  --espark-surface: 255 255 255;
+  --espark-soft: 244 240 236;
+  --espark-header: 227 221 215;
+  --espark-border: 207 200 193;
+  --espark-ink: 43 47 48;
+  --espark-muted: 95 102 104;
+  --espark-primary: 76 98 106;
+  --espark-accent: 107 124 110;
+  --espark-highlight: 223 208 138;
+  --c-gray-50: 249 250 251;
+  --c-gray-100: 243 244 246;
+  --c-gray-200: 229 231 235;
+  --c-gray-300: 209 213 219;
+  --c-gray-400: 156 163 175;
+  --c-gray-500: 107 114 128;
+  --c-gray-600: 75 85 99;
+  --c-gray-700: 55 65 81;
+  --c-gray-800: 31 41 55;
+  --c-gray-900: 17 24 39;
+  color: rgb(var(--espark-ink));
+}
+
+@media print {
+  /* Belt and braces: printing from dark mode must never emit a dark page. */
+  html.dark {
+    --espark-canvas: 255 255 255;
+    --espark-surface: 255 255 255;
+    --espark-soft: 244 240 236;
+    --espark-header: 227 221 215;
+    --espark-border: 207 200 193;
+    --espark-ink: 43 47 48;
+    --espark-muted: 95 102 104;
+    --espark-primary: 76 98 106;
+    --espark-accent: 107 124 110;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #2b2f30 !important;
+  }
 }
 
 /* Subtle decorative grid, same as the login page, applied app-wide.
@@ -73,7 +351,7 @@ body > * {
   z-index: 1;
 }
 
-/* Printable quotation styling — matches the Magic Tech sales quotation look. */
+/* Printable quotation styling — matches the eSpark sales quotation look. */
 /* ---------------------------------------------------------------------------
  * PAGE-FRAME ARCHITECTURE
  * ---------------------------------------------------------------------------
@@ -128,7 +406,7 @@ body > * {
   min-height: 297mm;
   padding: 14mm 12mm 18mm 12mm;
   background: #ffffff;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   margin: 0 auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   position: relative;
@@ -191,16 +469,16 @@ body > * {
 }
 
 .quotation-sheet thead th {
-  background: var(--mt-header);
-  color: var(--mt-red);
+  background: var(--espark-doc-header);
+  color: var(--espark-doc-primary);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
 
 .quotation-sheet .site-banner {
-  background: var(--mt-header);
-  color: var(--mt-red);
+  background: var(--espark-doc-header);
+  color: var(--espark-doc-primary);
   text-align: center;
   font-weight: 700;
   padding: 6px 0;
@@ -209,13 +487,13 @@ body > * {
 }
 
 .quotation-sheet .totals-row td {
-  background: var(--mt-highlight);
+  background: var(--espark-doc-highlight);
   font-weight: 700;
 }
 
 .quotation-sheet .totals-row.grand td {
   background: #fff8bf;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
 }
 
 /* Section-divider rows: full-width banner labels inside a system table
@@ -226,7 +504,7 @@ body > * {
  * the printed PDF the same way .totals-row does. */
 .quotation-sheet .section-row td {
   background: #f5f6fb;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -244,19 +522,19 @@ body > * {
 
 /* Drag-and-drop reorder feedback. The dragged row dims to ~40 % opacity
  * so the user can tell which row left, and the row currently hovered
- * over picks up a magic-red top border that doubles as the insertion
+ * over picks up an espark-primary top border that doubles as the insertion
  * indicator. The classes are only present while the gesture is in
  * flight (runtime state), so printed output is never affected. */
 .quotation-sheet tr.qt-row-dragging > td {
   opacity: 0.4;
 }
 .quotation-sheet tr.qt-row-drop-target > td {
-  box-shadow: inset 0 2px 0 0 var(--mt-red);
+  box-shadow: inset 0 2px 0 0 var(--espark-doc-primary);
 }
 
 /* "Mark" highlight — a per-row flag the user toggles to make important line
  * items pop on screen and on the printed/exported sheet. Deliberately a
- * different colour from the totals-row yellow (var(--mt-highlight)) so a
+ * different colour from the totals-row yellow (var(--espark-doc-highlight)) so a
  * marked product row never reads like a subtotal. print-color-adjust forces
  * the tint onto paper the same way the totals / banner rows print. */
 .quotation-sheet tr.qt-row-marked > td {
@@ -270,8 +548,8 @@ body > * {
 }
 
 .quotation-sheet .footer-address {
-  background: var(--mt-header);
-  color: var(--mt-red);
+  background: var(--espark-doc-header);
+  color: var(--espark-doc-primary);
   text-align: center;
   padding: 8px;
   font-weight: 600;
@@ -762,7 +1040,7 @@ body > * {
 .fp-sheet .fp-brand-strip {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid var(--mt-red);
+  border-bottom: 2px solid var(--espark-doc-primary);
   padding-bottom: 6px;
   margin-bottom: 10px;
 }
@@ -775,18 +1053,18 @@ body > * {
 .fp-sheet .fp-h1 {
   font-size: 22px;
   font-weight: 800;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   margin: 4px 0 12px 0;
   letter-spacing: -0.01em;
 }
 .fp-sheet .fp-h1-spaced { margin-top: 22px; }
-.fp-sheet .fp-red { color: var(--mt-red); }
+.fp-sheet .fp-red { color: var(--espark-doc-primary); }
 
 .fp-sheet .fp-paragraph {
   font-size: 11.5px;
   line-height: 1.55;
   text-align: justify;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   white-space: pre-wrap;
 }
 
@@ -805,7 +1083,7 @@ body > * {
   padding: 0 2px;
 }
 .fp-sheet .fp-inline:focus {
-  border-bottom-color: var(--mt-red);
+  border-bottom-color: var(--espark-doc-primary);
   background: rgba(255, 248, 191, 0.4);
 }
 .fp-sheet .fp-textarea {
@@ -823,7 +1101,7 @@ body > * {
   field-sizing: content;
 }
 .fp-sheet .fp-textarea:focus {
-  border-color: var(--mt-red);
+  border-color: var(--espark-doc-primary);
   background: #fffaf7;
 }
 
@@ -850,7 +1128,7 @@ body > * {
   object-fit: contain;
 }
 .fp-cover-band {
-  border-left: 6px solid var(--mt-red);
+  border-left: 6px solid var(--espark-doc-primary);
   padding: 24px 22px;
   background: #ffffff;
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.06);
@@ -858,7 +1136,7 @@ body > * {
 .fp-cover-title {
   font-size: 40px;
   font-weight: 900;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
@@ -866,7 +1144,7 @@ body > * {
   margin-top: 10px;
   font-size: 22px;
   font-weight: 700;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -876,7 +1154,7 @@ body > * {
   align-items: flex-end;
   margin-top: 18px;
   font-size: 12px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
 }
 .fp-cover-ref { font-weight: 700; }
 .fp-cover .fp-inline { font: inherit; color: inherit; }
@@ -903,12 +1181,12 @@ body > * {
 .fp-toc li::before {
   content: counter(fp-toc) ".";
   font-weight: 700;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   min-width: 1.6em;
 }
 .fp-toc .fp-toc-title {
   font-weight: 600;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
 }
 .fp-toc .fp-toc-leader {
   flex: 1;
@@ -918,7 +1196,7 @@ body > * {
 }
 .fp-toc .fp-toc-page {
   font-weight: 700;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   min-width: 1.4em;
   text-align: right;
 }
@@ -932,7 +1210,7 @@ body > * {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.85;
 }
 .fp-toc li.fp-toc-sub .fp-toc-leader { border-bottom-color: #e2d4d2; }
@@ -944,7 +1222,7 @@ body > * {
   justify-content: space-between;
   font-size: 12px;
   font-weight: 700;
-  border-bottom: 1px solid var(--mt-border);
+  border-bottom: 1px solid var(--espark-doc-border);
   padding-bottom: 6px;
   margin-bottom: 14px;
 }
@@ -954,17 +1232,17 @@ body > * {
 .fp-contact {
   margin: 6px 0 18px 0;
   padding: 10px 14px;
-  background: var(--mt-header);
-  border-left: 4px solid var(--mt-red);
+  background: var(--espark-doc-header);
+  border-left: 4px solid var(--espark-doc-primary);
 }
 .fp-contact-name {
   font-size: 14px;
   font-weight: 800;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
 }
 .fp-contact-row {
   font-size: 12px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   margin-top: 4px;
 }
 
@@ -982,12 +1260,12 @@ body > * {
   font-size: 11px;
 }
 .fp-table th {
-  background: var(--mt-red);
+  background: var(--espark-doc-primary);
   color: #ffffff;
   text-transform: none;
   font-weight: 700;
   padding: 9px 8px;
-  border: 1px solid var(--mt-red);
+  border: 1px solid var(--espark-doc-primary);
   letter-spacing: 0.01em;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -1011,28 +1289,28 @@ body > * {
   display: inline-block;
   min-width: 1.6em;
   font-weight: 800;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
 }
 .fp-table .fp-empty {
   padding: 16px;
   font-style: italic;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.6;
 }
 .fp-table .fp-optional {
   font-style: italic;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.7;
 }
 .fp-table .fp-total-row td {
-  background: var(--mt-highlight);
+  background: var(--espark-doc-highlight);
   font-weight: 700;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 .fp-table .fp-total-row.fp-total-row-final td {
   background: #fff8bf;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
 }
 .fp-table .fp-total-label { text-align: left; padding-left: 12px; }
 .fp-table .fp-total-value { font-weight: 800; }
@@ -1049,7 +1327,7 @@ body > * {
   min-width: 8em;
   font-size: 13px;
   font-weight: 800;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-bottom: none;
@@ -1087,7 +1365,7 @@ body > * {
   border: 1px solid #e3c8c5;
   border-radius: 9999px;
   background: #ffffff;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   font-size: 13px;
   line-height: 1;
   opacity: 0;
@@ -1108,7 +1386,7 @@ body > * {
   background: transparent;
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
 }
 .fp-add-bullet:hover {
   background: rgba(255, 248, 191, 0.3);
@@ -1158,7 +1436,7 @@ body > * {
 .tp-cover-customer {
   font-size: 36px;
   font-weight: 900;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
@@ -1166,7 +1444,7 @@ body > * {
   margin-top: 12px;
   font-size: 20px;
   font-weight: 700;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -1177,15 +1455,15 @@ body > * {
 .fp-sheet .tp-h2 {
   font-size: 14px;
   font-weight: 700;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   margin: 18px 0 8px 0;
-  border-bottom: 1px solid var(--mt-border);
+  border-bottom: 1px solid var(--espark-doc-border);
   padding-bottom: 4px;
 }
 
 .fp-sheet .tp-note {
   font-size: 11px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.7;
   font-style: italic;
   margin: 4px 0 8px 0;
@@ -1194,7 +1472,7 @@ body > * {
 
 .fp-sheet .tp-contact-pos {
   font-style: italic;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.8;
 }
 
@@ -1207,10 +1485,10 @@ body > * {
   margin-top: 4px;
 }
 .tp-bom-table th {
-  background: var(--mt-red);
+  background: var(--espark-doc-primary);
   color: #ffffff;
   padding: 8px 6px;
-  border: 1px solid var(--mt-red);
+  border: 1px solid var(--espark-doc-primary);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -1232,12 +1510,12 @@ body > * {
 .tp-bom-td-part { text-align: left; padding-left: 10px; }
 .tp-bom-part-num {
   font-weight: 800;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   font-size: 11.5px;
 }
 .tp-bom-part-vendor {
   font-size: 10px;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 2px;
@@ -1260,23 +1538,23 @@ body > * {
   background: rgba(255, 248, 191, 0.16);
 }
 .tp-bom-desc-text:focus {
-  border-color: var(--mt-red);
+  border-color: var(--espark-doc-primary);
   background: #fffaf7;
   outline: none;
 }
 .tp-bom-specs {
   margin-top: 6px;
   font-size: 10px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.7;
 }
-.tp-bom-specs summary { cursor: pointer; color: var(--mt-red); }
+.tp-bom-specs summary { cursor: pointer; color: var(--espark-doc-primary); }
 .tp-bom-specs pre {
   white-space: pre-wrap;
   font-family: ui-monospace, SFMono-Regular, monospace;
   margin: 4px 0 0 0;
   padding: 6px 8px;
-  background: var(--mt-soft);
+  background: var(--espark-doc-soft);
   border-radius: 4px;
   max-height: 220px;
   overflow: auto;
@@ -1294,8 +1572,8 @@ body > * {
   font: inherit;
   color: inherit;
 }
-.tp-bom-dur-input:focus { border-color: var(--mt-red); outline: none; }
-.tp-bom-dur-unit { margin-left: 4px; color: var(--mt-ink); opacity: 0.6; font-size: 10px; }
+.tp-bom-dur-input:focus { border-color: var(--espark-doc-primary); outline: none; }
+.tp-bom-dur-unit { margin-left: 4px; color: var(--espark-doc-ink); opacity: 0.6; font-size: 10px; }
 
 /* ---- Product Overview grid ---------------------------------------------- */
 .tp-product-grid {
@@ -1305,7 +1583,7 @@ body > * {
   margin-top: 8px;
 }
 .tp-product-card {
-  border: 1px solid var(--mt-border);
+  border: 1px solid var(--espark-doc-border);
   border-radius: 6px;
   padding: 8px;
   background: #ffffff;
@@ -1316,11 +1594,11 @@ body > * {
 .tp-product-name {
   font-weight: 800;
   font-size: 11px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
 }
 .tp-product-desc {
   font-size: 10px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.8;
   line-height: 1.35;
 }
@@ -1334,8 +1612,8 @@ body > * {
   margin-top: 6px;
 }
 .tp-ref-table th {
-  background: var(--mt-header);
-  color: var(--mt-red);
+  background: var(--espark-doc-header);
+  color: var(--espark-doc-primary);
   border: 1px solid #cfbebc;
   padding: 6px 5px;
   font-weight: 700;
@@ -1357,7 +1635,7 @@ body > * {
   width: 30px;
 }
 .tp-ref-remove {
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   font-size: 16px;
   line-height: 1;
   background: transparent;
@@ -1373,7 +1651,7 @@ body > * {
   position: relative;
   border: 2px dashed #d8c9c7;
   border-radius: 6px;
-  background: var(--mt-soft);
+  background: var(--espark-doc-soft);
   overflow: hidden;
   cursor: pointer;
   transition: border-color 180ms ease, background-color 180ms ease;
@@ -1382,7 +1660,7 @@ body > * {
   justify-content: center;
 }
 .editable-image-frame:hover {
-  border-color: var(--mt-red);
+  border-color: var(--espark-doc-primary);
   background: rgba(255, 248, 191, 0.25);
 }
 .editable-image-frame img {
@@ -1399,7 +1677,7 @@ body > * {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.55;
   font-size: 11px;
   text-align: center;
@@ -1408,7 +1686,7 @@ body > * {
 .editable-image-plus {
   font-size: 28px;
   line-height: 1;
-  color: var(--mt-red);
+  color: var(--espark-doc-primary);
   opacity: 0.7;
 }
 .editable-image-actions {
@@ -1422,7 +1700,7 @@ body > * {
 }
 .editable-image-frame:hover .editable-image-actions { opacity: 1; }
 .editable-image-btn {
-  background: var(--mt-red);
+  background: var(--espark-doc-primary);
   color: #ffffff;
   border: 0;
   border-radius: 4px;
@@ -1433,13 +1711,13 @@ body > * {
 }
 .editable-image-btn-ghost {
   background: rgba(255, 255, 255, 0.92);
-  color: var(--mt-ink);
-  border: 1px solid var(--mt-border);
+  color: var(--espark-doc-ink);
+  border: 1px solid var(--espark-doc-border);
 }
 .editable-image-caption {
   text-align: center;
   font-size: 10px;
-  color: var(--mt-ink);
+  color: var(--espark-doc-ink);
   opacity: 0.7;
   margin-top: 4px;
 }

@@ -306,8 +306,8 @@ export default function CrmModuleHub({
 
   if (tools.length === 0) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-        <p className="text-sm text-magic-ink/60">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+        <p className="text-sm text-espark-ink/60">
           No CRM tools are assigned to your account yet. Ask an admin for a role.
         </p>
       </div>
@@ -318,7 +318,7 @@ export default function CrmModuleHub({
   if (tab === null) {
     return (
       <div>
-        <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-magic-ink/70">
+        <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-espark-ink/70">
           Pick a tool to get started
           <HelpTip id="crm.tools" />
         </p>
@@ -330,15 +330,15 @@ export default function CrmModuleHub({
               <button
                 key={id}
                 onClick={() => setTab(id)}
-                className={`group flex flex-col items-start rounded-2xl border border-magic-border bg-gradient-to-br ${tone.grad} to-white p-5 text-left shadow-mt-soft transition-all ${tone.border} hover:shadow-mt-lift`}
+                className={`group flex flex-col items-start rounded-2xl border border-espark-border bg-gradient-to-br ${tone.grad} to-espark-surface p-5 text-left shadow-es-soft transition-all ${tone.border} hover:shadow-es-lift`}
               >
                 <span className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${tone.chip}`}>
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="mt-3 text-base font-bold text-magic-ink">
+                <h3 className="mt-3 text-base font-bold text-espark-ink">
                   {TAB_META[id].label}
                 </h3>
-                <p className="mt-1 text-sm text-magic-ink/60">{TAB_META[id].blurb}</p>
+                <p className="mt-1 text-sm text-espark-ink/60">{TAB_META[id].blurb}</p>
                 <span className={`mt-3 text-xs font-semibold ${tone.text}`}>Open →</span>
               </button>
             );
@@ -363,15 +363,15 @@ export default function CrmModuleHub({
     <div className="space-y-5">
       {/* Tab strip — only meaningful when the user has more than one tool. */}
       {multiTool && (
-        <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-magic-border bg-white/70 p-1.5 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-espark-border bg-espark-surface/70 p-1.5 backdrop-blur-sm">
           <button
             onClick={() => setTab(null)}
-            className="inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-sm font-semibold text-magic-ink/60 hover:bg-magic-soft hover:text-magic-ink transition-colors"
+            className="inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-sm font-semibold text-espark-ink/60 hover:bg-espark-soft hover:text-espark-ink transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
             Tools
           </button>
-          <span className="mx-1 h-5 w-px bg-magic-border/70" />
+          <span className="mx-1 h-5 w-px bg-espark-border/70" />
           {tools.map((id) => {
             const Icon = TAB_META[id].icon;
             const active = tab === id;
@@ -382,7 +382,7 @@ export default function CrmModuleHub({
                 className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
                   active
                     ? `${TONES[id].solid} text-white shadow-sm`
-                    : "text-magic-ink/70 hover:bg-magic-soft hover:text-magic-ink"
+                    : "text-espark-ink/70 hover:bg-espark-soft hover:text-espark-ink"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -400,11 +400,11 @@ export default function CrmModuleHub({
       {showClients && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-magic-ink/55">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-espark-ink/55">
               Clients
             </h2>
             <HelpTip id="crm.clients" />
-            <span className="h-px flex-1 bg-magic-border/70" />
+            <span className="h-px flex-1 bg-espark-border/70" />
           </div>
           <CrmSearch />
           <div className="grid gap-4 md:grid-cols-2">
@@ -440,10 +440,10 @@ export default function CrmModuleHub({
       <div className="space-y-3">
         {showClients && (
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-magic-ink/55">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-espark-ink/55">
               Tools
             </h2>
-            <span className="h-px flex-1 bg-magic-border/70" />
+            <span className="h-px flex-1 bg-espark-border/70" />
           </div>
         )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -451,11 +451,11 @@ export default function CrmModuleHub({
             <Link
               key={c.href}
               href={c.href}
-              className={`group rounded-2xl border border-magic-border bg-white p-5 shadow-mt-soft transition-all ${tone.border} hover:shadow-mt-lift`}
+              className={`group rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-es-soft transition-all ${tone.border} hover:shadow-es-lift`}
             >
               <span className={`inline-block h-1.5 w-9 rounded-full ${tone.solid}`} />
-              <h3 className="mt-3 text-base font-bold text-magic-ink">{c.title}</h3>
-              <p className="mt-1 text-sm text-magic-ink/60">{c.desc}</p>
+              <h3 className="mt-3 text-base font-bold text-espark-ink">{c.title}</h3>
+              <p className="mt-1 text-sm text-espark-ink/60">{c.desc}</p>
               <p className={`mt-3 text-xs font-semibold ${tone.text}`}>Open →</p>
             </Link>
           ))}
@@ -498,21 +498,21 @@ function KindCard({
   return (
     <Link
       href={href}
-      className={`block rounded-2xl border border-magic-border bg-white p-6 shadow-mt-soft transition-all ${t.border} hover:shadow-mt-lift`}
+      className={`block rounded-2xl border border-espark-border bg-espark-surface p-6 shadow-es-soft transition-all ${t.border} hover:shadow-es-lift`}
     >
       <div className="flex items-center gap-3">
         <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${t.chip}`}>
           <Icon className="h-5 w-5" />
         </span>
-        <h2 className="text-xl font-bold text-magic-ink">{title}</h2>
+        <h2 className="text-xl font-bold text-espark-ink">{title}</h2>
       </div>
-      <p className="mt-2 text-sm text-magic-ink/60">{description}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-magic-ink/60">
-        <span className="inline-flex items-center rounded-full bg-magic-soft px-2 py-0.5 font-semibold">
+      <p className="mt-2 text-sm text-espark-ink/60">{description}</p>
+      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-espark-ink/60">
+        <span className="inline-flex items-center rounded-full bg-espark-soft px-2 py-0.5 font-semibold">
           {clientLabel}
         </span>
         {showQuotations && (
-          <span className="inline-flex items-center rounded-full bg-magic-soft px-2 py-0.5 font-semibold">
+          <span className="inline-flex items-center rounded-full bg-espark-soft px-2 py-0.5 font-semibold">
             {quotations} quotation{quotations === 1 ? "" : "s"}
           </span>
         )}

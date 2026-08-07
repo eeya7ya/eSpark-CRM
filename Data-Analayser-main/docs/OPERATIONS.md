@@ -1,4 +1,4 @@
-# MagicTech — Operations & Handover Sheet
+# eSpark — Operations & Handover Sheet
 
 Everything built during the database recovery + hardening work, and exactly how
 to switch each piece on, test it, and go live. Three independent features, each
@@ -27,7 +27,7 @@ Set these in **Vercel → Project → Settings → Environment Variables → Pro
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account | R2, D1 |
 | `CLOUDFLARE_R2_ACCESS_KEY_ID` | R2 S3 key | R2 (files, backups, images) |
 | `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | R2 S3 secret | R2 |
-| `CLOUDFLARE_R2_BUCKET` | R2 bucket (default `magictech-files`) | R2 |
+| `CLOUDFLARE_R2_BUCKET` | R2 bucket (default `espark-files`) | R2 |
 | `CLOUDFLARE_D1_DATABASE_ID` | `385c686f-31a1-46cb-b2ee-a919472ad978` | D1 |
 | `CLOUDFLARE_API_TOKEN` | token with **D1 Edit** | D1 |
 | `CRON_SECRET` | protects the daily backup cron | §2 |

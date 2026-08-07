@@ -156,7 +156,7 @@ export default function ProjectBoqsList({
         placeholder="Search filename, MIME type, kind…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+        className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
       />
 
       {error && (
@@ -166,7 +166,7 @@ export default function ProjectBoqsList({
       )}
 
       {nonEmptyGroups.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           {query
             ? `No files match "${query}".`
             : "No files uploaded under this project yet."}
@@ -174,23 +174,23 @@ export default function ProjectBoqsList({
       ) : (
         nonEmptyGroups.map(([kindKey, list]) => (
           <div key={kindKey}>
-            <h3 className="text-sm font-semibold text-magic-ink mb-1.5">
+            <h3 className="text-sm font-semibold text-espark-ink mb-1.5">
               {KIND_LABELS[kindKey] ?? kindKey}
-              <span className="ml-2 text-xs font-normal text-magic-ink/60">
+              <span className="ml-2 text-xs font-normal text-espark-ink/60">
                 ({list.length})
               </span>
             </h3>
-            <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+            <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
               {list.map((f) => (
                 <li
                   key={f.id}
-                  className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-magic-soft/40"
+                  className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-espark-soft/40"
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <a
                         href={`/api/project-files/${f.id}`}
-                        className="text-sm text-magic-red hover:underline truncate"
+                        className="text-sm text-espark-primary hover:underline truncate"
                       >
                         {f.filename}
                       </a>
@@ -205,7 +205,7 @@ export default function ProjectBoqsList({
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-magic-ink/50 mt-0.5">
+                    <div className="text-xs text-espark-ink/50 mt-0.5">
                       {f.mime} · {humanSize(Number(f.size_bytes))} · uploaded{" "}
                       {new Date(f.created_at).toLocaleDateString()}
                     </div>
@@ -224,7 +224,7 @@ export default function ProjectBoqsList({
                         className={`rounded-md border px-2 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
                           f.shared_with_counterpart
                             ? "border-sky-300 text-sky-700 hover:bg-sky-50"
-                            : "border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                            : "border-espark-border text-espark-ink/70 hover:bg-espark-soft"
                         }`}
                       >
                         {busyId === f.id
@@ -245,7 +245,7 @@ export default function ProjectBoqsList({
                         className={`rounded-md border px-2 py-1 text-xs font-semibold transition-colors disabled:opacity-50 ${
                           f.shared_to_projects
                             ? "border-emerald-300 text-emerald-700 hover:bg-emerald-50"
-                            : "border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                            : "border-espark-border text-espark-ink/70 hover:bg-espark-soft"
                         }`}
                       >
                         {busyId === f.id

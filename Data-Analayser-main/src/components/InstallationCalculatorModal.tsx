@@ -148,15 +148,15 @@ export default function InstallationCalculatorModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4">
-      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4">
+      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-espark-surface p-6 shadow-2xl">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-magic-ink">
+          <h3 className="text-base font-semibold text-espark-ink">
             Installation Calculator
           </h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
             aria-label="Close"
           >
             ×
@@ -169,7 +169,7 @@ export default function InstallationCalculatorModal({
           </p>
         )}
         {rates === null && !err ? (
-          <p className="py-6 text-center text-sm text-magic-ink/50">Loading rate book…</p>
+          <p className="py-6 text-center text-sm text-espark-ink/50">Loading rate book…</p>
         ) : rates && rates.length === 0 ? (
           <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
             The rate book is empty. An admin sets it up at Admin → Installation
@@ -244,14 +244,14 @@ export default function InstallationCalculatorModal({
             {/* Crew */}
             {labor.length > 0 && (
               <div className="mt-4">
-                <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-magic-ink/40">
+                <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-espark-ink/40">
                   Crew × {" "}
                   <input
                     type="number"
                     min="0"
                     value={days}
                     onChange={(e) => setDays(e.target.value)}
-                    className="w-16 rounded border border-magic-border px-1.5 py-0.5 text-sm"
+                    className="w-16 rounded border border-espark-border px-1.5 py-0.5 text-sm"
                   />{" "}
                   day(s)
                 </div>
@@ -263,9 +263,9 @@ export default function InstallationCalculatorModal({
                         min="0"
                         value={crew[r.id] ?? "0"}
                         onChange={(e) => setCrew((p) => ({ ...p, [r.id]: e.target.value }))}
-                        className="w-16 rounded border border-magic-border px-1.5 py-1"
+                        className="w-16 rounded border border-espark-border px-1.5 py-1"
                       />
-                      <span className="text-magic-ink/70">
+                      <span className="text-espark-ink/70">
                         {r.name} ({jod(r.unit_cost)}/day)
                       </span>
                     </label>
@@ -277,7 +277,7 @@ export default function InstallationCalculatorModal({
             {/* Accessories */}
             {accessories.length > 0 && (
               <div className="mt-4">
-                <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-magic-ink/40">
+                <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-espark-ink/40">
                   Accessories (total qty)
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
@@ -288,9 +288,9 @@ export default function InstallationCalculatorModal({
                         min="0"
                         value={acc[r.id] ?? "0"}
                         onChange={(e) => setAcc((p) => ({ ...p, [r.id]: e.target.value }))}
-                        className="w-16 rounded border border-magic-border px-1.5 py-1"
+                        className="w-16 rounded border border-espark-border px-1.5 py-1"
                       />
-                      <span className="truncate text-magic-ink/70">
+                      <span className="truncate text-espark-ink/70">
                         {r.name} ({jod(r.unit_cost)})
                       </span>
                     </label>
@@ -300,39 +300,39 @@ export default function InstallationCalculatorModal({
             )}
 
             {/* Summary */}
-            <div className="mt-5 rounded-xl border border-magic-border bg-magic-soft/30 p-4 text-sm">
+            <div className="mt-5 rounded-xl border border-espark-border bg-espark-soft/30 p-4 text-sm">
               <Line label="Materials (cable + conduit)" value={calc.materials} />
               {calc.accessoriesTotal > 0 && <Line label="Accessories" value={calc.accessoriesTotal} />}
               <Line label="Labour" value={calc.laborTotal} />
               {calc.locationAdd > 0 && <Line label="Location" value={calc.locationAdd} />}
               <Line label="Cost" value={calc.cost} bold />
-              <div className="mt-1.5 flex items-center justify-between border-t border-magic-border/60 pt-1.5">
-                <span className="flex items-center gap-1 text-magic-ink/70">
+              <div className="mt-1.5 flex items-center justify-between border-t border-espark-border/60 pt-1.5">
+                <span className="flex items-center gap-1 text-espark-ink/70">
                   Margin
                   <input
                     type="number"
                     min="0"
                     value={margin}
                     onChange={(e) => setMargin(e.target.value)}
-                    className="w-16 rounded border border-magic-border px-1.5 py-0.5"
+                    className="w-16 rounded border border-espark-border px-1.5 py-0.5"
                   />
                   %
                 </span>
               </div>
-              <div className="mt-1.5 flex items-center justify-between text-base font-bold text-magic-ink">
+              <div className="mt-1.5 flex items-center justify-between text-base font-bold text-espark-ink">
                 <span>Selling price</span>
                 <span>{jod(calc.selling)} JOD</span>
               </div>
             </div>
 
             <div className="mt-4 flex justify-end gap-2">
-              <button onClick={onClose} className="rounded-md border border-magic-border px-3 py-1.5 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft">
+              <button onClick={onClose} className="rounded-md border border-espark-border px-3 py-1.5 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft">
                 Cancel
               </button>
               <button
                 onClick={submit}
                 disabled={calc.selling <= 0 || !system.trim()}
-                className="rounded-md bg-magic-red px-4 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-md bg-espark-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
               >
                 Add row to quotation
               </button>
@@ -345,12 +345,12 @@ export default function InstallationCalculatorModal({
 }
 
 const inputCls =
-  "w-full rounded border border-magic-border px-2 py-1.5 text-sm focus:border-magic-red focus:outline-none";
+  "w-full rounded border border-espark-border px-2 py-1.5 text-sm focus:border-espark-primary focus:outline-none";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold text-magic-ink/70">{label}</span>
+      <span className="mb-1 block text-xs font-semibold text-espark-ink/70">{label}</span>
       {children}
     </label>
   );
@@ -358,7 +358,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Line({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
   return (
-    <div className={`flex items-center justify-between ${bold ? "font-semibold text-magic-ink" : "text-magic-ink/70"}`}>
+    <div className={`flex items-center justify-between ${bold ? "font-semibold text-espark-ink" : "text-espark-ink/70"}`}>
       <span>{label}</span>
       <span className="tabular-nums">{jod(value)}</span>
     </div>

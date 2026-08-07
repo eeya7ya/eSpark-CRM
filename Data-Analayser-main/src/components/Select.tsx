@@ -377,14 +377,14 @@ export default function Select({
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKeyDown}
         className={twMerge(
-          "inline-flex min-w-[4rem] items-center justify-between gap-2 rounded-lg border border-magic-border bg-white px-3 py-2 text-left text-sm text-magic-ink shadow-sm transition-colors hover:border-magic-ink/25 focus:border-magic-red focus:outline-none focus:ring-2 focus:ring-magic-red/25 disabled:cursor-not-allowed disabled:opacity-50",
+          "inline-flex min-w-[4rem] items-center justify-between gap-2 rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-left text-sm text-espark-ink shadow-sm transition-colors hover:border-espark-ink/25 focus:border-espark-primary focus:outline-none focus:ring-2 focus:ring-espark-primary/25 disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
       >
         <span
           className={twMerge(
             "min-w-0 flex-1 truncate",
-            isPlaceholder ? "text-magic-ink/40" : "",
+            isPlaceholder ? "text-espark-ink/40" : "",
           )}
         >
           {triggerLabel}
@@ -396,7 +396,7 @@ export default function Select({
           strokeWidth={2.2}
           aria-hidden="true"
           data-select-chevron=""
-          className={`h-3.5 w-3.5 shrink-0 text-magic-ink/40 transition-transform ${
+          className={`h-3.5 w-3.5 shrink-0 text-espark-ink/40 transition-transform ${
             open ? "rotate-180" : ""
           }`}
         >
@@ -424,10 +424,10 @@ export default function Select({
                 ? { bottom: position.bottom }
                 : {}),
             }}
-            className="no-print fixed z-[100] overflow-y-auto overscroll-contain rounded-xl border border-magic-border bg-white py-1 text-sm shadow-mt-lift ring-1 ring-magic-ink/5"
+            className="no-print fixed z-[100] overflow-y-auto overscroll-contain rounded-xl border border-espark-border bg-espark-surface py-1 text-sm shadow-es-lift ring-1 ring-espark-ink/5"
           >
             {options.length === 0 && (
-              <p className="px-3 py-2 text-xs text-magic-ink/45">
+              <p className="px-3 py-2 text-xs text-espark-ink/45">
                 Nothing to choose from
               </p>
             )}
@@ -437,7 +437,7 @@ export default function Select({
                   <p
                     key={`g-${i}`}
                     role="presentation"
-                    className="mt-1 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-magic-ink/40 first:mt-0"
+                    className="mt-1 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-espark-ink/40 first:mt-0"
                   >
                     {item.label}
                   </p>
@@ -460,9 +460,9 @@ export default function Select({
                   onClick={() => commit(item)}
                   className={`flex w-full items-center gap-2 px-3 py-1.5 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                     isSelected
-                      ? "font-semibold text-magic-red"
-                      : "text-magic-ink"
-                  } ${isActive && !item.disabled ? "bg-magic-header" : ""}`}
+                      ? "font-semibold text-espark-primary"
+                      : "text-espark-ink"
+                  } ${isActive && !item.disabled ? "bg-espark-header" : ""}`}
                 >
                   <span className="min-w-0 flex-1 truncate">{item.label}</span>
                   {isSelected && (

@@ -1,4 +1,4 @@
--- MagicTech SQLite schema for Cloudflare D1.
+-- eSpark SQLite schema for Cloudflare D1.
 -- Regenerated from src/lib/db.ts (the Postgres bootstrap) — current as of
 -- 2026-06-29. D1 is now the app's primary database; this file is the canonical
 -- schema applied via POST /api/admin/d1-apply-schema (idempotent).
@@ -19,7 +19,7 @@
 -- column name" so it is safe to re-run.
 --
 -- Apply with:
---   wrangler d1 execute magictech --remote --file=./d1/schema.sql
+--   wrangler d1 execute espark --remote --file=./d1/schema.sql
 -- or POST /api/admin/d1-apply-schema (Admin → Backups → Reset/Sync D1).
 
 PRAGMA foreign_keys = OFF;

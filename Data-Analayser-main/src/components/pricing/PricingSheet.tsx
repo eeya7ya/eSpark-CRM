@@ -601,20 +601,20 @@ export function PricingSheet({
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 placeholder="Project name…"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                className="rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
               />
               <input
                 type="text"
                 value={responsiblePerson}
                 onChange={(e) => setResponsiblePerson(e.target.value)}
                 placeholder="Responsible person…"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                className="rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
               />
               <input
                 type="date"
                 value={projectDate}
                 onChange={(e) => setProjectDate(e.target.value)}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                className="rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
               />
             </>
           )}
@@ -643,7 +643,7 @@ export function PricingSheet({
                 onClick={handleSaveAsRevision}
                 disabled={saving || savingRevision}
                 title="Save current edits as a new revision linked to this project"
-                className="flex items-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-3 py-1.5 text-xs font-medium text-cyan-700 transition-colors hover:border-cyan-300 hover:bg-cyan-50 disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-lg border border-cyan-200 bg-espark-surface px-3 py-1.5 text-xs font-medium text-cyan-700 transition-colors hover:border-cyan-300 hover:bg-cyan-50 disabled:opacity-60"
               >
                 <GitBranch className="h-3.5 w-3.5" />
                 {savingRevision ? "Saving…" : "Save as Revision"}
@@ -661,7 +661,7 @@ export function PricingSheet({
                   onClick={handleSubmitExec}
                   disabled={submittingExec || execStatus === "pending"}
                   title="Submit this pricing sheet to the executive manager for confirmation"
-                  className="flex items-center gap-1.5 rounded-lg border border-rose-200 bg-white px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:border-rose-300 hover:bg-rose-50 disabled:opacity-60"
+                  className="flex items-center gap-1.5 rounded-lg border border-rose-200 bg-espark-surface px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:border-rose-300 hover:bg-rose-50 disabled:opacity-60"
                 >
                   <BadgeCheck className="h-3.5 w-3.5" />
                   {submittingExec
@@ -679,7 +679,7 @@ export function PricingSheet({
                 onClick={() => setShowConvertDialog(true)}
                 disabled={converting || rows.length === 0}
                 title="Create a draft quotation in the Designer pre-filled from these prices"
-                className="flex items-center gap-1.5 rounded-lg bg-magic-red px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-magic-red/90 disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-lg bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-espark-primary/90 disabled:opacity-60"
               >
                 <FileSignature className="h-3.5 w-3.5" />
                 {converting ? "Converting…" : "Convert to Quotation"}
@@ -703,7 +703,7 @@ export function PricingSheet({
                     className="fixed inset-0 z-10"
                     onClick={() => setShowExportMenu(false)}
                   />
-                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-xl border border-gray-200 bg-espark-surface py-1 shadow-lg">
                     <button
                       onClick={handleExportPrint}
                       className="flex w-full items-center gap-2.5 px-4 py-2.5 text-xs text-gray-700 hover:bg-gray-50"

@@ -15,4 +15,4 @@ const { publicKey, privateKey } = webpush.generateVAPIDKeys();
 console.log("# Web Push (VAPID) keys — add to .env.local / Vercel env:");
 console.log(`VAPID_PUBLIC_KEY=${publicKey}`);
 console.log(`VAPID_PRIVATE_KEY=${privateKey}`);
-console.log("VAPID_SUBJECT=mailto:notifications@magictech.local");
+console.log("VAPID_SUBJECT=mailto:notifications@espark.local");

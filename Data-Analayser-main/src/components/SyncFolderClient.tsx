@@ -143,10 +143,10 @@ export default function SyncFolderClient() {
         <div className="flex items-start gap-3">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
           <div>
-            <h2 className="text-sm font-semibold text-magic-ink">
+            <h2 className="text-sm font-semibold text-espark-ink">
               Not available in this browser
             </h2>
-            <p className="mt-1 text-sm text-magic-ink/60">
+            <p className="mt-1 text-sm text-espark-ink/60">
               Folder sync uses the browser&rsquo;s File System Access API, which
               today only works in <strong>Google Chrome</strong>,{" "}
               <strong>Microsoft Edge</strong> and other Chromium browsers on
@@ -163,14 +163,14 @@ export default function SyncFolderClient() {
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-magic-red/10 text-magic-red">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-espark-primary/10 text-espark-primary">
               <FolderSync className="h-5 w-5" />
             </span>
             <div>
-              <h2 className="text-sm font-semibold text-magic-ink">
+              <h2 className="text-sm font-semibold text-espark-ink">
                 {folderName ? folderName : "No folder chosen yet"}
               </h2>
-              <p className="text-xs text-magic-ink/55">
+              <p className="text-xs text-espark-ink/55">
                 {folderName
                   ? perm === "granted"
                     ? "Connected — files mirror both ways while this tab is open."
@@ -217,12 +217,12 @@ export default function SyncFolderClient() {
         </div>
 
         {folderName && perm === "granted" && (
-          <label className="mt-4 flex items-center gap-2 text-sm text-magic-ink/70">
+          <label className="mt-4 flex items-center gap-2 text-sm text-espark-ink/70">
             <input
               type="checkbox"
               checked={autoOn}
               onChange={toggleAuto}
-              className="h-4 w-4 rounded border-magic-border text-magic-red focus:ring-magic-red/30"
+              className="h-4 w-4 rounded border-espark-border text-espark-primary focus:ring-espark-primary/30"
             />
             Auto-sync every 45 seconds while this tab is open
           </label>
@@ -236,15 +236,15 @@ export default function SyncFolderClient() {
         )}
 
         {report && (
-          <div className="mt-3 rounded-lg border border-magic-border bg-magic-soft/40 px-3 py-2.5 text-sm">
-            <div className="flex items-center gap-2 font-medium text-magic-ink">
+          <div className="mt-3 rounded-lg border border-espark-border bg-espark-soft/40 px-3 py-2.5 text-sm">
+            <div className="flex items-center gap-2 font-medium text-espark-ink">
               <CheckCircle2 className="h-4 w-4 text-emerald-600" />
               Last sync&nbsp;
-              <span className="font-normal text-magic-ink/60">
+              <span className="font-normal text-espark-ink/60">
                 {new Date(report.ranAt).toLocaleTimeString()}
               </span>
             </div>
-            <div className="mt-1 text-magic-ink/70">
+            <div className="mt-1 text-espark-ink/70">
               {report.downloaded} downloaded · {report.uploaded} uploaded ·{" "}
               {report.quotations} quotation{report.quotations === 1 ? "" : "s"} ·{" "}
               {report.pricing} pricing · {report.skipped} already in sync
@@ -264,25 +264,25 @@ export default function SyncFolderClient() {
       </Card>
 
       <Card>
-        <h3 className="text-sm font-semibold text-magic-ink">How it works</h3>
-        <ul className="mt-2 space-y-1.5 text-sm text-magic-ink/70">
+        <h3 className="text-sm font-semibold text-espark-ink">How it works</h3>
+        <ul className="mt-2 space-y-1.5 text-sm text-espark-ink/70">
           <li>
             • Files are organised as{" "}
-            <code className="rounded bg-magic-soft px-1 py-0.5 text-xs">
+            <code className="rounded bg-espark-soft px-1 py-0.5 text-xs">
               Client / Project [#id] / file
             </code>
             . Anything new in the app is downloaded into that structure.
           </li>
           <li>
             • Drop a file into one of those{" "}
-            <code className="rounded bg-magic-soft px-1 py-0.5 text-xs">
+            <code className="rounded bg-espark-soft px-1 py-0.5 text-xs">
               [#id]
             </code>{" "}
             project folders and it uploads to that project on the next sync.
           </li>
           <li>
             • Your quotations are exported as brand-matched Excel files into a{" "}
-            <code className="rounded bg-magic-soft px-1 py-0.5 text-xs">
+            <code className="rounded bg-espark-soft px-1 py-0.5 text-xs">
               _Quotations
             </code>{" "}
             subfolder, and re-exported automatically when you edit them in the
@@ -291,7 +291,7 @@ export default function SyncFolderClient() {
           <li>
             • Your priced projects from the Pricing module are exported as Excel
             files into a{" "}
-            <code className="rounded bg-magic-soft px-1 py-0.5 text-xs">
+            <code className="rounded bg-espark-soft px-1 py-0.5 text-xs">
               _Pricing
             </code>{" "}
             folder, one subfolder per manufacturer, and re-exported when their
@@ -314,7 +314,7 @@ export default function SyncFolderClient() {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-magic-border bg-white p-4 shadow-mt-soft">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 shadow-es-soft">
       {children}
     </div>
   );
@@ -338,8 +338,8 @@ function Btn({
       disabled={disabled}
       className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors disabled:opacity-50 ${
         primary
-          ? "bg-magic-red text-white hover:bg-magic-red/90"
-          : "border border-magic-border text-magic-ink/75 hover:bg-magic-soft"
+          ? "bg-espark-primary text-white hover:bg-espark-primary/90"
+          : "border border-espark-border text-espark-ink/75 hover:bg-espark-soft"
       }`}
     >
       {children}

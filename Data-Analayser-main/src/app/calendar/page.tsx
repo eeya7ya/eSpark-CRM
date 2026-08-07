@@ -17,7 +17,7 @@ export default async function CalendarPage() {
   await ensureSchema();
 
   return (
-    <div className="flex min-h-screen flex-col bg-magic-soft/40">
+    <div className="flex min-h-screen flex-col bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col px-4 py-5 sm:px-6 lg:px-8">
         <CalendarMarkerClient />

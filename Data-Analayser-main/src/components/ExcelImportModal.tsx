@@ -458,15 +458,15 @@ export default function ExcelImportModal({
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-4xl rounded-2xl bg-espark-surface p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-magic-ink">
+            <h2 className="text-lg font-bold text-espark-ink">
               Import items from Excel
             </h2>
-            <p className="mt-1 text-xs text-magic-ink/60">
+            <p className="mt-1 text-xs text-espark-ink/60">
               Upload a sheet and we&apos;ll auto-detect columns like
               <b> Brand</b>, <b>Model</b>, <b>Description</b>, <b>Quantity</b>,
               and <b>Unit Price</b>. Review the mapping below and click
@@ -475,7 +475,7 @@ export default function ExcelImportModal({
           </div>
           <button
             onClick={onCancel}
-            className="text-magic-ink/50 hover:text-magic-red text-lg"
+            className="text-espark-ink/50 hover:text-espark-primary text-lg"
             aria-label="Close"
           >
             ✕
@@ -495,15 +495,15 @@ export default function ExcelImportModal({
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-lg bg-magic-red text-white px-4 py-2 text-sm font-semibold hover:bg-red-700"
+            className="rounded-lg bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700"
           >
             {fileName ? "Choose a different file" : "Choose Excel / CSV file"}
           </button>
           {fileName && (
-            <span className="text-xs text-magic-ink/70">
+            <span className="text-xs text-espark-ink/70">
               <b>{fileName}</b>
               {rows.length > 0 && (
-                <span className="text-magic-ink/50">
+                <span className="text-espark-ink/50">
                   {" "}
                   — {rows.length} data rows detected
                 </span>
@@ -511,7 +511,7 @@ export default function ExcelImportModal({
             </span>
           )}
           {parsing && (
-            <span className="text-xs text-magic-ink/50 animate-pulse">
+            <span className="text-xs text-espark-ink/50 animate-pulse">
               Parsing…
             </span>
           )}
@@ -526,8 +526,8 @@ export default function ExcelImportModal({
         {sheetSummary &&
           (sheetSummary.imported.length > 1 ||
             sheetSummary.skipped.length > 0) && (
-            <div className="mt-3 rounded-lg bg-magic-soft/60 border border-magic-border px-3 py-2 text-[11px] text-magic-ink/70">
-              <span className="font-semibold text-magic-ink/80">Sheets:</span>{" "}
+            <div className="mt-3 rounded-lg bg-espark-soft/60 border border-espark-border px-3 py-2 text-[11px] text-espark-ink/70">
+              <span className="font-semibold text-espark-ink/80">Sheets:</span>{" "}
               {sheetSummary.imported
                 .map(
                   (s) => `${s.name} (${s.rows} row${s.rows === 1 ? "" : "s"})`,
@@ -536,7 +536,7 @@ export default function ExcelImportModal({
               {sheetSummary.skipped.length > 0 && (
                 <>
                   {" · "}
-                  <span className="text-magic-ink/50">
+                  <span className="text-espark-ink/50">
                     skipped {sheetSummary.skipped.join(", ")} — no recognisable
                     header row
                   </span>
@@ -548,29 +548,29 @@ export default function ExcelImportModal({
         {headers.length > 0 && (
           <div className="mt-6 space-y-4">
             <div>
-              <h3 className="text-xs font-semibold uppercase text-magic-ink/60 mb-2">
+              <h3 className="text-xs font-semibold uppercase text-espark-ink/60 mb-2">
                 Column mapping
               </h3>
-              <div className="rounded-lg border border-magic-border overflow-hidden">
+              <div className="rounded-lg border border-espark-border overflow-hidden">
                 <table className="w-full text-xs">
-                  <thead className="bg-magic-soft/60">
+                  <thead className="bg-espark-soft/60">
                     <tr>
-                      <th className="px-2 py-1.5 text-left font-semibold text-magic-ink/70 w-1/3">
+                      <th className="px-2 py-1.5 text-left font-semibold text-espark-ink/70 w-1/3">
                         Sheet column
                       </th>
-                      <th className="px-2 py-1.5 text-left font-semibold text-magic-ink/70">
+                      <th className="px-2 py-1.5 text-left font-semibold text-espark-ink/70">
                         Maps to
                       </th>
-                      <th className="px-2 py-1.5 text-left font-semibold text-magic-ink/70">
+                      <th className="px-2 py-1.5 text-left font-semibold text-espark-ink/70">
                         Sample value
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {headers.map((h, i) => (
-                      <tr key={i} className="border-t border-magic-border/50">
-                        <td className="px-2 py-1 font-semibold text-magic-ink">
-                          {h || <span className="text-magic-ink/40">(blank)</span>}
+                      <tr key={i} className="border-t border-espark-border/50">
+                        <td className="px-2 py-1 font-semibold text-espark-ink">
+                          {h || <span className="text-espark-ink/40">(blank)</span>}
                         </td>
                         <td className="px-2 py-1">
                           <Select
@@ -581,7 +581,7 @@ export default function ExcelImportModal({
                                 [i]: next as FieldKey | "",
                               }))
                             }
-                            className="rounded-md border border-magic-border bg-white px-2 py-0.5 text-xs"
+                            className="rounded-md border border-espark-border bg-espark-surface px-2 py-0.5 text-xs"
                           >
                             <option value="">— Ignore —</option>
                             {(Object.keys(FIELD_LABELS) as FieldKey[]).map(
@@ -593,7 +593,7 @@ export default function ExcelImportModal({
                             )}
                           </Select>
                         </td>
-                        <td className="px-2 py-1 text-magic-ink/60 truncate max-w-xs">
+                        <td className="px-2 py-1 text-espark-ink/60 truncate max-w-xs">
                           {rows[0]?.values[i] || ""}
                         </td>
                       </tr>
@@ -610,7 +610,7 @@ export default function ExcelImportModal({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold uppercase text-magic-ink/60 mb-1">
+                <label className="block text-xs font-semibold uppercase text-espark-ink/60 mb-1">
                   Default page (for rows without a System column)
                 </label>
                 <input
@@ -618,7 +618,7 @@ export default function ExcelImportModal({
                   onChange={(e) => setPageName(e.target.value)}
                   list="quick-pages"
                   placeholder="e.g. KNX / Lighting Control"
-                  className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
                 />
                 <datalist id="quick-pages">
                   {existingPages.map((p) => (
@@ -627,7 +627,7 @@ export default function ExcelImportModal({
                 </datalist>
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase text-magic-ink/60 mb-1">
+                <label className="block text-xs font-semibold uppercase text-espark-ink/60 mb-1">
                   Import mode
                 </label>
                 <div className="flex gap-2">
@@ -635,8 +635,8 @@ export default function ExcelImportModal({
                     onClick={() => setMode("append")}
                     className={`flex-1 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
                       mode === "append"
-                        ? "bg-magic-red text-white border-magic-red"
-                        : "bg-white border-magic-border hover:bg-magic-soft"
+                        ? "bg-espark-primary text-white border-espark-primary"
+                        : "bg-espark-surface border-espark-border hover:bg-espark-soft"
                     }`}
                   >
                     Append to current
@@ -645,8 +645,8 @@ export default function ExcelImportModal({
                     onClick={() => setMode("replace")}
                     className={`flex-1 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
                       mode === "replace"
-                        ? "bg-magic-red text-white border-magic-red"
-                        : "bg-white border-magic-border hover:bg-magic-soft"
+                        ? "bg-espark-primary text-white border-espark-primary"
+                        : "bg-espark-surface border-espark-border hover:bg-espark-soft"
                     }`}
                   >
                     Replace all
@@ -657,26 +657,26 @@ export default function ExcelImportModal({
 
             {preview.length > 0 && (
               <div>
-                <h3 className="text-xs font-semibold uppercase text-magic-ink/60 mb-2">
+                <h3 className="text-xs font-semibold uppercase text-espark-ink/60 mb-2">
                   Preview (first {preview.length} rows)
                 </h3>
-                <div className="rounded-lg border border-magic-border overflow-x-auto">
+                <div className="rounded-lg border border-espark-border overflow-x-auto">
                   <table className="w-full text-xs">
-                    <thead className="bg-magic-soft/60">
+                    <thead className="bg-espark-soft/60">
                       <tr>
                         {multiSheet && (
-                          <th className="px-2 py-1 text-left font-semibold text-magic-ink/70 whitespace-nowrap">
+                          <th className="px-2 py-1 text-left font-semibold text-espark-ink/70 whitespace-nowrap">
                             Sheet
                           </th>
                         )}
                         {headers.map((h, i) => (
                           <th
                             key={i}
-                            className="px-2 py-1 text-left font-semibold text-magic-ink/70 whitespace-nowrap"
+                            className="px-2 py-1 text-left font-semibold text-espark-ink/70 whitespace-nowrap"
                           >
                             {h}
                             {mapping[i] && (
-                              <span className="ml-1 text-[9px] text-magic-red">
+                              <span className="ml-1 text-[9px] text-espark-primary">
                                 →{FIELD_LABELS[mapping[i] as FieldKey]}
                               </span>
                             )}
@@ -686,16 +686,16 @@ export default function ExcelImportModal({
                     </thead>
                     <tbody>
                       {preview.map((r, ri) => (
-                        <tr key={ri} className="border-t border-magic-border/50">
+                        <tr key={ri} className="border-t border-espark-border/50">
                           {multiSheet && (
-                            <td className="px-2 py-1 text-magic-ink/50 whitespace-nowrap">
+                            <td className="px-2 py-1 text-espark-ink/50 whitespace-nowrap">
                               {r.sheet || ""}
                             </td>
                           )}
                           {r.values.map((c, ci) => (
                             <td
                               key={ci}
-                              className="px-2 py-1 text-magic-ink/80 max-w-xs truncate"
+                              className="px-2 py-1 text-espark-ink/80 max-w-xs truncate"
                             >
                               {c}
                             </td>
@@ -713,14 +713,14 @@ export default function ExcelImportModal({
         <div className="mt-6 flex items-center justify-end gap-2">
           <button
             onClick={onCancel}
-            className="rounded-lg px-4 py-2 text-sm text-magic-ink/70 hover:bg-magic-soft"
+            className="rounded-lg px-4 py-2 text-sm text-espark-ink/70 hover:bg-espark-soft"
           >
             Cancel
           </button>
           <button
             onClick={handleImport}
             disabled={!canImport}
-            className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Import {rows.length > 0 ? `${rows.length} row${rows.length === 1 ? "" : "s"}` : ""}
           </button>

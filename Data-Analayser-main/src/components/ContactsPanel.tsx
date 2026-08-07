@@ -133,17 +133,17 @@ export default function ContactsPanel({
           placeholder="Search name, email, phone, title…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 min-w-0 rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+          className="flex-1 min-w-0 rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <Link
           href="/crm/trash"
-          className="rounded-lg border border-magic-border px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+          className="rounded-lg border border-espark-border px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
         >
           Trash
         </Link>
         <button
           onClick={() => setCreating(true)}
-          className="rounded-lg bg-magic-red text-white px-3 py-2 text-sm font-semibold hover:bg-magic-red/90 transition-colors"
+          className="rounded-lg bg-espark-primary text-white px-3 py-2 text-sm font-semibold hover:bg-espark-primary/90 transition-colors"
         >
           + New contact
         </button>
@@ -156,7 +156,7 @@ export default function ContactsPanel({
       )}
 
       {visible.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           {query
             ? `No matches for "${query}".`
             : "No contacts yet. Use + New contact to add the first person."}
@@ -166,15 +166,15 @@ export default function ContactsPanel({
           {visible.map((c) => (
             <li
               key={c.id}
-              className="rounded-xl border border-magic-border bg-white p-3"
+              className="rounded-xl border border-espark-border bg-espark-surface p-3"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="font-semibold text-magic-ink">
+                  <div className="font-semibold text-espark-ink">
                     {linkBase && c.folder_id ? (
                       <Link
                         href={`${linkBase}/${c.folder_id}`}
-                        className="hover:text-magic-red"
+                        className="hover:text-espark-primary"
                       >
                         {displayName(c)}
                       </Link>
@@ -182,18 +182,18 @@ export default function ContactsPanel({
                       <span>{displayName(c)}</span>
                     )}
                     {c.title && (
-                      <span className="ml-2 text-xs text-magic-ink/50 font-normal">
+                      <span className="ml-2 text-xs text-espark-ink/50 font-normal">
                         · {c.title}
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-magic-ink/60 mt-0.5">
+                  <div className="text-xs text-espark-ink/60 mt-0.5">
                     {c.email && <>{c.email}</>}
                     {c.email && c.phone && <> · </>}
                     {c.phone && <>{c.phone}</>}
                   </div>
                   {linkBase && (c.project_count !== undefined || c.quotation_count !== undefined) && (
-                    <div className="text-xs text-magic-ink/50 mt-1">
+                    <div className="text-xs text-espark-ink/50 mt-1">
                       {(c.project_count ?? 0)} project
                       {(c.project_count ?? 0) === 1 ? "" : "s"} ·{" "}
                       {(c.quotation_count ?? 0)} quotation
@@ -201,7 +201,7 @@ export default function ContactsPanel({
                     </div>
                   )}
                   {c.notes && (
-                    <p className="text-xs text-magic-ink/70 mt-1 whitespace-pre-line line-clamp-2">
+                    <p className="text-xs text-espark-ink/70 mt-1 whitespace-pre-line line-clamp-2">
                       {c.notes}
                     </p>
                   )}
@@ -210,7 +210,7 @@ export default function ContactsPanel({
                   {linkBase && c.folder_id && (
                     <Link
                       href={`${linkBase}/${c.folder_id}`}
-                      className="px-2 py-1 text-xs font-semibold rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft transition-colors"
+                      className="px-2 py-1 text-xs font-semibold rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft transition-colors"
                     >
                       Open
                     </Link>
@@ -218,14 +218,14 @@ export default function ContactsPanel({
                   <button
                     onClick={() => setEditing(c)}
                     disabled={busy}
-                    className="px-2 py-1 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                    className="px-2 py-1 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => void softDelete(c.id)}
                     disabled={busy}
-                    className="px-2 py-1 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
+                    className="px-2 py-1 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
                   >
                     Delete
                   </button>
@@ -327,20 +327,20 @@ function ContactModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl space-y-3"
+        className="w-full max-w-md rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-magic-ink">
+          <h3 className="font-semibold text-espark-ink">
             {mode === "create" ? "New contact" : `Edit contact`}
           </h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
           >
             ×
           </button>
@@ -353,7 +353,7 @@ function ContactModal({
             onChange={(e) => setFirstName(e.target.value)}
             disabled={busy}
             autoFocus
-            className="rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
           />
           <input
             type="text"
@@ -361,7 +361,7 @@ function ContactModal({
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
           />
         </div>
         <input
@@ -370,7 +370,7 @@ function ContactModal({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
         />
         <div className="grid grid-cols-2 gap-2">
           <input
@@ -379,7 +379,7 @@ function ContactModal({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
           />
           <input
             type="tel"
@@ -387,7 +387,7 @@ function ContactModal({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
           />
         </div>
         <textarea
@@ -396,7 +396,7 @@ function ContactModal({
           onChange={(e) => setNotes(e.target.value)}
           disabled={busy}
           rows={3}
-          className="w-full rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
         />
         {error && (
           <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1">
@@ -407,14 +407,14 @@ function ContactModal({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+            className="rounded border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy}
-            className="rounded bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+            className="rounded bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
           >
             {busy
               ? mode === "create"

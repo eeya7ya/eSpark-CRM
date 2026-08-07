@@ -140,7 +140,7 @@ export default function TrashPage() {
               className={cn(
                 "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors capitalize",
                 tab === t
-                  ? "bg-white text-gray-900 shadow-sm"
+                  ? "bg-espark-surface text-gray-900 shadow-sm"
                   : "text-gray-500 hover:text-gray-700"
               )}
             >
@@ -231,7 +231,7 @@ function TrashItem({
   onDelete: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-espark-surface p-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-3 min-w-0">
         <div className="mt-0.5 flex-shrink-0">{icon}</div>
         <div className="min-w-0">

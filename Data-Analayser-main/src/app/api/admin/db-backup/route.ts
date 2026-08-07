@@ -34,7 +34,7 @@ export async function GET() {
     const { buffer, manifest } = await buildDbSnapshotZip(sql());
 
     const stamp = manifest.generatedAt.replace(/[:.]/g, "-");
-    const filename = `magictech-database-backup-${stamp}.zip`;
+    const filename = `espark-database-backup-${stamp}.zip`;
 
     // STREAM the zip instead of returning it buffered. A buffered response is
     // capped at ~4.5 MB on Vercel — once the database grows past that, a

@@ -662,20 +662,20 @@ export default function UsersAndRolesPanel({
   }
 
   if (loading) {
-    return <p className="text-sm text-magic-ink/60">Loading users &amp; roles…</p>;
+    return <p className="text-sm text-espark-ink/60">Loading users &amp; roles…</p>;
   }
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-magic-ink">Users &amp; roles</h3>
+        <h3 className="text-sm font-semibold text-espark-ink">Users &amp; roles</h3>
         <div className="flex flex-wrap items-center gap-2">
           <Select
             value={exportFormat}
             onChange={(next) =>
               setExportFormat(next as "csv" | "xlsx" | "json")
             }
-            className="rounded-lg border border-magic-border bg-white px-2 py-1.5 text-xs font-semibold text-magic-ink"
+            className="rounded-lg border border-espark-border bg-espark-surface px-2 py-1.5 text-xs font-semibold text-espark-ink"
             title="Choose the export format"
           >
             <option value="xlsx">Excel (.xlsx)</option>
@@ -687,13 +687,13 @@ export default function UsersAndRolesPanel({
             onClick={() => void exportUsers(exportFormat)}
             disabled={users.length === 0}
             title="Download all users. The Password column is blank — fill it in and re-import to set credentials."
-            className="inline-flex items-center gap-1.5 rounded-lg border border-magic-border bg-white px-3 py-1.5 text-xs font-semibold text-magic-ink hover:border-magic-red/40 hover:text-magic-red disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-ink hover:border-espark-primary/40 hover:text-espark-primary disabled:opacity-50"
           >
             Export
           </button>
           {!readOnly && (
             <label
-              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-magic-border bg-white px-3 py-1.5 text-xs font-semibold text-magic-ink hover:border-magic-red/40 hover:text-magic-red ${
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-ink hover:border-espark-primary/40 hover:text-espark-primary ${
                 importing ? "pointer-events-none opacity-50" : ""
               }`}
               title="Import users from a CSV or JSON file (same columns as the export). Existing usernames are updated; new ones are created when a Password is provided."
@@ -714,7 +714,7 @@ export default function UsersAndRolesPanel({
         </div>
       </div>
       {importMsg && (
-        <p className="rounded-lg border border-magic-border bg-magic-soft/40 px-3 py-2 text-xs text-magic-ink/70">
+        <p className="rounded-lg border border-espark-border bg-espark-soft/40 px-3 py-2 text-xs text-espark-ink/70">
           {importMsg}
         </p>
       )}
@@ -727,41 +727,41 @@ export default function UsersAndRolesPanel({
       {!readOnly && (
         <form
           onSubmit={createUser}
-          className="rounded-2xl border border-magic-border bg-white p-4"
+          className="rounded-2xl border border-espark-border bg-espark-surface p-4"
         >
-          <h3 className="mb-3 text-sm font-semibold text-magic-ink">
+          <h3 className="mb-3 text-sm font-semibold text-espark-ink">
             Create user
           </h3>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-8">
             <input
-              className="rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
               placeholder="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
             <input
-              className="rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
               placeholder="display name"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
             <input
-              className="rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
               type="tel"
               placeholder="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
             <input
-              className="rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
               type="email"
               placeholder="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              className="rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm"
               type="password"
               placeholder="password"
               value={password}
@@ -769,7 +769,7 @@ export default function UsersAndRolesPanel({
               required
             />
             <input
-              className="rounded-md border border-magic-border px-3 py-2 text-sm uppercase"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm uppercase"
               placeholder="department code"
               title="Leads every quotation reference, formatted DEPT-FO<year>-<hex>"
               value={newDept}
@@ -778,15 +778,15 @@ export default function UsersAndRolesPanel({
             <button
               type="button"
               onClick={() => setCreateRolesOpen(true)}
-              className="flex min-h-[38px] flex-wrap items-center gap-1 rounded-md border border-magic-border bg-white px-2 py-1 text-left text-xs hover:border-magic-red/40"
+              className="flex min-h-[38px] flex-wrap items-center gap-1 rounded-md border border-espark-border bg-espark-surface px-2 py-1 text-left text-xs hover:border-espark-primary/40"
               title="Choose roles"
             >
               <RoleChips values={newRoles} />
-              <span className="ml-auto text-magic-ink/40">▾</span>
+              <span className="ml-auto text-espark-ink/40">▾</span>
             </button>
             <button
               disabled={creating}
-              className="rounded-md bg-magic-red px-3 py-2 text-sm font-semibold text-white hover:bg-magic-red/85 disabled:opacity-60"
+              className="rounded-md bg-espark-primary px-3 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
             >
               {creating ? "Creating…" : "Create user"}
             </button>
@@ -804,9 +804,9 @@ export default function UsersAndRolesPanel({
       )}
 
       {/* Desktop table */}
-      <div className="hidden overflow-hidden rounded-2xl border border-magic-border bg-white lg:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-espark-border bg-espark-surface lg:block">
         <table className="w-full text-sm">
-          <thead className="bg-magic-header text-xs uppercase text-magic-red">
+          <thead className="bg-espark-header text-xs uppercase text-espark-primary">
             <tr>
               <th className="p-3 text-left">User</th>
               <th className="p-3 text-left">Role</th>
@@ -818,23 +818,23 @@ export default function UsersAndRolesPanel({
               const roleValues = currentRolesFor(u, grantsByUser.get(u.id) ?? []);
               const rowBusy = busyUserId === u.id;
               return (
-                <tr key={u.id} className="border-t border-magic-border align-middle">
+                <tr key={u.id} className="border-t border-espark-border align-middle">
                   <td className="p-3">
-                    <div className="font-semibold text-magic-ink">
+                    <div className="font-semibold text-espark-ink">
                       {u.username}
                     </div>
-                    <div className="text-xs text-magic-ink/60">
+                    <div className="text-xs text-espark-ink/60">
                       {u.display_name || "—"}
                       {u.phone ? ` · ${u.phone}` : ""}
                       {u.email ? ` · ${u.email}` : ""}
                     </div>
-                    <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-magic-ink/40">
+                    <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-espark-ink/40">
                       <span>
                         #{u.id} · {new Date(u.created_at).toLocaleDateString()}
                       </span>
                       {u.department_code && (
                         <span
-                          className="rounded bg-magic-soft px-1.5 py-0.5 font-semibold text-magic-ink/70"
+                          className="rounded bg-espark-soft px-1.5 py-0.5 font-semibold text-espark-ink/70"
                           title="Department code — leads this user's quotation refs"
                         >
                           {u.department_code}
@@ -849,7 +849,7 @@ export default function UsersAndRolesPanel({
                         <button
                           onClick={() => setRolesUser(u)}
                           disabled={rowBusy}
-                          className="rounded border border-magic-border px-2 py-1 text-[11px] font-medium text-magic-ink/70 hover:border-magic-red/40 hover:text-magic-red disabled:opacity-50"
+                          className="rounded border border-espark-border px-2 py-1 text-[11px] font-medium text-espark-ink/70 hover:border-espark-primary/40 hover:text-espark-primary disabled:opacity-50"
                         >
                           Edit roles
                         </button>
@@ -858,12 +858,12 @@ export default function UsersAndRolesPanel({
                   </td>
                   <td className="whitespace-nowrap p-3 text-right">
                     {readOnly ? (
-                      <span className="text-xs text-magic-ink/40">—</span>
+                      <span className="text-xs text-espark-ink/40">—</span>
                     ) : (
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openEdit(u)}
-                          className="rounded border border-magic-border px-2 py-1 text-xs font-medium text-magic-ink/70 hover:bg-magic-soft"
+                          className="rounded border border-espark-border px-2 py-1 text-xs font-medium text-espark-ink/70 hover:bg-espark-soft"
                         >
                           Edit
                         </button>
@@ -894,35 +894,35 @@ export default function UsersAndRolesPanel({
           return (
             <div
               key={u.id}
-              className="space-y-3 rounded-2xl border border-magic-border bg-white p-4"
+              className="space-y-3 rounded-2xl border border-espark-border bg-espark-surface p-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="truncate font-semibold text-magic-ink">
+                  <div className="truncate font-semibold text-espark-ink">
                     {u.username}
                   </div>
-                  <div className="truncate text-sm text-magic-ink/70">
+                  <div className="truncate text-sm text-espark-ink/70">
                     {u.display_name || "—"}
                   </div>
                   {(u.phone || u.email) && (
-                    <div className="mt-0.5 text-xs text-magic-ink/50">
+                    <div className="mt-0.5 text-xs text-espark-ink/50">
                       {[u.phone, u.email].filter(Boolean).join(" · ")}
                     </div>
                   )}
                 </div>
-                <span className="font-mono text-xs text-magic-ink/40">
+                <span className="font-mono text-xs text-espark-ink/40">
                   #{u.id}
                 </span>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <label className="text-xs text-magic-ink/60">Roles</label>
+                <label className="text-xs text-espark-ink/60">Roles</label>
                 <RoleChips values={roleValues} />
                 {!readOnly && (
                   <button
                     onClick={() => setRolesUser(u)}
                     disabled={rowBusy}
-                    className="rounded border border-magic-border px-2 py-1 text-[11px] font-medium text-magic-ink/70 hover:border-magic-red/40 hover:text-magic-red disabled:opacity-50"
+                    className="rounded border border-espark-border px-2 py-1 text-[11px] font-medium text-espark-ink/70 hover:border-espark-primary/40 hover:text-espark-primary disabled:opacity-50"
                   >
                     Edit roles
                   </button>
@@ -933,7 +933,7 @@ export default function UsersAndRolesPanel({
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => openEdit(u)}
-                    className="rounded-md border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink hover:bg-magic-soft"
+                    className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink hover:bg-espark-soft"
                   >
                     Edit / password
                   </button>
@@ -989,46 +989,46 @@ export default function UsersAndRolesPanel({
         >
           <form
             onSubmit={saveEdit}
-            className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl bg-white p-5 md:rounded-2xl"
+            className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl bg-espark-surface p-5 md:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div>
-              <h3 className="font-semibold text-magic-ink">
+              <h3 className="font-semibold text-espark-ink">
                 Edit {editUser.username}
               </h3>
-              <p className="mt-1 text-xs text-magic-ink/60">
+              <p className="mt-1 text-xs text-espark-ink/60">
                 Leave password blank to keep the current one.
               </p>
             </div>
             <input
-              className="w-full rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
               placeholder="display name"
               value={editDisplayName}
               onChange={(e) => setEditDisplayName(e.target.value)}
             />
             <input
-              className="w-full rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
               type="tel"
               placeholder="phone"
               value={editPhone}
               onChange={(e) => setEditPhone(e.target.value)}
             />
             <input
-              className="w-full rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
               type="email"
               placeholder="email (printed on quotations)"
               value={editEmail}
               onChange={(e) => setEditEmail(e.target.value)}
             />
             <input
-              className="w-full rounded-md border border-magic-border px-3 py-2 text-sm uppercase"
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm uppercase"
               placeholder="department code (leads quotation refs)"
               title="Leads every quotation reference, formatted DEPT-FO<year>-<hex>"
               value={editDept}
               onChange={(e) => setEditDept(e.target.value.toUpperCase())}
             />
             <input
-              className="w-full rounded-md border border-magic-border px-3 py-2 text-sm"
+              className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
               type="password"
               placeholder="new password (optional)"
               value={editPassword}
@@ -1039,13 +1039,13 @@ export default function UsersAndRolesPanel({
               <button
                 type="button"
                 onClick={() => setEditUser(null)}
-                className="rounded-md border border-magic-border px-3 py-2 text-sm"
+                className="rounded-md border border-espark-border px-3 py-2 text-sm"
               >
                 Cancel
               </button>
               <button
                 disabled={editSaving}
-                className="rounded-md bg-magic-red px-3 py-2 text-sm font-semibold text-white hover:bg-magic-red/85 disabled:opacity-60"
+                className="rounded-md bg-espark-primary px-3 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
               >
                 {editSaving ? "Saving…" : "Save"}
               </button>
@@ -1059,9 +1059,9 @@ export default function UsersAndRolesPanel({
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-magic-border bg-white px-4 py-3">
-      <div className="text-2xl font-bold text-magic-ink">{value}</div>
-      <div className="text-xs text-magic-ink/50">{label}</div>
+    <div className="rounded-xl border border-espark-border bg-espark-surface px-4 py-3">
+      <div className="text-2xl font-bold text-espark-ink">{value}</div>
+      <div className="text-xs text-espark-ink/50">{label}</div>
     </div>
   );
 }
@@ -1070,7 +1070,7 @@ function StatCard({ label, value }: { label: string; value: number }) {
 function RoleChips({ values }: { values: string[] }) {
   if (values.length === 0) {
     return (
-      <span className="rounded-md border border-magic-border bg-magic-soft px-2 py-1 text-xs text-magic-ink/50">
+      <span className="rounded-md border border-espark-border bg-espark-soft px-2 py-1 text-xs text-espark-ink/50">
         No role yet
       </span>
     );
@@ -1083,8 +1083,8 @@ function RoleChips({ values }: { values: string[] }) {
           key={v}
           className={`rounded-md px-2 py-1 text-xs ${
             isGov
-              ? "border border-magic-ink/20 bg-magic-ink/5 font-medium text-magic-ink"
-              : "border border-magic-border bg-white text-magic-ink/75"
+              ? "border border-espark-ink/20 bg-espark-ink/5 font-medium text-espark-ink"
+              : "border border-espark-border bg-espark-surface text-espark-ink/75"
           }`}
         >
           {LABEL_BY_VALUE[v] ?? v}
@@ -1141,21 +1141,21 @@ function RolesEditor({
       onClick={onCancel}
     >
       <div
-        className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl bg-white p-5 md:rounded-2xl"
+        className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl bg-espark-surface p-5 md:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div>
-          <h3 className="font-semibold text-magic-ink">
+          <h3 className="font-semibold text-espark-ink">
             {title}
           </h3>
-          <p className="mt-1 text-xs text-magic-ink/60">
+          <p className="mt-1 text-xs text-espark-ink/60">
             Tick any combination of job roles. Admin / Viewer are exclusive and
             clear all job roles.
           </p>
         </div>
 
         <div>
-          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-magic-ink/50">
+          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-espark-ink/50">
             Access level
           </div>
           <div className="space-y-1">
@@ -1183,13 +1183,13 @@ function RolesEditor({
             exclusive ? "pointer-events-none opacity-40 transition-opacity" : ""
           }
         >
-          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-magic-ink/50">
+          <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-espark-ink/50">
             Job roles (select any combination)
           </div>
           <div className="space-y-3">
             {JOB_ROLE_GROUPS.map((g) => (
               <div key={g.group}>
-                <div className="mb-1 text-xs font-medium text-magic-ink/60">
+                <div className="mb-1 text-xs font-medium text-espark-ink/60">
                   {g.group}
                 </div>
                 <div className="grid grid-cols-2 gap-1">
@@ -1217,7 +1217,7 @@ function RolesEditor({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-md border border-magic-border px-3 py-2 text-sm"
+            className="rounded-md border border-espark-border px-3 py-2 text-sm"
           >
             Cancel
           </button>
@@ -1225,7 +1225,7 @@ function RolesEditor({
             type="button"
             disabled={saving}
             onClick={() => onSave(Array.from(sel))}
-            className="rounded-md bg-magic-red px-3 py-2 text-sm font-semibold text-white hover:bg-magic-red/85 disabled:opacity-60"
+            className="rounded-md bg-espark-primary px-3 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save roles"}
           </button>

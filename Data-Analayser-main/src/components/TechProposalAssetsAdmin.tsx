@@ -36,7 +36,7 @@ const SLOTS: Array<{
   {
     key: "references",
     title: "References",
-    hint: "The MagicTech references image.",
+    hint: "The eSpark references image.",
   },
 ];
 
@@ -82,10 +82,10 @@ export default function TechProposalAssetsAdmin({
   return (
     <section className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold text-magic-ink">
+        <h2 className="text-lg font-semibold text-espark-ink">
           Technical Proposal assets
         </h2>
-        <p className="mt-1 max-w-3xl text-sm text-magic-ink/60">
+        <p className="mt-1 max-w-3xl text-sm text-espark-ink/60">
           Upload the company-level images once here — every Technical Proposal
           shows them by default (a proposal can still override its own copy).
           The project-specific images (network / CCTV diagram, storage
@@ -97,10 +97,10 @@ export default function TechProposalAssetsAdmin({
         {SLOTS.map((slot) => (
           <div
             key={slot.key}
-            className="rounded-2xl border border-magic-border bg-white p-4"
+            className="rounded-2xl border border-espark-border bg-espark-surface p-4"
           >
-            <h3 className="text-sm font-bold text-magic-ink">{slot.title}</h3>
-            <p className="mb-3 text-xs text-magic-ink/55">{slot.hint}</p>
+            <h3 className="text-sm font-bold text-espark-ink">{slot.title}</h3>
+            <p className="mb-3 text-xs text-espark-ink/55">{slot.hint}</p>
             <EditableImage
               value={assets[slot.key] || ""}
               onChange={(next) => (readOnly ? undefined : set(slot.key, next))}
@@ -127,7 +127,7 @@ export default function TechProposalAssetsAdmin({
         <button
           onClick={() => void save()}
           disabled={saving}
-          className="rounded-xl bg-magic-red px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-magic-red/90 disabled:opacity-60"
+          className="rounded-xl bg-espark-primary px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-espark-primary/90 disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save proposal assets"}
         </button>

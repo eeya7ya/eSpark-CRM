@@ -286,9 +286,9 @@ export default function QuotationRowActions({
       <div
         ref={menuRef}
         style={{ top: pos.top, left: pos.left, width: 288 }}
-        className="fixed z-[1000] max-h-96 overflow-y-auto rounded-md border border-magic-border bg-white py-1 text-sm shadow-lg"
+        className="fixed z-[1000] max-h-96 overflow-y-auto rounded-md border border-espark-border bg-espark-surface py-1 text-sm shadow-lg"
       >
-        <div className="px-3 pt-1.5 pb-1 text-[10px] uppercase tracking-wide text-magic-ink/50">
+        <div className="px-3 pt-1.5 pb-1 text-[10px] uppercase tracking-wide text-espark-ink/50">
           Copy into…
         </div>
 
@@ -296,9 +296,9 @@ export default function QuotationRowActions({
         <button
           onClick={() => copyTo(currentFolderId, currentProjectId)}
           disabled={copyingTarget != null}
-          className="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left hover:bg-magic-header disabled:opacity-50"
+          className="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left hover:bg-espark-header disabled:opacity-50"
         >
-          <span className="truncate font-medium text-magic-red">
+          <span className="truncate font-medium text-espark-primary">
             This project · {currentProjectName || "Current"}
           </span>
           {copyingTarget === currentProjectId && (
@@ -306,16 +306,16 @@ export default function QuotationRowActions({
           )}
         </button>
 
-        <div className="my-1 border-t border-magic-border/60" />
+        <div className="my-1 border-t border-espark-border/60" />
 
         {folders === null ? (
-          <div className="flex items-center gap-2 px-3 py-2 text-xs text-magic-ink/50">
+          <div className="flex items-center gap-2 px-3 py-2 text-xs text-espark-ink/50">
             <Spinner size={12} /> Loading…
           </div>
         ) : foldersError ? (
           <div className="px-3 py-2 text-xs text-red-600">{foldersError}</div>
         ) : groups.length === 0 ? (
-          <div className="px-3 py-2 text-xs italic text-magic-ink/50">
+          <div className="px-3 py-2 text-xs italic text-espark-ink/50">
             No clients available.
           </div>
         ) : (
@@ -327,7 +327,7 @@ export default function QuotationRowActions({
                   onClick={() =>
                     setExpandedCompany(companyOpen ? null : g.key)
                   }
-                  className="flex w-full items-center gap-1.5 px-2 py-1.5 text-left font-semibold text-magic-ink hover:bg-magic-header"
+                  className="flex w-full items-center gap-1.5 px-2 py-1.5 text-left font-semibold text-espark-ink hover:bg-espark-header"
                 >
                   <ChevronRight
                     className={`h-3.5 w-3.5 shrink-0 transition-transform ${
@@ -348,7 +348,7 @@ export default function QuotationRowActions({
                             setExpandedFolder(next);
                             if (next != null) void loadProjects(f.id);
                           }}
-                          className="flex w-full items-center gap-1.5 py-1.5 pl-6 pr-2 text-left text-magic-ink/90 hover:bg-magic-header"
+                          className="flex w-full items-center gap-1.5 py-1.5 pl-6 pr-2 text-left text-espark-ink/90 hover:bg-espark-header"
                         >
                           <ChevronRight
                             className={`h-3 w-3 shrink-0 transition-transform ${
@@ -360,7 +360,7 @@ export default function QuotationRowActions({
                         {folderOpen && (
                           <div>
                             {loadingFolder === f.id && !projects ? (
-                              <div className="flex items-center gap-2 py-1 pl-12 pr-3 text-xs text-magic-ink/50">
+                              <div className="flex items-center gap-2 py-1 pl-12 pr-3 text-xs text-espark-ink/50">
                                 <Spinner size={10} />
                                 Loading…
                               </div>
@@ -370,7 +370,7 @@ export default function QuotationRowActions({
                                   key={p.id}
                                   onClick={() => copyTo(f.id, p.id)}
                                   disabled={copyingTarget != null}
-                                  className="flex w-full items-center justify-between gap-2 py-1.5 pl-12 pr-3 text-left text-magic-ink/80 hover:bg-magic-header disabled:opacity-50"
+                                  className="flex w-full items-center justify-between gap-2 py-1.5 pl-12 pr-3 text-left text-espark-ink/80 hover:bg-espark-header disabled:opacity-50"
                                 >
                                   <span className="truncate">{p.name}</span>
                                   {copyingTarget === p.id && (
@@ -379,7 +379,7 @@ export default function QuotationRowActions({
                                 </button>
                               ))
                             ) : (
-                              <div className="py-1 pl-12 pr-3 text-xs italic text-magic-ink/40">
+                              <div className="py-1 pl-12 pr-3 text-xs italic text-espark-ink/40">
                                 No projects.
                               </div>
                             )}
@@ -416,7 +416,7 @@ export default function QuotationRowActions({
           openMenu();
         }}
         disabled={copyingTarget != null}
-        className="flex items-center gap-1 rounded-md border border-magic-border px-2 py-0.5 text-[11px] font-medium text-magic-ink/70 transition-colors hover:border-magic-red hover:text-magic-red disabled:opacity-50"
+        className="flex items-center gap-1 rounded-md border border-espark-border px-2 py-0.5 text-[11px] font-medium text-espark-ink/70 transition-colors hover:border-espark-primary hover:text-espark-primary disabled:opacity-50"
         title="Make an editable copy of this quotation — choose where it goes"
       >
         <Copy className="h-3 w-3" />
@@ -431,7 +431,7 @@ export default function QuotationRowActions({
           void handleDelete();
         }}
         disabled={deleting}
-        className="flex items-center gap-1 rounded-md border border-magic-border px-2 py-0.5 text-[11px] font-medium text-magic-ink/60 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+        className="flex items-center gap-1 rounded-md border border-espark-border px-2 py-0.5 text-[11px] font-medium text-espark-ink/60 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
         title="Delete this quotation (moves it to the trash)"
       >
         {deleting ? (

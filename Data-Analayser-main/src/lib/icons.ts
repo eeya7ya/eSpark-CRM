@@ -128,4 +128,7 @@ export {
   Wallet,
   X,
   XCircle,
+  // Theme toggle.
+  Sun,
+  Moon,
 } from "@phosphor-icons/react";

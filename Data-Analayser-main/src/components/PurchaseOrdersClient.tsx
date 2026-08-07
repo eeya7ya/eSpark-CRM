@@ -361,7 +361,7 @@ export default function PurchaseOrdersClient({
           </div>
           <button
             onClick={() => setReloadTick((t) => t + 1)}
-            className="shrink-0 rounded-md bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+            className="shrink-0 rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
           >
             Retry
           </button>
@@ -376,10 +376,10 @@ export default function PurchaseOrdersClient({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by PO #, client, project, supplier, or linked quotation…"
-            className="w-full pl-10 pr-4 py-2 text-sm border border-magic-border rounded-xl focus:outline-none focus:ring-2 focus:ring-magic-red/30 bg-white"
+            className="w-full pl-10 pr-4 py-2 text-sm border border-espark-border rounded-xl focus:outline-none focus:ring-2 focus:ring-espark-primary/30 bg-espark-surface"
           />
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-magic-ink/40"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-espark-ink/40"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -395,7 +395,7 @@ export default function PurchaseOrdersClient({
         <Select
           value={statusFilter}
           onChange={(next) => setStatusFilter(next)}
-          className="px-3 py-2 text-sm border border-magic-border rounded-xl bg-white"
+          className="px-3 py-2 text-sm border border-espark-border rounded-xl bg-espark-surface"
         >
           <option value="all">All statuses</option>
           {STATUS_OPTIONS.map((s) => (
@@ -405,13 +405,13 @@ export default function PurchaseOrdersClient({
           ))}
         </Select>
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] uppercase tracking-wide text-magic-ink/50 font-semibold">
+          <span className="text-[11px] uppercase tracking-wide text-espark-ink/50 font-semibold">
             Sort
           </span>
           <Select
             value={sortBy}
             onChange={(next) => setSortBy(next as SortBy)}
-            className="px-2 py-2 text-xs border border-magic-border rounded-lg bg-white"
+            className="px-2 py-2 text-xs border border-espark-border rounded-lg bg-espark-surface"
           >
             <option value="created">Created</option>
             <option value="updated">Last edited</option>
@@ -427,7 +427,7 @@ export default function PurchaseOrdersClient({
             type="button"
             onClick={() => setSortDir(sortDir === "asc" ? "desc" : "asc")}
             title={sortDir === "asc" ? "Ascending" : "Descending"}
-            className="px-2 py-2 text-xs border border-magic-border rounded-lg bg-white text-magic-ink/70 hover:text-magic-red hover:border-magic-red/60"
+            className="px-2 py-2 text-xs border border-espark-border rounded-lg bg-espark-surface text-espark-ink/70 hover:text-espark-primary hover:border-espark-primary/60"
           >
             {sortDir === "asc" ? "↑" : "↓"}
           </button>
@@ -437,7 +437,7 @@ export default function PurchaseOrdersClient({
             setShowCreate((s) => !s);
             setCreateErr(null);
           }}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-magic-red text-white hover:bg-magic-red/90 transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-espark-primary text-white hover:bg-espark-primary/90 transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -459,10 +459,10 @@ export default function PurchaseOrdersClient({
       {/* Summary chips */}
       {!loading && orders.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="rounded-full bg-magic-header px-3 py-1 font-semibold text-magic-ink/70">
+          <span className="rounded-full bg-espark-header px-3 py-1 font-semibold text-espark-ink/70">
             {filtered.length} PO{filtered.length !== 1 ? "s" : ""}
           </span>
-          <span className="rounded-full bg-magic-red/10 text-magic-red px-3 py-1 font-semibold">
+          <span className="rounded-full bg-espark-primary/10 text-espark-primary px-3 py-1 font-semibold">
             Total: {totals.grand.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -471,7 +471,7 @@ export default function PurchaseOrdersClient({
           {[...totals.byStatus.entries()].map(([status, amt]) => (
             <span
               key={status}
-              className="rounded-full bg-white border border-magic-border px-3 py-1 text-magic-ink/70"
+              className="rounded-full bg-espark-surface border border-espark-border px-3 py-1 text-espark-ink/70"
             >
               {status}:{" "}
               {amt.toLocaleString(undefined, {
@@ -487,25 +487,25 @@ export default function PurchaseOrdersClient({
       {showCreate && (
         <form
           onSubmit={createPo}
-          className="rounded-2xl border border-magic-border bg-white p-4 grid grid-cols-1 md:grid-cols-3 gap-3"
+          className="rounded-2xl border border-espark-border bg-espark-surface p-4 grid grid-cols-1 md:grid-cols-3 gap-3"
         >
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60 md:col-span-1">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60 md:col-span-1">
             PO number *
             <input
               type="text"
               value={formPoNumber}
               onChange={(e) => setFormPoNumber(e.target.value)}
               required
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
               placeholder="PO-2026-0001"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Linked quotation
             <Select
               value={formQuotationId}
               onChange={(next) => setFormQuotationId(next)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink bg-white"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink bg-espark-surface"
             >
               <option value="">— (none)</option>
               {quotations.map((q) => (
@@ -515,34 +515,34 @@ export default function PurchaseOrdersClient({
               ))}
             </Select>
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Supplier
             <input
               type="text"
               value={formSupplier}
               onChange={(e) => setFormSupplier(e.target.value)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Client
             <input
               type="text"
               value={formClient}
               onChange={(e) => setFormClient(e.target.value)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Project
             <input
               type="text"
               value={formProject}
               onChange={(e) => setFormProject(e.target.value)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Amount
             <div className="flex gap-2">
               <input
@@ -551,7 +551,7 @@ export default function PurchaseOrdersClient({
                 min="0"
                 value={formAmount}
                 onChange={(e) => setFormAmount(e.target.value)}
-                className="flex-1 rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+                className="flex-1 rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
                 placeholder="0.00"
               />
               <input
@@ -559,16 +559,16 @@ export default function PurchaseOrdersClient({
                 value={formCurrency}
                 onChange={(e) => setFormCurrency(e.target.value.toUpperCase())}
                 maxLength={6}
-                className="w-16 rounded-md border border-magic-border px-2 py-2 text-sm text-magic-ink"
+                className="w-16 rounded-md border border-espark-border px-2 py-2 text-sm text-espark-ink"
               />
             </div>
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Status
             <Select
               value={formStatus}
               onChange={(next) => setFormStatus(next)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink bg-white"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink bg-espark-surface"
             >
               {STATUS_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -577,38 +577,38 @@ export default function PurchaseOrdersClient({
               ))}
             </Select>
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Issued date
             <input
               type="date"
               value={formIssuedAt}
               onChange={(e) => setFormIssuedAt(e.target.value)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60">
             Expected date
             <input
               type="date"
               value={formExpectedAt}
               onChange={(e) => setFormExpectedAt(e.target.value)}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-magic-ink/60 md:col-span-3">
+          <label className="flex flex-col gap-1 text-xs text-espark-ink/60 md:col-span-3">
             Notes
             <textarea
               value={formNotes}
               onChange={(e) => setFormNotes(e.target.value)}
               rows={2}
-              className="rounded-md border border-magic-border px-3 py-2 text-sm text-magic-ink"
+              className="rounded-md border border-espark-border px-3 py-2 text-sm text-espark-ink"
             />
           </label>
           <div className="md:col-span-3 flex items-center gap-3">
             <button
               type="submit"
               disabled={creating}
-              className="rounded-md bg-magic-red text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+              className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
             >
               {creating ? "Creating…" : "Create PO"}
             </button>
@@ -618,7 +618,7 @@ export default function PurchaseOrdersClient({
                 setShowCreate(false);
                 resetForm();
               }}
-              className="px-3 py-2 text-sm text-magic-ink/60 hover:text-magic-ink"
+              className="px-3 py-2 text-sm text-espark-ink/60 hover:text-espark-ink"
             >
               Cancel
             </button>
@@ -635,20 +635,20 @@ export default function PurchaseOrdersClient({
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-14 rounded-xl border border-magic-border bg-white animate-pulse"
+              className="h-14 rounded-xl border border-espark-border bg-espark-surface animate-pulse"
             />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-magic-border bg-white p-6 text-center text-magic-ink/50">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-6 text-center text-espark-ink/50">
           {orders.length === 0
             ? "No purchase orders yet. Click + New PO above to create one, or convert a quotation into a PO."
             : "No POs match your filters."}
         </div>
       ) : (
-        <div className="rounded-2xl border border-magic-border bg-white overflow-hidden">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-magic-header text-magic-red text-xs uppercase">
+            <thead className="bg-espark-header text-espark-primary text-xs uppercase">
               <tr>
                 <th className="p-3 text-left">PO #</th>
                 <th className="p-3 text-left">Linked quote</th>
@@ -668,13 +668,13 @@ export default function PurchaseOrdersClient({
                 return (
                   <tr
                     key={po.id}
-                    className={`border-t border-magic-border ${
+                    className={`border-t border-espark-border ${
                       isEditing ? "bg-amber-50/50" : ""
                     }`}
                   >
-                    <td className="p-3 font-mono text-magic-ink">
+                    <td className="p-3 font-mono text-espark-ink">
                       {po.po_number}
-                      <div className="text-[11px] text-magic-ink/40">
+                      <div className="text-[11px] text-espark-ink/40">
                         {formatDate(po.created_at)}
                       </div>
                     </td>
@@ -682,24 +682,24 @@ export default function PurchaseOrdersClient({
                       {po.quotation_id && po.quotation_ref ? (
                         <Link
                           href={`/quotation?id=${po.quotation_id}`}
-                          className="text-magic-red hover:underline font-mono text-xs"
+                          className="text-espark-primary hover:underline font-mono text-xs"
                         >
                           {po.quotation_ref}
                         </Link>
                       ) : (
-                        <span className="text-magic-ink/30 text-xs">—</span>
+                        <span className="text-espark-ink/30 text-xs">—</span>
                       )}
                       {folder && (
-                        <div className="text-[11px] text-magic-ink/50 truncate">
+                        <div className="text-[11px] text-espark-ink/50 truncate">
                           {folder.name}
                         </div>
                       )}
                     </td>
                     <td className="p-3">
-                      <div className="font-medium text-magic-ink">
+                      <div className="font-medium text-espark-ink">
                         {po.client_name || "—"}
                       </div>
-                      <div className="text-xs text-magic-ink/60 truncate">
+                      <div className="text-xs text-espark-ink/60 truncate">
                         {po.project_name || "—"}
                       </div>
                     </td>
@@ -709,11 +709,11 @@ export default function PurchaseOrdersClient({
                           type="text"
                           value={editSupplier}
                           onChange={(e) => setEditSupplier(e.target.value)}
-                          className="w-full rounded-md border border-magic-border px-2 py-1 text-sm"
+                          className="w-full rounded-md border border-espark-border px-2 py-1 text-sm"
                         />
                       ) : (
                         po.supplier || (
-                          <span className="text-magic-ink/30">—</span>
+                          <span className="text-espark-ink/30">—</span>
                         )
                       )}
                     </td>
@@ -724,7 +724,7 @@ export default function PurchaseOrdersClient({
                           step="0.01"
                           value={editAmount}
                           onChange={(e) => setEditAmount(e.target.value)}
-                          className="w-28 rounded-md border border-magic-border px-2 py-1 text-sm text-right"
+                          className="w-28 rounded-md border border-espark-border px-2 py-1 text-sm text-right"
                         />
                       ) : (
                         formatAmount(po.amount, po.currency)
@@ -735,7 +735,7 @@ export default function PurchaseOrdersClient({
                         <Select
                           value={editStatus}
                           onChange={(next) => setEditStatus(next)}
-                          className="rounded-md border border-magic-border px-2 py-1 text-sm bg-white"
+                          className="rounded-md border border-espark-border px-2 py-1 text-sm bg-espark-surface"
                         >
                           {STATUS_OPTIONS.map((s) => (
                             <option key={s.value} value={s.value}>
@@ -752,27 +752,27 @@ export default function PurchaseOrdersClient({
                                 ? "bg-gray-100 text-gray-500"
                                 : po.status === "in_progress"
                                   ? "bg-amber-100 text-amber-700"
-                                  : "bg-magic-red/10 text-magic-red"
+                                  : "bg-espark-primary/10 text-espark-primary"
                           }`}
                         >
                           {po.status.replace("_", " ")}
                         </span>
                       )}
                     </td>
-                    <td className="p-3 text-xs text-magic-ink/70">
+                    <td className="p-3 text-xs text-espark-ink/70">
                       {isEditing ? (
                         <input
                           type="date"
                           value={editExpectedAt}
                           onChange={(e) => setEditExpectedAt(e.target.value)}
-                          className="rounded-md border border-magic-border px-2 py-1 text-xs"
+                          className="rounded-md border border-espark-border px-2 py-1 text-xs"
                         />
                       ) : (
                         formatDate(po.expected_at)
                       )}
                     </td>
                     {isAdmin && (
-                      <td className="p-3 text-xs text-magic-ink/60">
+                      <td className="p-3 text-xs text-espark-ink/60">
                         {po.owner_display_name?.trim() ||
                           po.owner_username ||
                           "—"}
@@ -790,7 +790,7 @@ export default function PurchaseOrdersClient({
                           </button>
                           <button
                             onClick={cancelEdit}
-                            className="rounded-md border border-magic-border px-3 py-1 text-xs hover:bg-gray-100"
+                            className="rounded-md border border-espark-border px-3 py-1 text-xs hover:bg-gray-100"
                           >
                             Cancel
                           </button>

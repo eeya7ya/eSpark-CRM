@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, LogOut, ArrowLeft, HelpCircle } from "@/lib/icons";
 import type { SessionUser } from "@/lib/auth";
 import NotificationsBell, {
@@ -12,6 +11,8 @@ import NotificationsBell, {
 import SideNav from "@/components/SideNav";
 import HelpCenter from "@/components/HelpCenter";
 import AppFooter from "@/components/AppFooter";
+import BrandLogo from "@/components/brand/BrandLogo";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface ModuleRole {
   module: string;
@@ -85,7 +86,7 @@ export default function TopBar({ user }: { user: SessionUser }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-white/40 bg-white/70 backdrop-blur-xl shadow-[0_1px_0_rgba(17,24,39,0.04),0_10px_30px_-20px_rgba(17,24,39,0.25)]">
+      <header className="sticky top-0 z-40 border-b border-espark-border/60 bg-espark-surface/70 backdrop-blur-xl shadow-es-soft">
         <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             {showBack && (
@@ -94,7 +95,7 @@ export default function TopBar({ user }: { user: SessionUser }) {
                 onClick={goBack}
                 aria-label="Go back to the previous page"
                 title="Back"
-                className="inline-flex h-9 items-center gap-2 rounded-xl border border-magic-border/70 bg-white/70 px-3 text-magic-ink/80 shadow-sm hover:border-magic-red/40 hover:text-magic-red transition-colors"
+                className="inline-flex h-9 items-center gap-2 rounded-xl border border-espark-border/70 bg-espark-surface/70 px-3 text-espark-ink/80 shadow-sm hover:border-espark-primary/40 hover:text-espark-primary transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span className="hidden text-xs font-semibold sm:inline">Back</span>
@@ -104,7 +105,7 @@ export default function TopBar({ user }: { user: SessionUser }) {
               type="button"
               onClick={() => setNavOpen(true)}
               aria-label="Open navigation"
-              className="inline-flex h-9 items-center gap-2 rounded-xl border border-magic-border/70 bg-white/70 px-3 text-magic-ink/80 shadow-sm hover:border-magic-red/40 hover:text-magic-red transition-colors"
+              className="inline-flex h-9 items-center gap-2 rounded-xl border border-espark-border/70 bg-espark-surface/70 px-3 text-espark-ink/80 shadow-sm hover:border-espark-primary/40 hover:text-espark-primary transition-colors"
             >
               <Menu className="h-4 w-4" />
               <span className="hidden text-xs font-semibold sm:inline">Menu</span>
@@ -112,29 +113,29 @@ export default function TopBar({ user }: { user: SessionUser }) {
             <Link
               href="/"
               className="group flex min-w-0 items-center gap-3"
-              aria-label="Magic Tech · Dashboard"
+              aria-label="eSpark · Dashboard"
             >
-              <Image
-                src="/logo.png"
-                alt="Magic Tech"
-                width={680}
-                height={200}
-                priority
-                className="h-8 w-auto object-contain transition-transform group-hover:scale-[1.02] sm:h-9"
+              {/* Vector lockup rather than a raster: it re-colours itself with
+                  the theme, so one asset serves both light and dark chrome. */}
+              <BrandLogo
+                className="transition-transform group-hover:scale-[1.02]"
+                glyphClassName="h-7 sm:h-8"
+                wordmarkClassName="text-lg sm:text-xl"
               />
-              <span className="hidden rounded-full bg-gradient-to-r from-magic-red/10 to-magic-accent/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-magic-red/80 md:inline-block">
+              <span className="hidden rounded-full bg-gradient-to-r from-espark-primary/10 to-espark-accent/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-espark-primary/80 md:inline-block">
                 Dashboard
               </span>
             </Link>
           </div>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <button
               type="button"
               onClick={() => setHelpOpen(true)}
               aria-label="Open help center"
               title="Help"
-              className="inline-flex h-9 items-center gap-2 rounded-xl border border-magic-border/70 bg-white/70 px-3 text-magic-ink/80 shadow-sm hover:border-magic-red/40 hover:text-magic-red transition-colors"
+              className="inline-flex h-9 items-center gap-2 rounded-xl border border-espark-border/70 bg-espark-surface/70 px-3 text-espark-ink/80 shadow-sm hover:border-espark-primary/40 hover:text-espark-primary transition-colors"
             >
               {/* A question mark reads as "help" at 16px; the lifebuoy's spokes
                   collapsed into an unreadable wheel at this size. */}
@@ -142,15 +143,15 @@ export default function TopBar({ user }: { user: SessionUser }) {
               <span className="hidden text-xs font-semibold sm:inline">Help</span>
             </button>
             <NotificationsBell />
-            <span className="ml-1 hidden items-center gap-1.5 rounded-full border border-magic-border/60 bg-white/60 px-3 py-1 text-[11px] font-medium text-magic-ink/70 sm:inline-flex">
+            <span className="ml-1 hidden items-center gap-1.5 rounded-full border border-espark-border/60 bg-espark-surface/60 px-3 py-1 text-[11px] font-medium text-espark-ink/70 sm:inline-flex">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               {user.display_name || user.username}
-              <span className="text-magic-ink/40">· {user.role}</span>
+              <span className="text-espark-ink/40">· {user.role}</span>
             </span>
             <button
               onClick={logout}
               aria-label="Sign out"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-magic-ink to-magic-ink/80 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:from-magic-red hover:to-magic-red/80 hover:shadow-md"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-espark-ink to-espark-ink/80 px-3 py-1.5 text-xs font-semibold text-espark-on-ink shadow-sm transition-all hover:from-espark-primary hover:to-espark-primary/80 hover:shadow-md"
             >
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign out</span>

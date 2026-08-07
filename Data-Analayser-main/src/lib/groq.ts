@@ -85,7 +85,7 @@ export const DESIGN_MODEL = () =>
 // Perfect for deep fallback when our local DB can't answer.
 export const WEB_MODEL = () => process.env.GROQ_WEB_MODEL || "groq/compound";
 
-export const DESIGNER_SYSTEM_PROMPT = `You are MagicTech's expert Sales & Design Engineer AI.
+export const DESIGNER_SYSTEM_PROMPT = `You are eSpark's expert Sales & Design Engineer AI.
 
 You design professional low-current / ICT / AV / surveillance solutions for
 clients based on: (1) a local product database provided in context, and (2)
@@ -132,7 +132,7 @@ RULES:
 - Never output markdown fences. Return raw JSON only.
 `;
 
-export const WEB_SYSTEM_PROMPT = `You are MagicTech's research assistant. You
+export const WEB_SYSTEM_PROMPT = `You are eSpark's research assistant. You
 perform live web lookups to fill gaps that the local product catalog cannot
 answer. Return a concise JSON object:
 

@@ -71,45 +71,45 @@ export default function ConvertToProjectDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-magic-ink/40 px-4 py-8"
+      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-espark-scrim/40 px-4 py-8"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg space-y-3 rounded-2xl bg-white p-5 shadow-2xl"
+        className="w-full max-w-lg space-y-3 rounded-2xl bg-espark-surface p-5 shadow-2xl"
       >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-magic-ink">Convert to Project</h3>
-            <p className="text-xs text-magic-ink/55">
+            <h3 className="font-semibold text-espark-ink">Convert to Project</h3>
+            <p className="text-xs text-espark-ink/55">
               Snapshots this quotation as a BOQ and sends it to a projects
               manager to assign a member.
             </p>
           </div>
-          <button onClick={onClose} className="text-magic-ink/50 hover:text-magic-ink">
+          <button onClick={onClose} className="text-espark-ink/50 hover:text-espark-ink">
             ×
           </button>
         </div>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <label className="block">
-            <span className="text-xs font-semibold text-magic-ink/70">Client contact</span>
+            <span className="text-xs font-semibold text-espark-ink/70">Client contact</span>
             <input
               type="text"
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
               placeholder="Contact name"
               disabled={busy}
-              className="mt-1 w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+              className="mt-1 w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold text-magic-ink/70">Priority</span>
+            <span className="text-xs font-semibold text-espark-ink/70">Priority</span>
             <Select
               value={priority}
               onChange={(next) => setPriority(next)}
               disabled={busy}
-              className="mt-1 w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+              className="mt-1 w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
             >
               {PRIORITIES.map((p) => (
                 <option key={p.value} value={p.value}>
@@ -121,31 +121,31 @@ export default function ConvertToProjectDialog({
         </div>
 
         <label className="block">
-          <span className="text-xs font-semibold text-magic-ink/70">Phone number(s)</span>
+          <span className="text-xs font-semibold text-espark-ink/70">Phone number(s)</span>
           <input
             type="text"
             value={contactPhones}
             onChange={(e) => setContactPhones(e.target.value)}
             placeholder="e.g. +962 7… , +962 7…"
             disabled={busy}
-            className="mt-1 w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="mt-1 w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
         </label>
 
         <label className="block">
-          <span className="text-xs font-semibold text-magic-ink/70">Site address</span>
+          <span className="text-xs font-semibold text-espark-ink/70">Site address</span>
           <input
             type="text"
             value={siteAddress}
             onChange={(e) => setSiteAddress(e.target.value)}
             placeholder="Typed address (optional)"
             disabled={busy}
-            className="mt-1 w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="mt-1 w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
         </label>
 
         <div>
-          <span className="text-xs font-semibold text-magic-ink/70">Site location</span>
+          <span className="text-xs font-semibold text-espark-ink/70">Site location</span>
           <div className="mt-1">
             <LocationPicker
               lat={lat}
@@ -159,14 +159,14 @@ export default function ConvertToProjectDialog({
         </div>
 
         <label className="block">
-          <span className="text-xs font-semibold text-magic-ink/70">Notes / parameters</span>
+          <span className="text-xs font-semibold text-espark-ink/70">Notes / parameters</span>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
             placeholder="Anything the project team needs to know…"
             disabled={busy}
-            className="mt-1 w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="mt-1 w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
         </label>
 
@@ -180,14 +180,14 @@ export default function ConvertToProjectDialog({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+            className="rounded border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy}
-            className="rounded bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+            className="rounded bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
           >
             {busy ? "Converting…" : "Convert & send to projects"}
           </button>

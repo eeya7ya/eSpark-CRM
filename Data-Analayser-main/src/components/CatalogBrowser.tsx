@@ -235,17 +235,17 @@ export default function CatalogBrowser({
   return (
     <div className="flex flex-col gap-4">
       {/* ── Browse controls ── */}
-      <section className="rounded-2xl border border-magic-border bg-white p-5 shadow-mt-soft">
+      <section className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-es-soft">
       <div className="mb-4 flex items-center gap-2">
-        <Search className="h-4 w-4 text-magic-red" />
-        <h2 className="text-sm font-bold text-magic-ink">Browse & edit</h2>
-        <span className="text-[11px] text-magic-ink/45">
+        <Search className="h-4 w-4 text-espark-primary" />
+        <h2 className="text-sm font-bold text-espark-ink">Browse & edit</h2>
+        <span className="text-[11px] text-espark-ink/45">
           changes here update the live catalogue presales pick from
         </span>
       </div>
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex-1 min-w-48">
-          <label className="block text-[11px] font-semibold uppercase tracking-wider text-magic-ink/60 mb-1">
+          <label className="block text-[11px] font-semibold uppercase tracking-wider text-espark-ink/60 mb-1">
             Select vendor / system
           </label>
           <Select
@@ -263,7 +263,7 @@ export default function CatalogBrowser({
               setSelectedSubCategory("");
               setProducts([]);
             }}
-            className="w-full rounded-lg border border-magic-border bg-white px-3 py-2.5 text-sm font-medium text-magic-ink shadow-sm cursor-pointer hover:border-magic-red/50 hover:bg-magic-soft/40 focus:outline-none focus:border-magic-red focus:ring-2 focus:ring-magic-red/20 transition-all"
+            className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2.5 text-sm font-medium text-espark-ink shadow-sm cursor-pointer hover:border-espark-primary/50 hover:bg-espark-soft/40 focus:outline-none focus:border-espark-primary focus:ring-2 focus:ring-espark-primary/20 transition-all"
           >
             <option value="">— Pick a system —</option>
             {/* The vendor is repeated inside its own optgroup on purpose: the
@@ -286,13 +286,13 @@ export default function CatalogBrowser({
 
         {categories.length > 0 && (
           <div className="flex-1 min-w-40 max-w-56">
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-magic-ink/60 mb-1">
+            <label className="block text-[11px] font-semibold uppercase tracking-wider text-espark-ink/60 mb-1">
               Sub Category
             </label>
             <Select
               value={selectedSubCategory}
               onChange={(next) => setSelectedSubCategory(next)}
-              className="w-full rounded-lg border border-magic-border bg-white px-3 py-2.5 text-sm font-medium text-magic-ink shadow-sm cursor-pointer hover:border-magic-red/50 hover:bg-magic-soft/40 focus:outline-none focus:border-magic-red focus:ring-2 focus:ring-magic-red/20 transition-all"
+              className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2.5 text-sm font-medium text-espark-ink shadow-sm cursor-pointer hover:border-espark-primary/50 hover:bg-espark-soft/40 focus:outline-none focus:border-espark-primary focus:ring-2 focus:ring-espark-primary/20 transition-all"
             >
               <option value="">— All sub categories —</option>
               {categories.map((cat) => (
@@ -305,11 +305,11 @@ export default function CatalogBrowser({
         )}
 
         <div className="flex-1 min-w-48">
-          <label className="block text-[11px] font-semibold uppercase tracking-wider text-magic-ink/60 mb-1">
+          <label className="block text-[11px] font-semibold uppercase tracking-wider text-espark-ink/60 mb-1">
             {selectedVendor ? "Filter / search" : "Global search (all vendors)"}
           </label>
           <div className="relative flex items-center">
-            <Search className="pointer-events-none absolute left-3 h-4 w-4 text-magic-ink/30" />
+            <Search className="pointer-events-none absolute left-3 h-4 w-4 text-espark-ink/30" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -318,14 +318,14 @@ export default function CatalogBrowser({
                   ? "e.g. 4MP bullet ColorVu PoE"
                   : "Search by keyword, model, vendor, category…"
               }
-              className="w-full rounded-lg border border-magic-border bg-white py-2.5 pl-9 pr-9 text-sm font-medium text-magic-ink shadow-sm placeholder:text-magic-ink/30 hover:border-magic-red/50 hover:bg-magic-soft/40 focus:outline-none focus:border-magic-red focus:ring-2 focus:ring-magic-red/20 transition-all"
+              className="w-full rounded-lg border border-espark-border bg-espark-surface py-2.5 pl-9 pr-9 text-sm font-medium text-espark-ink shadow-sm placeholder:text-espark-ink/30 hover:border-espark-primary/50 hover:bg-espark-soft/40 focus:outline-none focus:border-espark-primary focus:ring-2 focus:ring-espark-primary/20 transition-all"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
                 aria-label="Clear search"
-                className="absolute right-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-magic-ink/35 transition-colors hover:bg-magic-soft hover:text-magic-ink"
+                className="absolute right-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-espark-ink/35 transition-colors hover:bg-espark-soft hover:text-espark-ink"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -339,14 +339,14 @@ export default function CatalogBrowser({
       {/* ── Product table ── */}
       <div className="flex-1 min-w-0">
         {!selectedVendor && !debouncedSearch.trim() && (
-          <div className="rounded-2xl border border-magic-border bg-white px-6 py-12 text-center shadow-mt-soft">
-            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-magic-soft text-magic-ink/35">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface px-6 py-12 text-center shadow-es-soft">
+            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-espark-soft text-espark-ink/35">
               <Boxes className="h-7 w-7" />
             </span>
-            <p className="mt-3.5 text-[15px] font-semibold text-magic-ink">
+            <p className="mt-3.5 text-[15px] font-semibold text-espark-ink">
               Pick a system to start
             </p>
-            <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-magic-ink/55">
+            <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-espark-ink/55">
               Choose a vendor / system above to browse its full product
               catalogue, or search to find products across every vendor.
             </p>
@@ -354,7 +354,7 @@ export default function CatalogBrowser({
                 most sessions are headed for one of the big vendors anyway. */}
             {topSystems.length > 0 && (
               <div className="mt-5">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-magic-ink/35">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-espark-ink/35">
                   Jump to
                 </p>
                 <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2">
@@ -369,14 +369,14 @@ export default function CatalogBrowser({
                         setSelectedSubCategory("");
                         setProducts([]);
                       }}
-                      className="inline-flex items-center gap-2 rounded-full border border-magic-border bg-white py-1.5 pl-3 pr-2 text-xs font-semibold text-magic-ink/75 shadow-sm transition-colors hover:border-magic-red/40 hover:text-magic-red"
+                      className="inline-flex items-center gap-2 rounded-full border border-espark-border bg-espark-surface py-1.5 pl-3 pr-2 text-xs font-semibold text-espark-ink/75 shadow-sm transition-colors hover:border-espark-primary/40 hover:text-espark-primary"
                     >
                       {/* Vendor stays in the label — several vendors ship a
                           system of the same name (two "CCTV"s), so the system
                           alone doesn't identify which one a chip opens. */}
-                      <span className="text-magic-ink/40">{s.vendor}</span>
+                      <span className="text-espark-ink/40">{s.vendor}</span>
                       {s.system && <span>{s.system}</span>}
-                      <span className="rounded-full bg-magic-soft px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-magic-ink/45">
+                      <span className="rounded-full bg-espark-soft px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-espark-ink/45">
                         {s.product_count}
                       </span>
                     </button>
@@ -388,9 +388,9 @@ export default function CatalogBrowser({
         )}
 
         {loading && (
-          <div className="rounded-2xl border border-magic-border bg-white px-6 py-12 text-center shadow-mt-soft">
-            <Loader2 className="mx-auto h-6 w-6 animate-spin text-magic-red/60" />
-            <p className="mt-3 text-[13px] font-medium text-magic-ink/55">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface px-6 py-12 text-center shadow-es-soft">
+            <Loader2 className="mx-auto h-6 w-6 animate-spin text-espark-primary/60" />
+            <p className="mt-3 text-[13px] font-medium text-espark-ink/55">
               {globalMode ? "Searching all vendors…" : "Loading products…"}
             </p>
           </div>
@@ -399,14 +399,14 @@ export default function CatalogBrowser({
         {!loading &&
           (selectedVendor || debouncedSearch.trim()) &&
           sorted.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-magic-border bg-white px-6 py-12 text-center shadow-mt-soft">
-              <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-magic-soft text-magic-ink/35">
+            <div className="rounded-2xl border border-dashed border-espark-border bg-espark-surface px-6 py-12 text-center shadow-es-soft">
+              <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-espark-soft text-espark-ink/35">
                 <Search className="h-6 w-6" />
               </span>
-              <p className="mt-3 text-[15px] font-semibold text-magic-ink">
+              <p className="mt-3 text-[15px] font-semibold text-espark-ink">
                 No products found
               </p>
-              <p className="mt-1 text-[13px] text-magic-ink/55">
+              <p className="mt-1 text-[13px] text-espark-ink/55">
                 {search
                   ? `Nothing matches "${search}" here.`
                   : "This system has no products yet."}
@@ -415,7 +415,7 @@ export default function CatalogBrowser({
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-magic-border bg-white px-3.5 py-2 text-xs font-semibold text-magic-ink/75 shadow-sm transition-colors hover:border-magic-red/40 hover:text-magic-red"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3.5 py-2 text-xs font-semibold text-espark-ink/75 shadow-sm transition-colors hover:border-espark-primary/40 hover:text-espark-primary"
                 >
                   <X className="h-3.5 w-3.5" />
                   Clear search
@@ -443,17 +443,17 @@ export default function CatalogBrowser({
         )}
 
         {sorted.length > 0 && (
-          <div className="rounded-2xl border border-magic-border bg-white overflow-hidden shadow-mt-soft">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-magic-border bg-magic-soft/30 px-4 py-3">
-              <span className="flex min-w-0 items-center gap-2 text-[13px] font-bold text-magic-ink">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden shadow-es-soft">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-espark-border bg-espark-soft/30 px-4 py-3">
+              <span className="flex min-w-0 items-center gap-2 text-[13px] font-bold text-espark-ink">
                 {globalMode ? (
                   <>
-                    <Search className="h-3.5 w-3.5 shrink-0 text-magic-red" />
+                    <Search className="h-3.5 w-3.5 shrink-0 text-espark-primary" />
                     Global search results
                   </>
                 ) : (
                   <>
-                    <Boxes className="h-3.5 w-3.5 shrink-0 text-magic-red" />
+                    <Boxes className="h-3.5 w-3.5 shrink-0 text-espark-primary" />
                     <span className="truncate">
                       {selectedVendor}
                       {selectedSystem ? ` — ${selectedSystem}` : ""}
@@ -461,7 +461,7 @@ export default function CatalogBrowser({
                   </>
                 )}
               </span>
-              <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold tabular-nums text-magic-ink/55 shadow-sm ring-1 ring-magic-border">
+              <span className="shrink-0 rounded-full bg-espark-surface px-2.5 py-1 text-[11px] font-semibold tabular-nums text-espark-ink/55 shadow-sm ring-1 ring-espark-border">
                 {sorted.length} of {total} products
               </span>
             </div>
@@ -473,14 +473,14 @@ export default function CatalogBrowser({
                     <col key={col.key} style={{ width: col.width }} />
                   ))}
                 </colgroup>
-                <thead className="sticky top-0 bg-magic-soft/80 backdrop-blur z-10">
+                <thead className="sticky top-0 bg-espark-soft/80 backdrop-blur z-10">
                   <tr>
-                    <th className="px-2 py-2 text-left font-semibold text-magic-ink/60"></th>
+                    <th className="px-2 py-2 text-left font-semibold text-espark-ink/60"></th>
                     {DISPLAY_COLUMNS.map((col) => (
                       <th
                         key={col.key}
                         onClick={() => toggleSort(col.key)}
-                        className="px-2 py-2 text-left font-semibold text-magic-ink/60 cursor-pointer hover:text-magic-red select-none"
+                        className="px-2 py-2 text-left font-semibold text-espark-ink/60 cursor-pointer hover:text-espark-primary select-none"
                       >
                         <span className="inline-flex items-center gap-1">
                           <span className="truncate">{col.label}</span>
@@ -496,7 +496,7 @@ export default function CatalogBrowser({
                   {sorted.map((p) => (
                     <tr
                       key={p.id}
-                      className="border-t border-magic-border/50 hover:bg-magic-soft/30 transition-colors"
+                      className="border-t border-espark-border/50 hover:bg-espark-soft/30 transition-colors"
                     >
                       <td className="px-2 py-1.5">
                         <div className="flex items-center gap-1">
@@ -505,7 +505,7 @@ export default function CatalogBrowser({
                               onClick={() => setEditingProduct(p)}
                               title="Edit product values"
                               aria-label="Edit product"
-                              className="w-7 h-7 rounded-full border border-magic-border bg-white text-magic-ink/60 flex items-center justify-center hover:bg-magic-soft hover:text-magic-red hover:border-magic-red/40 focus:outline-none focus:ring-2 focus:ring-magic-red/30 transition-colors"
+                              className="w-7 h-7 rounded-full border border-espark-border bg-espark-surface text-espark-ink/60 flex items-center justify-center hover:bg-espark-soft hover:text-espark-primary hover:border-espark-primary/40 focus:outline-none focus:ring-2 focus:ring-espark-primary/30 transition-colors"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -538,7 +538,7 @@ export default function CatalogBrowser({
                                 <img
                                   src={url}
                                   alt={`${p.model} thumbnail`}
-                                  className="inline-block w-14 h-14 object-cover rounded border border-magic-border"
+                                  className="inline-block w-14 h-14 object-cover rounded border border-espark-border"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     window.open(url, "_blank", "noopener");
@@ -547,7 +547,7 @@ export default function CatalogBrowser({
                                   style={{ cursor: "zoom-in" }}
                                 />
                               ) : (
-                                <span className="text-magic-ink/30">—</span>
+                                <span className="text-espark-ink/30">—</span>
                               )}
                             </td>
                           );
@@ -586,10 +586,10 @@ export default function CatalogBrowser({
                                 : "truncate whitespace-nowrap"
                             } ${
                               col.key === "model"
-                                ? "font-semibold text-magic-ink"
+                                ? "font-semibold text-espark-ink"
                                 : col.key === "price_si"
-                                  ? "text-magic-red font-semibold whitespace-nowrap"
-                                  : "text-magic-ink/70"
+                                  ? "text-espark-primary font-semibold whitespace-nowrap"
+                                  : "text-espark-ink/70"
                             }`}
                             onClick={
                               col.key === "specifications"
@@ -709,7 +709,7 @@ function PictureUploader({
 
   return (
     <div className="flex items-center gap-3">
-      <div className="w-20 h-20 rounded-lg border border-magic-border bg-magic-soft/40 flex items-center justify-center overflow-hidden flex-shrink-0">
+      <div className="w-20 h-20 rounded-lg border border-espark-border bg-espark-soft/40 flex items-center justify-center overflow-hidden flex-shrink-0">
         {value ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
@@ -718,7 +718,7 @@ function PictureUploader({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-[10px] text-magic-ink/40 text-center px-1">
+          <span className="text-[10px] text-espark-ink/40 text-center px-1">
             No picture
           </span>
         )}
@@ -740,7 +740,7 @@ function PictureUploader({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={busy}
-          className="rounded-md border border-magic-border bg-white px-3 py-1.5 text-xs font-semibold text-magic-ink hover:border-magic-red hover:text-magic-red disabled:opacity-50"
+          className="rounded-md border border-espark-border bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-ink hover:border-espark-primary hover:text-espark-primary disabled:opacity-50"
         >
           {busy ? "Compressing…" : value ? "Change picture" : "Upload picture"}
         </button>
@@ -749,12 +749,12 @@ function PictureUploader({
             type="button"
             onClick={() => onChange(null)}
             disabled={busy}
-            className="rounded-md border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+            className="rounded-md border border-red-200 bg-espark-surface px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
           >
             Remove
           </button>
         )}
-        <span className="text-[10px] text-magic-ink/50">
+        <span className="text-[10px] text-espark-ink/50">
           Auto-compressed to ≤200 KB.
         </span>
       </div>
@@ -897,13 +897,13 @@ function EditProductModal({
       }}
     >
       <div
-        className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-2xl rounded-2xl bg-espark-surface p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <h2 className="text-lg font-bold text-magic-ink">Edit product</h2>
-            <p className="mt-1 text-xs text-magic-ink/60">
+            <h2 className="text-lg font-bold text-espark-ink">Edit product</h2>
+            <p className="mt-1 text-xs text-espark-ink/60">
               Updating <b>{product.model}</b>. Changes are written straight to
               the catalogue database.
             </p>
@@ -912,7 +912,7 @@ function EditProductModal({
             type="button"
             onClick={onCancel}
             disabled={saving || deleting}
-            className="rounded-full w-8 h-8 flex items-center justify-center text-magic-ink/40 hover:bg-magic-soft hover:text-magic-ink disabled:opacity-50"
+            className="rounded-full w-8 h-8 flex items-center justify-center text-espark-ink/40 hover:bg-espark-soft hover:text-espark-ink disabled:opacity-50"
             aria-label="Close"
           >
             ×
@@ -929,7 +929,7 @@ function EditProductModal({
           {EDIT_FIELDS.map((f) => {
             const value = draft[f.key];
             const commonClass =
-              "w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:outline-none focus:border-magic-red focus:ring-2 focus:ring-magic-red/20";
+              "w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:outline-none focus:border-espark-primary focus:ring-2 focus:ring-espark-primary/20";
             // The image variant renders its own buttons (Change / Remove)
             // so a wrapping <label> would forward stray clicks to the
             // hidden file input. Use a plain <div> for image fields and
@@ -943,7 +943,7 @@ function EditProductModal({
                   f.type === "textarea" ? "md:col-span-2" : ""
                 }`}
               >
-                <span className="text-[10px] font-semibold uppercase text-magic-ink/60">
+                <span className="text-[10px] font-semibold uppercase text-espark-ink/60">
                   {f.label}
                 </span>
                 {f.type === "textarea" ? (
@@ -960,7 +960,7 @@ function EditProductModal({
                   // sits in the field instead, where it answers "207.25 of
                   // what?" without a trip to the column beside it.
                   <span className="relative flex items-center">
-                    <span className="pointer-events-none absolute left-3 text-sm font-semibold text-magic-ink/35">
+                    <span className="pointer-events-none absolute left-3 text-sm font-semibold text-espark-ink/35">
                       {draft.currency || "USD"}
                     </span>
                     <input
@@ -1005,7 +1005,7 @@ function EditProductModal({
               type="button"
               onClick={onCancel}
               disabled={saving || deleting}
-              className="rounded-lg px-4 py-2 text-sm text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+              className="rounded-lg px-4 py-2 text-sm text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
             >
               Cancel
             </button>
@@ -1013,7 +1013,7 @@ function EditProductModal({
               type="button"
               onClick={save}
               disabled={!dirty || saving || deleting}
-              className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {saving ? "Saving…" : "Save changes"}
             </button>

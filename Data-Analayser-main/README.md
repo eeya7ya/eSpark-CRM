@@ -1,6 +1,6 @@
-# MagicTech — AI Quotation Designer (Vercel 2026)
+# eSpark — AI Quotation Designer (Vercel 2026)
 
-Professional low-current / ICT / AV / surveillance quotation designer. Powered
+Quotation, pricing and lead-management workspace for eSpark. Powered
 by Next.js 15 (App Router), **Postgres** (any provider, accessed via a
 transaction pooler), and Groq for fast AI inference with a live
 agentic web-search fallback. All catalogs are pulled in real time from the
@@ -30,8 +30,9 @@ product data.
 - **Auth.** HttpOnly JWT cookies signed with `jose`. Default admin on first
   boot is `admin / admin123` — change it immediately. Admins create further
   users from the Admin page.
-- **Printable quotation.** Styled to exactly match the Magic Tech Sales
-  Quotation layout (Aqaba example). Click **Print / PDF** to export.
+- **Printable quotation.** A4 sales-quotation layout with running header and
+  footer. Click **Print / PDF** to export. Print output is pinned to a fixed
+  light palette, so it is identical whether the app is in light or dark mode.
 
 ---
 
@@ -51,7 +52,7 @@ settings:
 | `DEFAULT_ADMIN_PASS`             |          | Default `admin123` — **change immediately after first login**                           |
 | `GITHUB_REPO`                    |          | `owner/repo` that hosts `DATABASE/` — default this repo                                 |
 | `GITHUB_BRANCH`                  |          | Branch that hosts `DATABASE/`                                                            |
-| `COMPANY_LOGO_URL`               |          | Raw GitHub URL for the Magic Tech logo (falls back to SVG)                              |
+| `COMPANY_LOGO_URL`               |          | Raw GitHub URL for the eSpark logo (falls back to `/logo-placeholder.svg`)              |
 
 ### How the Postgres URL is resolved
 
@@ -150,7 +151,7 @@ Recommended path:
 
 ## DATABASE/ folder
 
-Mirrors your Magic Tech catalog exactly. Each category contains:
+Mirrors the product catalog. Each category contains:
 
 - `*_db.json` — the products with pricing.
 - `*_selection_theory.json` — engineering selection criteria used by the AI
@@ -216,4 +217,4 @@ src/
 
 ## License
 
-Proprietary — Magic Tech / Neogenesis.
+Proprietary — eSpark.

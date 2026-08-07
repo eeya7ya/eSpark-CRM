@@ -225,13 +225,13 @@ export default function DuplicateQuotation({
       <div
         ref={menuRef}
         style={{ top: menuPos.top, left: menuPos.left, width: 256 }}
-        className="fixed z-[1000] rounded-md border border-magic-border bg-white shadow-lg py-1 text-sm max-h-72 overflow-y-auto"
+        className="fixed z-[1000] rounded-md border border-espark-border bg-espark-surface shadow-lg py-1 text-sm max-h-72 overflow-y-auto"
       >
-        <div className="px-3 pt-1.5 pb-1 text-[10px] uppercase tracking-wide text-magic-ink/50">
+        <div className="px-3 pt-1.5 pb-1 text-[10px] uppercase tracking-wide text-espark-ink/50">
           Paste a copy into…
         </div>
         {folders.length === 0 && (
-          <div className="px-3 py-2 text-xs text-magic-ink/50 italic">
+          <div className="px-3 py-2 text-xs text-espark-ink/50 italic">
             No client folders yet — create one first.
           </div>
         )}
@@ -240,20 +240,20 @@ export default function DuplicateQuotation({
             key={f.id}
             onClick={() => duplicateTo(f.id)}
             disabled={loading}
-            className={`w-full text-left px-3 py-1.5 hover:bg-magic-header disabled:opacity-50 ${
-              currentFolderId === f.id ? "font-semibold text-magic-red" : ""
+            className={`w-full text-left px-3 py-1.5 hover:bg-espark-header disabled:opacity-50 ${
+              currentFolderId === f.id ? "font-semibold text-espark-primary" : ""
             }`}
           >
             {f.name}
             {currentFolderId === f.id && (
-              <span className="ml-1 text-[10px] italic text-magic-ink/50">
+              <span className="ml-1 text-[10px] italic text-espark-ink/50">
                 (same client)
               </span>
             )}
           </button>
         ))}
         {error && (
-          <div className="mt-1 border-t border-magic-border px-3 py-2 text-[11px] text-red-600">
+          <div className="mt-1 border-t border-espark-border px-3 py-2 text-[11px] text-red-600">
             {error}
           </div>
         )}
@@ -266,7 +266,7 @@ export default function DuplicateQuotation({
         ref={buttonRef}
         onClick={() => setOpen(!open)}
         disabled={loading}
-        className="text-xs text-magic-red hover:underline disabled:opacity-50"
+        className="text-xs text-espark-primary hover:underline disabled:opacity-50"
         title="Duplicate this quotation into a client folder"
       >
         {loading ? "Copying…" : "Copy"}

@@ -128,7 +128,7 @@ export default function NewsAdminPanel() {
               deleted_at: null,
             })
           }
-          className="px-3 py-1.5 text-sm font-semibold rounded bg-magic-red text-white hover:bg-magic-red/90 transition-colors"
+          className="px-3 py-1.5 text-sm font-semibold rounded bg-espark-primary text-white hover:bg-espark-primary/90 transition-colors"
         >
           + New announcement
         </button>
@@ -143,9 +143,9 @@ export default function NewsAdminPanel() {
       )}
 
       {posts === null ? (
-        <p className="text-sm text-magic-ink/60">Loading…</p>
+        <p className="text-sm text-espark-ink/60">Loading…</p>
       ) : posts.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           No announcements yet.
         </p>
       ) : (
@@ -153,15 +153,15 @@ export default function NewsAdminPanel() {
           {posts.map((p) => (
             <li
               key={p.id}
-              className={`rounded-xl border bg-white p-3 ${
-                p.deleted_at ? "border-magic-border/40 opacity-70" : "border-magic-border"
+              className={`rounded-xl border bg-espark-surface p-3 ${
+                p.deleted_at ? "border-espark-border/40 opacity-70" : "border-espark-border"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="font-semibold text-magic-ink flex items-center gap-2">
+                  <div className="font-semibold text-espark-ink flex items-center gap-2">
                     {p.pinned && (
-                      <span className="rounded-full bg-magic-red/15 text-magic-red px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                      <span className="rounded-full bg-espark-primary/15 text-espark-primary px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
                         Pinned
                       </span>
                     )}
@@ -172,10 +172,10 @@ export default function NewsAdminPanel() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-magic-ink/80 mt-1 whitespace-pre-line line-clamp-3">
+                  <p className="text-sm text-espark-ink/80 mt-1 whitespace-pre-line line-clamp-3">
                     {p.body}
                   </p>
-                  <div className="text-xs text-magic-ink/50 mt-1">
+                  <div className="text-xs text-espark-ink/50 mt-1">
                     modules: {toAudienceArray(p.audience_modules).join(", ")} ·
                     roles: {toAudienceArray(p.audience_roles).join(", ")}
                     {p.expires_at && (
@@ -190,14 +190,14 @@ export default function NewsAdminPanel() {
                   <button
                     onClick={() => setEditing(p)}
                     disabled={busy}
-                    className="px-2 py-1 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                    className="px-2 py-1 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => void toggleArchive(p.id, !p.deleted_at)}
                     disabled={busy}
-                    className="px-2 py-1 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50 transition-colors"
+                    className="px-2 py-1 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50 transition-colors"
                   >
                     {p.deleted_at ? "Unarchive" : "Archive"}
                   </button>
@@ -254,8 +254,8 @@ function NewsForm({
   ).sort();
 
   return (
-    <div className="rounded-xl border border-dashed border-magic-border bg-white p-4 space-y-3">
-      <h3 className="font-semibold text-magic-ink">
+    <div className="rounded-xl border border-dashed border-espark-border bg-espark-surface p-4 space-y-3">
+      <h3 className="font-semibold text-espark-ink">
         {post.id ? `Edit announcement #${post.id}` : "New announcement"}
       </h3>
 
@@ -265,7 +265,7 @@ function NewsForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         disabled={busy}
-        className="w-full rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+        className="w-full rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
       />
       <textarea
         placeholder="Body"
@@ -273,11 +273,11 @@ function NewsForm({
         onChange={(e) => setBody(e.target.value)}
         disabled={busy}
         rows={4}
-        className="w-full rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+        className="w-full rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
       />
 
       <div>
-        <div className="text-xs font-semibold text-magic-ink/70 mb-1">
+        <div className="text-xs font-semibold text-espark-ink/70 mb-1">
           Audience modules
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -286,8 +286,8 @@ function NewsForm({
               key={m}
               className={`px-2 py-1 text-xs rounded border cursor-pointer ${
                 modulesSel.includes(m)
-                  ? "border-magic-red bg-magic-red/10 text-magic-red"
-                  : "border-magic-border bg-white text-magic-ink/70 hover:bg-magic-soft"
+                  ? "border-espark-primary bg-espark-primary/10 text-espark-primary"
+                  : "border-espark-border bg-espark-surface text-espark-ink/70 hover:bg-espark-soft"
               }`}
             >
               <input
@@ -303,7 +303,7 @@ function NewsForm({
       </div>
 
       <div>
-        <div className="text-xs font-semibold text-magic-ink/70 mb-1">
+        <div className="text-xs font-semibold text-espark-ink/70 mb-1">
           Audience roles
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -312,8 +312,8 @@ function NewsForm({
               key={r}
               className={`px-2 py-1 text-xs rounded border cursor-pointer ${
                 rolesSel.includes(r)
-                  ? "border-magic-red bg-magic-red/10 text-magic-red"
-                  : "border-magic-border bg-white text-magic-ink/70 hover:bg-magic-soft"
+                  ? "border-espark-primary bg-espark-primary/10 text-espark-primary"
+                  : "border-espark-border bg-espark-surface text-espark-ink/70 hover:bg-espark-soft"
               }`}
             >
               <input
@@ -345,7 +345,7 @@ function NewsForm({
             value={expiresAt}
             onChange={(e) => setExpiresAt(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-2 py-1 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-2 py-1 text-sm"
           />
         </label>
       </div>
@@ -354,7 +354,7 @@ function NewsForm({
         <button
           onClick={onCancel}
           disabled={busy}
-          className="px-3 py-1.5 text-xs font-semibold rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
         >
           Cancel
         </button>
@@ -373,7 +373,7 @@ function NewsForm({
             })
           }
           disabled={busy || !title.trim() || !body.trim()}
-          className="px-3 py-1.5 text-xs font-semibold rounded bg-magic-red text-white hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold rounded bg-espark-primary text-white hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
         >
           {post.id ? "Save" : "Publish"}
         </button>

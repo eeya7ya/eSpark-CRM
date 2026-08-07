@@ -35,7 +35,7 @@
  *      you if they are missing and rows need them):
  *        CLOUDFLARE_R2_ACCESS_KEY_ID
  *        CLOUDFLARE_R2_SECRET_ACCESS_KEY
- *        CLOUDFLARE_R2_BUCKET            defaults to "magictech-files"
+ *        CLOUDFLARE_R2_BUCKET            defaults to "espark-files"
  *
  * Usage
  * ─────
@@ -66,7 +66,7 @@ const CF_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 
 const R2_ACCESS = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
 const R2_SECRET = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
-const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || "magictech-files";
+const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || "espark-files";
 
 const DRY_RUN = process.env.DRY_RUN === "1" || process.env.DRY_RUN === "true";
 const PAGE = Number(process.env.D1_PAGE_SIZE || 500);

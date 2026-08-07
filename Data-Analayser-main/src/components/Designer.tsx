@@ -80,7 +80,7 @@ export interface ExistingQuotation {
     /**
      * Brand variant id whose logo / cover / about-us artwork this
      * quotation should render. Legacy rows (no value stored) fall back
-     * to the default Magic Tech bundle in `getBrandVariant()`.
+     * to the default eSpark bundle in `getBrandVariant()`.
      */
     brandVariantId?: string;
     // Legacy marker. Quotations saved before the "Excl. Tax" button was
@@ -1666,7 +1666,7 @@ export default function Designer({
     };
 
     // ── 1) Title banner ────────────────────────────────────────────────
-    aoa.push(padRow(["Magic Tech — Sales Quotation"]));
+    aoa.push(padRow(["eSpark — Sales Quotation"]));
     merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: lastColIdx } });
 
     // ── 2) Info block (label / value pairs, 2 per row) ────────────────
@@ -1884,12 +1884,12 @@ export default function Designer({
     <div className="space-y-4">
       {/* ── Settings toolbar ──────────────────────────────────────────────── */}
       {showDesignUI && (
-      <div className="no-print rounded-2xl border border-magic-border bg-white p-4">
+      <div className="no-print rounded-2xl border border-espark-border bg-espark-surface p-4">
         <div className="flex flex-wrap items-end gap-4">
           {/* Pricing — default is SI (unit = SI base × 1). Toggle
               "Manual pricing" to apply a custom factor across every row. */}
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-[10px] font-semibold uppercase text-magic-ink/60 mb-1">
+            <label className="block text-[10px] font-semibold uppercase text-espark-ink/60 mb-1">
               Pricing
             </label>
             <div className="flex flex-wrap items-center gap-2">
@@ -1900,8 +1900,8 @@ export default function Designer({
                 }
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                   pricingCategory === "manual"
-                    ? "bg-magic-red text-white"
-                    : "border border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                    ? "bg-espark-primary text-white"
+                    : "border border-espark-border text-espark-ink/70 hover:bg-espark-soft"
                 }`}
                 title="Toggle to multiply every row's SI base price by a custom factor"
               >
@@ -1929,18 +1929,18 @@ export default function Designer({
                         (e.target as HTMLInputElement).blur();
                       }
                     }}
-                    className="w-20 rounded-md border border-magic-border px-2 py-1 text-sm"
+                    className="w-20 rounded-md border border-espark-border px-2 py-1 text-sm"
                     title="Multiplier applied to each row's SI base price (e.g. 1.5 = +50%, 0.98 = −2%)"
                     aria-label="Manual pricing factor"
                   />
-                  <span className="text-[10px] text-magic-ink/60">
+                  <span className="text-[10px] text-espark-ink/60">
                     × SI base
                   </span>
                 </>
               )}
             </div>
             {pricingCategory !== "manual" && (
-              <p className="mt-1 text-[10px] text-magic-ink/50">
+              <p className="mt-1 text-[10px] text-espark-ink/50">
                 Prices use the SI base.
               </p>
             )}
@@ -1949,7 +1949,7 @@ export default function Designer({
           {/* Quick settings */}
           <div className="flex flex-wrap items-end gap-3">
             <div>
-              <label className="block text-[10px] font-semibold uppercase text-magic-ink/60">
+              <label className="block text-[10px] font-semibold uppercase text-espark-ink/60">
                 Tax %
               </label>
               <div className="flex items-center gap-1.5 mt-1">
@@ -1958,7 +1958,7 @@ export default function Designer({
                   value={taxPercent}
                   onChange={(e) => setTaxPercent(Number(e.target.value))}
                   disabled={!includeTax}
-                  className={`w-20 rounded-md border border-magic-border px-2 py-1 text-sm ${
+                  className={`w-20 rounded-md border border-espark-border px-2 py-1 text-sm ${
                     !includeTax ? "opacity-40" : ""
                   }`}
                 />
@@ -1967,7 +1967,7 @@ export default function Designer({
                   className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
                     includeTax
                       ? "bg-green-600 text-white hover:bg-green-700"
-                      : "bg-gray-300 text-magic-ink/70 hover:bg-gray-400"
+                      : "bg-gray-300 text-espark-ink/70 hover:bg-gray-400"
                   }`}
                   title={includeTax ? "Click to exclude tax" : "Click to include tax"}
                 >
@@ -1978,7 +1978,7 @@ export default function Designer({
                   className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors ${
                     taxInclusive
                       ? "bg-orange-500 text-white hover:bg-orange-600"
-                      : "bg-gray-300 text-magic-ink/70 hover:bg-gray-400"
+                      : "bg-gray-300 text-espark-ink/70 hover:bg-gray-400"
                   }`}
                   title={taxInclusive ? "Prices shown are tax-excluded" : "Click to exclude tax from prices"}
                 >
@@ -1990,7 +1990,7 @@ export default function Designer({
                 trailing button to switch between a % of the subtotal and a
                 fixed JOD amount; the field below it edits the live mode. */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase text-magic-ink/60">
+              <label className="block text-[10px] font-semibold uppercase text-espark-ink/60">
                 Discount
               </label>
               <div className="flex items-center gap-1.5 mt-1">
@@ -2003,7 +2003,7 @@ export default function Designer({
                     if (discountMode === "amount") setDiscountAmount(v);
                     else setDiscountPercent(v);
                   }}
-                  className="w-20 rounded-md border border-magic-border px-2 py-1 text-sm"
+                  className="w-20 rounded-md border border-espark-border px-2 py-1 text-sm"
                   title={
                     discountMode === "amount"
                       ? "Fixed discount amount (JOD), applied to the subtotal before tax"
@@ -2014,14 +2014,14 @@ export default function Designer({
                   onClick={() =>
                     setDiscountMode(discountMode === "amount" ? "percent" : "amount")
                   }
-                  className="rounded-md px-2.5 py-1 text-[11px] font-semibold bg-gray-300 text-magic-ink/70 transition-colors hover:bg-gray-400"
+                  className="rounded-md px-2.5 py-1 text-[11px] font-semibold bg-gray-300 text-espark-ink/70 transition-colors hover:bg-gray-400"
                   title="Switch between a % of the subtotal and a fixed JOD amount"
                 >
                   {discountMode === "amount" ? "JOD" : "%"}
                 </button>
               </div>
             </div>
-            <label className="flex items-center gap-2 text-xs text-magic-ink/80 pb-1">
+            <label className="flex items-center gap-2 text-xs text-espark-ink/80 pb-1">
               <input
                 type="checkbox"
                 checked={showPictures}
@@ -2033,14 +2033,14 @@ export default function Designer({
                 its matching cover and about-us sheets so switching one
                 automatically swaps in the paired artwork at print time. */}
             <div>
-              <label className="block text-[10px] font-semibold uppercase text-magic-ink/60">
+              <label className="block text-[10px] font-semibold uppercase text-espark-ink/60">
                 Brand
               </label>
               <Select
                 value={brandVariantId}
                 onChange={(next) => setBrandVariantId(next)}
                 title="Select the logo, cover page and about-us page artwork for this quotation"
-                className="mt-1 rounded-md border border-magic-border px-2 py-1 text-sm min-w-[180px]"
+                className="mt-1 rounded-md border border-espark-border px-2 py-1 text-sm min-w-[180px]"
               >
                 {brandVariants.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -2059,7 +2059,7 @@ export default function Designer({
           has a single clear next action (Step 1: pick a client) instead of
           facing an empty preview they can't save anyway. */}
       {showDesignUI && (
-      <div className="rounded-2xl border border-magic-border bg-white p-4">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-4">
         <div className="no-print flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold">Quotation preview</h3>
           <div className="flex items-center gap-2">
@@ -2068,7 +2068,7 @@ export default function Designer({
                 className={`text-[11px] italic ${
                   saveStatus.startsWith("Error")
                     ? "text-red-600"
-                    : "text-magic-ink/60"
+                    : "text-espark-ink/60"
                 }`}
               >
                 {saveStatus}
@@ -2083,8 +2083,8 @@ export default function Designer({
               }
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 quickPickerOpen
-                  ? "bg-magic-red text-white border-magic-red hover:bg-red-700"
-                  : "border-magic-red text-magic-red hover:bg-magic-red hover:text-white"
+                  ? "bg-espark-primary text-white border-espark-primary hover:bg-red-700"
+                  : "border-espark-primary text-espark-primary hover:bg-espark-primary hover:text-white"
               }`}
             >
               {quickPickerOpen ? "Hide picker" : "Show picker"}
@@ -2122,7 +2122,7 @@ export default function Designer({
             <button
               onClick={clearAll}
               disabled={items.length === 0 || saving}
-              className="rounded-md border border-magic-border px-3 py-1.5 text-xs hover:bg-magic-soft disabled:opacity-40"
+              className="rounded-md border border-espark-border px-3 py-1.5 text-xs hover:bg-espark-soft disabled:opacity-40"
             >
               Clear
             </button>

@@ -94,28 +94,28 @@ export default function MoveToFolder({
         {loading ? "Moving…" : "Move"}
       </button>
       {open && (
-        <div className="absolute right-0 z-50 mt-1 w-56 rounded-md border border-magic-border bg-white shadow-lg py-1 text-sm max-h-72 overflow-y-auto">
+        <div className="absolute right-0 z-50 mt-1 w-56 rounded-md border border-espark-border bg-espark-surface shadow-lg py-1 text-sm max-h-72 overflow-y-auto">
           <button
             onClick={() => moveTo(null)}
-            className={`w-full text-left px-3 py-1.5 hover:bg-magic-header ${
-              currentFolderId === null ? "font-semibold text-magic-red" : ""
+            className={`w-full text-left px-3 py-1.5 hover:bg-espark-header ${
+              currentFolderId === null ? "font-semibold text-espark-primary" : ""
             }`}
           >
             Unfiled
           </button>
-          <div className="border-t border-magic-border my-1" />
+          <div className="border-t border-espark-border my-1" />
           {folders.map((f) => (
             <button
               key={f.id}
               onClick={() => moveTo(f.id)}
-              className={`w-full text-left px-3 py-1.5 hover:bg-magic-header ${
-                currentFolderId === f.id ? "font-semibold text-magic-red" : ""
+              className={`w-full text-left px-3 py-1.5 hover:bg-espark-header ${
+                currentFolderId === f.id ? "font-semibold text-espark-primary" : ""
               }`}
             >
               {f.name}
             </button>
           ))}
-          <div className="border-t border-magic-border my-1" />
+          <div className="border-t border-espark-border my-1" />
           {creatingNew ? (
             <div className="px-2 py-1.5 flex items-center gap-1">
               <input
@@ -125,7 +125,7 @@ export default function MoveToFolder({
                 onChange={(e) => setNewFolderName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && createAndMove()}
                 placeholder="Folder name…"
-                className="flex-1 px-2 py-1 text-xs border border-magic-border rounded focus:outline-none focus:ring-1 focus:ring-magic-red/30"
+                className="flex-1 px-2 py-1 text-xs border border-espark-border rounded focus:outline-none focus:ring-1 focus:ring-espark-primary/30"
               />
               <button
                 onClick={createAndMove}
@@ -138,7 +138,7 @@ export default function MoveToFolder({
           ) : (
             <button
               onClick={() => setCreatingNew(true)}
-              className="w-full text-left px-3 py-1.5 text-blue-600 hover:bg-magic-header flex items-center gap-1"
+              className="w-full text-left px-3 py-1.5 text-blue-600 hover:bg-espark-header flex items-center gap-1"
             >
               <svg
                 className="w-3.5 h-3.5"

@@ -47,18 +47,18 @@ export default function ProjectDrillDownShell({
     // print reset (globals.css) strip the project shell when a quotation under
     // this project is printed, so only the quotation document hits the page —
     // no TopBar / breadcrumb / header / tab strip leaking into the PDF.
-    <div className="min-h-screen bg-magic-soft/40 print-root">
+    <div className="min-h-screen bg-espark-soft/40 print-root">
       <div className="no-print">
         <TopBar user={user} />
       </div>
       <main className="max-w-6xl mx-auto px-6 py-6 lg:px-10 space-y-5 print-main">
         <div className="no-print">
-          <div className="text-xs text-magic-ink/50">
+          <div className="text-xs text-espark-ink/50">
             {breadcrumb.map((c, i) => (
               <span key={`${i}:${c.label}`}>
                 {i > 0 && <span> → </span>}
                 {c.href ? (
-                  <Link href={c.href} className="hover:text-magic-red">
+                  <Link href={c.href} className="hover:text-espark-primary">
                     {c.label}
                   </Link>
                 ) : (
@@ -69,14 +69,14 @@ export default function ProjectDrillDownShell({
           </div>
           <div className="flex items-start justify-between gap-3 mt-1">
             <div>
-              <h1 className="text-2xl font-bold text-magic-ink">
+              <h1 className="text-2xl font-bold text-espark-ink">
                 {project.name}
               </h1>
-              <div className="text-xs text-magic-ink/60 mt-0.5">
+              <div className="text-xs text-espark-ink/60 mt-0.5">
                 status: {project.status}
               </div>
               {project.description && (
-                <p className="text-sm text-magic-ink/80 mt-2 whitespace-pre-line">
+                <p className="text-sm text-espark-ink/80 mt-2 whitespace-pre-line">
                   {project.description}
                 </p>
               )}
@@ -113,20 +113,20 @@ export function NoProjectAccess({
   fallbackLabel: string;
 }) {
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-3xl mx-auto p-6 text-center">
-        <h1 className="text-xl font-bold text-magic-ink mb-2">
+        <h1 className="text-xl font-bold text-espark-ink mb-2">
           You don&apos;t have access to this project
         </h1>
-        <p className="text-sm text-magic-ink/60">
+        <p className="text-sm text-espark-ink/60">
           Ask the owner to assign you, or an admin to grant projects-module
           access. The project and every file under it stay intact regardless
           of access changes.
         </p>
         <Link
           href={fallbackHref}
-          className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft transition-colors"
+          className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft transition-colors"
         >
           ← {fallbackLabel}
         </Link>

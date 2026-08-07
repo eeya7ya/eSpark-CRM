@@ -80,19 +80,19 @@ export default async function ProjectDetailPage({
   }
   if (!canView) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-3xl mx-auto px-6 py-10 text-center">
-          <h1 className="text-xl font-bold text-magic-ink mb-2">
+          <h1 className="text-xl font-bold text-espark-ink mb-2">
             You don&apos;t have access to this project
           </h1>
-          <p className="text-sm text-magic-ink/60">
+          <p className="text-sm text-espark-ink/60">
             Ask the project owner or an admin to assign you. Your existing
             grants and data remain untouched.
           </p>
           <Link
             href="/projects"
-            className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft"
+            className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft"
           >
             Back to projects
           </Link>
@@ -113,29 +113,29 @@ export default async function ProjectDetailPage({
   `) as QuotationLite[];
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-5xl mx-auto px-6 py-6 lg:px-10 space-y-5">
         <div>
           <Link
             href="/projects"
-            className="text-xs text-magic-ink/50 hover:text-magic-red"
+            className="text-xs text-espark-ink/50 hover:text-espark-primary"
           >
             ← All projects
           </Link>
           <div className="flex items-start justify-between gap-3 mt-1">
-            <h1 className="text-2xl font-bold text-magic-ink">
+            <h1 className="text-2xl font-bold text-espark-ink">
               {project.name}
             </h1>
           </div>
-          <div className="mt-1 text-sm text-magic-ink/60 flex flex-wrap items-center gap-2">
+          <div className="mt-1 text-sm text-espark-ink/60 flex flex-wrap items-center gap-2">
             <span>Status: {project.status}</span>
             {project.folder_name && (
               <>
                 <span>·</span>
                 <Link
                   href={`/folder/${project.folder_id}`}
-                  className="hover:text-magic-red"
+                  className="hover:text-espark-primary"
                 >
                   Folder: {project.folder_name}
                 </Link>
@@ -149,7 +149,7 @@ export default async function ProjectDetailPage({
             )}
           </div>
           {project.description && (
-            <p className="mt-3 text-sm text-magic-ink/80 whitespace-pre-line">
+            <p className="mt-3 text-sm text-espark-ink/80 whitespace-pre-line">
               {project.description}
             </p>
           )}
@@ -175,16 +175,16 @@ export default async function ProjectDetailPage({
         <ExecutionReportsPanel projectId={id} />
 
         {(isAdmin || isOwner) && (
-        <section className="rounded-2xl border border-magic-border bg-white p-5">
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+        <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Quotations under this project
           </h2>
           {quotations.length === 0 ? (
-            <p className="text-sm text-magic-ink/50 italic">
+            <p className="text-sm text-espark-ink/50 italic">
               No quotations filed under this project yet.
             </p>
           ) : (
-            <ul className="divide-y divide-magic-border">
+            <ul className="divide-y divide-espark-border">
               {quotations.map((qq) => (
                 <li
                   key={qq.id}
@@ -193,16 +193,16 @@ export default async function ProjectDetailPage({
                   <div className="min-w-0">
                     <Link
                       href={`/quotation?id=${qq.id}`}
-                      className="font-mono text-sm font-semibold text-magic-ink hover:text-magic-red"
+                      className="font-mono text-sm font-semibold text-espark-ink hover:text-espark-primary"
                     >
                       {qq.ref}
                     </Link>
-                    <span className="ml-2 text-sm text-magic-ink/70">
+                    <span className="ml-2 text-sm text-espark-ink/70">
                       {qq.project_name}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs">
-                    <span className="text-magic-ink/50">{qq.status}</span>
+                    <span className="text-espark-ink/50">{qq.status}</span>
                     {qq.approved_at && (
                       <span className="inline-flex rounded-full border border-emerald-300 bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700">
                         approved

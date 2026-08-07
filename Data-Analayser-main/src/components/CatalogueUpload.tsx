@@ -378,9 +378,9 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
        block — a second bordered card here read as a competing panel, and its
        own <h2> repeated the heading the tile above already carries. */
     <div>
-      <p className="text-xs leading-relaxed text-magic-ink/60 mb-4">
+      <p className="text-xs leading-relaxed text-espark-ink/60 mb-4">
         Upload an Excel file (.xlsx / .xls) with columns:{" "}
-        <span className="font-mono text-magic-ink/80">
+        <span className="font-mono text-espark-ink/80">
           vendor, System, Category, sub_category, Fast View, model, description, currency, price_si, Specifications
         </span>
         . Products are matched by <b>model</b>: only new and changed rows are
@@ -389,7 +389,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
 
       {/* File picker */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700">
           Choose file
           <input
             type="file"
@@ -403,7 +403,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
           />
         </label>
         {fileName && (
-          <span className="inline-flex items-center gap-1.5 rounded-lg border border-magic-border bg-magic-soft/60 px-2.5 py-1.5 text-xs font-medium text-magic-ink/70">
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border bg-espark-soft/60 px-2.5 py-1.5 text-xs font-medium text-espark-ink/70">
             {fileName}
           </span>
         )}
@@ -433,7 +433,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
 
       {/* Header mapping info */}
       {rows.length > 0 && Object.keys(headerMap).length > 0 && (
-        <div className="mb-4 text-xs text-magic-ink/60">
+        <div className="mb-4 text-xs text-espark-ink/60">
           <span className="font-semibold">Column mapping: </span>
           {Object.entries(headerMap)
             .filter(([orig, norm]) => orig.toLowerCase().replace(/\s/g, "_") !== norm)
@@ -449,9 +449,9 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
 
       {/* Change-detection summary */}
       {rows.length > 0 && (
-        <div className="mb-3 rounded-lg border border-magic-border bg-magic-soft/40 px-4 py-3 text-sm">
+        <div className="mb-3 rounded-lg border border-espark-border bg-espark-soft/40 px-4 py-3 text-sm">
           {fpStatus === "loading" && (
-            <span className="text-magic-ink/60">
+            <span className="text-espark-ink/60">
               Comparing against the current catalogue…
             </span>
           )}
@@ -463,7 +463,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
           )}
           {fpStatus === "ready" && (
             <div className="flex flex-col gap-2">
-              <span className="text-magic-ink">
+              <span className="text-espark-ink">
                 <b>{newCount}</b> new · <b>{changedCount}</b> changed ·{" "}
                 {imageRefreshCount > 0 && (
                   <>
@@ -471,9 +471,9 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
                   </>
                 )}
                 <b>{unchangedCount}</b> unchanged{" "}
-                <span className="text-magic-ink/50">(skipped)</span>
+                <span className="text-espark-ink/50">(skipped)</span>
               </span>
-              <label className="inline-flex items-center gap-1.5 text-xs text-magic-ink/70">
+              <label className="inline-flex items-center gap-1.5 text-xs text-espark-ink/70">
                 <input
                   type="checkbox"
                   checked={refreshImages}
@@ -497,13 +497,13 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
       {rows.length > 0 && (
         <>
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-semibold text-magic-ink">
+            <span className="text-sm font-semibold text-espark-ink">
               Preview — {rows.length} product(s)
             </span>
             <button
               onClick={upload}
               disabled={uploading || fpStatus === "loading" || toUpload.length === 0}
-              className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
             >
               {uploading
                 ? uploadProgress
@@ -516,17 +516,17 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
                     : `Upload ${toUpload.length} product${toUpload.length === 1 ? "" : "s"}`}
             </button>
           </div>
-          <div className="overflow-x-auto max-h-[40vh] overflow-y-auto rounded-lg border border-magic-border">
+          <div className="overflow-x-auto max-h-[40vh] overflow-y-auto rounded-lg border border-espark-border">
             <table className="w-full text-xs border-collapse">
-              <thead className="sticky top-0 bg-magic-soft/80 backdrop-blur">
+              <thead className="sticky top-0 bg-espark-soft/80 backdrop-blur">
                 <tr>
-                  <th className="px-3 py-2 text-left font-semibold text-magic-ink/60 whitespace-nowrap">
+                  <th className="px-3 py-2 text-left font-semibold text-espark-ink/60 whitespace-nowrap">
                     picture
                   </th>
                   {EXPECTED_COLUMNS.map((col) => (
                     <th
                       key={col}
-                      className="px-3 py-2 text-left font-semibold text-magic-ink/60 whitespace-nowrap"
+                      className="px-3 py-2 text-left font-semibold text-espark-ink/60 whitespace-nowrap"
                     >
                       {col.replace(/_/g, " ")}
                     </th>
@@ -535,17 +535,17 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
               </thead>
               <tbody>
                 {rows.slice(0, 100).map((r, i) => (
-                  <tr key={i} className="border-t border-magic-border/50 hover:bg-magic-soft/30">
+                  <tr key={i} className="border-t border-espark-border/50 hover:bg-espark-soft/30">
                     <td className="px-3 py-1.5">
                       {r.picture_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={r.picture_url}
                           alt=""
-                          className="h-10 w-10 object-contain rounded border border-magic-border bg-white"
+                          className="h-10 w-10 object-contain rounded border border-espark-border bg-espark-surface"
                         />
                       ) : (
-                        <span className="text-magic-ink/30">—</span>
+                        <span className="text-espark-ink/30">—</span>
                       )}
                     </td>
                     <td className="px-3 py-1.5 whitespace-nowrap">{r.vendor}</td>
@@ -556,7 +556,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
                     <td className="px-3 py-1.5 whitespace-nowrap font-semibold">{r.model}</td>
                     <td className="px-3 py-1.5 max-w-[200px] truncate">{r.description}</td>
                     <td className="px-3 py-1.5 whitespace-nowrap">{r.currency}</td>
-                    <td className="px-3 py-1.5 whitespace-nowrap text-magic-red font-semibold">
+                    <td className="px-3 py-1.5 whitespace-nowrap text-espark-primary font-semibold">
                       {r.price_si > 0 ? r.price_si.toFixed(2) : "—"}
                     </td>
                     <td className="px-3 py-1.5 max-w-[200px] truncate">{r.specifications}</td>
@@ -566,7 +566,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
             </table>
           </div>
           {rows.length > 100 && (
-            <p className="mt-2 text-xs text-magic-ink/50">
+            <p className="mt-2 text-xs text-espark-ink/50">
               Showing first 100 of {rows.length} rows.
             </p>
           )}

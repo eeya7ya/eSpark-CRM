@@ -180,7 +180,7 @@ export default function DashboardPage() {
         <div className="flex flex-shrink-0 items-center gap-2">
           <Link
             href="/pricing/deep-search"
-            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-600 transition-all hover:border-cyan-300 hover:text-cyan-700"
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-espark-surface px-4 py-2.5 text-sm font-semibold text-gray-600 transition-all hover:border-cyan-300 hover:text-cyan-700"
           >
             <ScanSearch className="h-4 w-4" />
             Deep Search
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                     if (e.key === "Enter") handleCreate();
                     if (e.key === "Escape") handleCancel();
                   }}
-                  className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 min-w-[200px]"
+                  className="rounded-xl border border-gray-200 bg-espark-surface px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 min-w-[200px]"
                 />
               </div>
 
@@ -225,7 +225,7 @@ export default function DashboardPage() {
                         if (e.key === "Enter") handleCreate();
                         if (e.key === "Escape") handleCancel();
                       }}
-                      className="w-28 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
+                      className="w-28 rounded-xl border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
                     />
                   </div>
                 ))}
@@ -247,7 +247,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-all"
+                  className="rounded-xl border border-gray-200 bg-espark-surface px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-all"
                 >
                   Cancel
                 </button>
@@ -285,7 +285,7 @@ export default function DashboardPage() {
               "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
               activeTab === "all"
                 ? "bg-cyan-500 text-white shadow-sm"
-                : "border border-gray-200 bg-white text-gray-600 hover:border-cyan-300 hover:text-cyan-700"
+                : "border border-gray-200 bg-espark-surface text-gray-600 hover:border-cyan-300 hover:text-cyan-700"
             )}
           >
             All
@@ -298,7 +298,7 @@ export default function DashboardPage() {
                 "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
                 activeTab === tab.id
                   ? "bg-cyan-500 text-white shadow-sm"
-                  : "border border-gray-200 bg-white text-gray-600 hover:border-cyan-300 hover:text-cyan-700"
+                  : "border border-gray-200 bg-espark-surface text-gray-600 hover:border-cyan-300 hover:text-cyan-700"
             )}
             >
               {tab.label}

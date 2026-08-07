@@ -63,13 +63,13 @@ export default function AdminSettings({
   return (
     <form
       onSubmit={save}
-      className="rounded-2xl border border-magic-border bg-white p-5 space-y-5"
+      className="rounded-2xl border border-espark-border bg-espark-surface p-5 space-y-5"
     >
       <div>
-        <label className="block text-xs font-semibold uppercase text-magic-ink/60 mb-1">
+        <label className="block text-xs font-semibold uppercase text-espark-ink/60 mb-1">
           Default Terms &amp; Conditions
         </label>
-        <p className="text-[11px] text-magic-ink/60 mb-2">
+        <p className="text-[11px] text-espark-ink/60 mb-2">
           One term per line. These seed every new quotation and replace the
           built-in default list. Existing saved quotations keep their own
           terms.
@@ -78,16 +78,16 @@ export default function AdminSettings({
           value={termsText}
           onChange={(e) => setTermsText(e.target.value)}
           rows={8}
-          className="w-full rounded-md border border-magic-border px-3 py-2 text-sm font-mono"
+          className="w-full rounded-md border border-espark-border px-3 py-2 text-sm font-mono"
           placeholder="Validity: 1 week from the date of the offer."
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold uppercase text-magic-ink/60 mb-1">
+        <label className="block text-xs font-semibold uppercase text-espark-ink/60 mb-1">
           Printable footer (company address line)
         </label>
-        <p className="text-[11px] text-magic-ink/60 mb-2">
+        <p className="text-[11px] text-espark-ink/60 mb-2">
           Shown at the bottom of every printable quotation sheet. Plain text —
           use a single line, or include line breaks to stack it.
         </p>
@@ -95,7 +95,7 @@ export default function AdminSettings({
           value={footerText}
           onChange={(e) => setFooterText(e.target.value)}
           rows={3}
-          className="w-full rounded-md border border-magic-border px-3 py-2 text-sm"
+          className="w-full rounded-md border border-espark-border px-3 py-2 text-sm"
           placeholder="Address: …  Tel: …  Fax: …"
         />
       </div>
@@ -104,7 +104,7 @@ export default function AdminSettings({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-md bg-magic-red text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+          className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save settings"}
         </button>

@@ -117,41 +117,52 @@ interface TpOverrides {
 
 // ─── Default content (mirrors the docx template) ──────────────────────────
 
+/*
+ * ─── Default proposal copy ────────────────────────────────────────────────
+ *
+ * These are editable placeholders, not statements of fact. Everything here is
+ * overridable per-proposal from the Designer, and the admin panel persists a
+ * house default.
+ *
+ * The previous deployment shipped this file pre-filled with the prior brand's
+ * corporate claims — a 2003 founding date, ICT/low-current specialisation,
+ * named vendor certifications, warranty terms tied to specific manufacturers,
+ * and a live customer reference (company, contact name and email). None of
+ * that transfers to eSpark, and asserting it in a customer-facing commercial
+ * document would be inaccurate, so those claims were removed rather than
+ * re-badged. What remains is drawn from eSpark's published identity — the four
+ * departments, the service lines and the contact details on espark.dev.
+ *
+ * ACTION REQUIRED before sending proposals to customers: supply real copy for
+ * the blocks marked `TODO(espark)` below. They are deliberately written as
+ * visible prompts so an unfilled proposal is obvious in review rather than
+ * quietly shipping someone else's boilerplate.
+ */
+
 const DEFAULT_ABOUT_US =
-  "Magic Tech, a leading Jordanian technology company established in 2003, " +
-  "specializes in delivering advanced Information and Communication " +
-  "Technology (ICT) and low-current solutions across a wide range of " +
-  "industries. With a strong commitment to innovation, quality, and " +
-  "customer satisfaction, Magic Tech provides comprehensive technology " +
-  "services that help organizations enhance security, efficiency, and " +
-  "operational performance.\n\n" +
-  "Our expertise covers the design, supply, installation, and maintenance " +
-  "of integrated technology solutions, including surveillance systems, " +
-  "access control and time attendance solutions, smart locks, intrusion " +
-  "alarm systems, fire alarm systems, video intercom systems, garage door " +
-  "automation, UPS and power backup systems, sound and public address " +
-  "solutions, networking infrastructure, as well as computer hardware and " +
-  "software solutions.\n\n" +
-  "At Magic Tech, we believe that technology is most effective when " +
-  "supported by professional expertise. Our team of highly qualified " +
-  "engineers and technicians brings extensive industry experience and " +
-  "continuously develops their skills through specialized training " +
-  "programs and certifications from leading international technology " +
-  "vendors.\n\n" +
-  "Over the years, Magic Tech has earned a strong reputation as a trusted " +
-  "technology partner by consistently providing high-quality products, " +
-  "professional implementation services, and exceptional after-sales " +
-  "support.";
+  "eSpark provides professional support across education, digital marketing, " +
+  "and engineering solutions. We combine expertise across these disciplines " +
+  "to deliver accurate, well-engineered work for clients worldwide.\n\n" +
+  "Our work is organised into four departments. eSpark Academy delivers " +
+  "expert-led courses and mentoring across engineering, AI, marketing and " +
+  "design. eSpark Marketing covers content creation, search engine " +
+  "optimisation and graphic design. eSpark Engineering provides drawings and " +
+  "design, electrical system design and protection studies. eSpark " +
+  "Networking covers network design, system administration, secure " +
+  "connectivity and web solutions.\n\n" +
+  "Each engagement is delivered by specialists in the relevant discipline, " +
+  "with the scope, deliverables and acceptance criteria agreed in writing " +
+  "before work begins.";
 
 const DEFAULT_DISCLAIMER = [
   "The information contained in this document is the sole property of " +
-    "MagicTech and its affiliated companies. Such information is provided " +
+    "eSpark and its affiliated companies. Such information is provided " +
     "in response to specific requests and is based on the information " +
-    "available at the time of preparation, as well as MagicTech's standard " +
+    "available at the time of preparation, as well as eSpark's standard " +
     "terms and conditions. It is intended solely for the purpose for which " +
     "it has been supplied and should not be relied upon for any other " +
     "purpose.",
-  "This document is submitted exclusively for the evaluation of MagicTech " +
+  "This document is submitted exclusively for the evaluation of eSpark " +
     "products, services, and solutions and may only be disclosed to " +
     "employees or authorized representatives of the intended recipient " +
     "who have a legitimate need to access such information.",
@@ -159,15 +170,15 @@ const DEFAULT_DISCLAIMER = [
     "this document is accurate and up to date at the time of publication. " +
     "However, products, specifications, services, and other content " +
     "described herein are subject to continuous development and " +
-    "improvement. MagicTech reserves the right to modify, update, or " +
+    "improvement. eSpark reserves the right to modify, update, or " +
     "discontinue any information, product, or service at any time without " +
     "prior notice.",
-  "MagicTech shall not be liable for any loss, damage, or consequences " +
+  "eSpark shall not be liable for any loss, damage, or consequences " +
     "arising from the use of, or reliance upon, information that may have " +
     "become outdated or inaccurate after publication.",
   "No part of this document may be copied, reproduced, distributed, " +
     "transmitted, stored in a retrieval system, or translated into any " +
-    "form or by any means without the prior written consent of MagicTech.",
+    "form or by any means without the prior written consent of eSpark.",
 ];
 
 const DEFAULT_SOLUTION_OVERVIEW =
@@ -177,72 +188,67 @@ const DEFAULT_SOLUTION_OVERVIEW =
   "delivers reliability, scalability and value for the client.";
 
 const DEFAULT_SERVICE_CONTRACT =
-  "Magic Tech offers a tailored Service Contract covering preventive " +
-  "maintenance visits, priority remote support, and on-site response for " +
-  "the duration of the agreement. The scope is sized to the project's " +
-  "criticality and can be extended annually.";
+  "TODO(espark): describe the support agreement offered with this project " +
+  "— what is covered, the response commitment, and the term. Scope this to " +
+  "what eSpark actually contracts to provide.";
 
 const DEFAULT_LOCAL_SUPPORT =
-  "All deployed systems are backed by Magic Tech's local support team " +
-  "operating out of Amman, with same-day phone and email response and " +
-  "next-business-day on-site dispatch for issues that cannot be resolved " +
-  "remotely.";
+  "Delivered work is supported by the eSpark team in Jordan, reachable at " +
+  "it-support@espark.dev and +962 79 655 7319.\\n\\n" +
+  "TODO(espark): state the response times eSpark commits to before this " +
+  "proposal goes to a customer.";
 
 const DEFAULT_SERVICE_LEVEL =
   "*This will be added based on the project.";
 
 const DEFAULT_TEAM =
-  "Magic Tech's Low Current team holds major vendor certifications " +
-  "across the product lines included in this proposal, with regularly " +
-  "renewed training so the deployed systems are commissioned to the " +
-  "manufacturer's best-practice guidelines.";
+  "TODO(espark): summarise the qualifications of the team assigned to " +
+  "this project — disciplines covered and any certifications eSpark " +
+  "actually holds. Do not list vendor certifications unless they are held.";
 
-const DEFAULT_REFERENCES: ReferenceRow[] = [
-  {
-    customer: "Cementra",
-    contact: "Osama Almashakbeh",
-    email: "O.Almashakbeh@cementra.com",
-    project: "CCTV, Structured Cabling & Solutions",
-  },
-];
+// Intentionally empty. The prior deployment shipped a live customer
+// reference here (company, contact name and email address); that is another
+// company's customer and their contact's personal data, so it was removed
+// rather than carried over. Add eSpark's own references — with the
+// referee's consent — via the proposal editor or the admin default.
+const DEFAULT_REFERENCES: ReferenceRow[] = [];
 
 const DEFAULT_SECTIONS: FpSection[] = [
+  // Commercial terms. The prior deployment's defaults quoted lead times,
+  // countries of origin and warranty terms for specific manufacturers
+  // (Hikvision, Planet, ETK) carried over from that brand's supply chain.
+  // Those are not eSpark's terms to offer, so they are replaced with prompts.
+  // Every section is editable per-proposal in the Designer.
   {
     heading: "DELIVERY",
     bullets: [
-      "8 - 12 weeks from receipt of your written Purchase Order.",
-      "Passive: 3-5 weeks from the PO date.",
-      "Hikvision: 8-12 weeks from the PO date.",
+      "TODO(espark): delivery window, measured from receipt of a written Purchase Order.",
     ],
   },
   {
     heading: "INSTALLATION",
     bullets: [
-      "Installation will proceed according to a mutually agreed project plan. If there is a delay from the customer's side exceeding one month, the project will be considered finally accepted for contractual purposes. However, Magictech will remain committed to installing the systems once the customer is ready.",
-      "Magictech is not responsible for any design issues or for any missing hardware, software, or licenses.",
-      "Cable and passive components are not included in this proposal.",
+      "Work proceeds according to a mutually agreed project plan. Where a delay originates on the customer's side and exceeds one month, the project is considered finally accepted for contractual purposes; eSpark remains committed to completing the installation once the customer is ready.",
+      "eSpark is not responsible for pre-existing design issues, or for hardware, software or licences outside the agreed scope.",
+      "TODO(espark): list anything explicitly excluded from this proposal.",
     ],
   },
   {
-    heading: "COUNTRY OF ORIGINS",
+    heading: "COUNTRY OF ORIGIN",
     bullets: [
-      "CCTV: Hikvision — China.",
-      "Active: Planet — China.",
-      "Cables: ETK — Turkey.",
+      "TODO(espark): list the supplied equipment and its country of origin, where the project includes hardware.",
     ],
   },
   {
     heading: "WARRANTY",
     bullets: [
-      "Passive Warranty: 20 years' warranty that provides next-day advance hardware replacement, if available, otherwise 45 days from RMA date.",
-      "Hikvision Warranty: 3 years' hardware warranty for cameras replacement at no additional cost, a replacement part within Next-Business-Day (NBD) after receipt of the RMA request if available, and otherwise 45 days, excluding any misuse.",
-      "Planet Warranty: 3 years' hardware warranty for networks replacement at no additional cost, a replacement part within Next-Business-Day (NBD) after receipt of the RMA request if available, and otherwise 45 days, exclude any misusing.",
+      "TODO(espark): state the warranty period and replacement terms that apply to this project's deliverables.",
     ],
   },
   {
     heading: "VALIDITY",
     bullets: [
-      "This offer is valid for 45 calendar days from the date of issuance or until stock is exhausted, whichever comes first.",
+      "This offer is valid for 45 calendar days from the date of issuance.",
     ],
   },
 ];
@@ -553,7 +559,7 @@ export default function TechnicalProposalView({
     me?.display_name || me?.username || (row?.sales_engineer as string) || "";
   const defaultSalesPhone = me?.phone || config.salesPhone || "";
   const defaultSalesEmail = me?.username
-    ? `${me.username}@magictech-jo.com`
+    ? `${me.username}@espark.dev`
     : "";
 
   const salesName = overrides.salesName ?? defaultSalesName;
@@ -641,7 +647,7 @@ export default function TechnicalProposalView({
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8">
         <PageLoader label={`Loading technical proposal #${quotationId}…`} />
       </div>
     );
@@ -658,8 +664,8 @@ export default function TechnicalProposalView({
 
   return (
     <div>
-      <div className="no-print sticky top-[60px] z-30 mx-auto mb-4 flex w-full max-w-[210mm] flex-wrap items-center justify-between gap-2 rounded-xl border border-magic-border bg-white px-4 py-2.5 shadow-md">
-        <div className="text-xs text-magic-ink/60">
+      <div className="no-print sticky top-[60px] z-30 mx-auto mb-4 flex w-full max-w-[210mm] flex-wrap items-center justify-between gap-2 rounded-xl border border-espark-border bg-espark-surface px-4 py-2.5 shadow-md">
+        <div className="text-xs text-espark-ink/60">
           {enriching
             ? "Loading catalogue details for each model…"
             : "Every image and text block is editable; the Bill of Materials pulls detailed descriptions from the catalogue. Edits persist for this proposal only."}
@@ -667,13 +673,13 @@ export default function TechnicalProposalView({
         <div className="flex items-center gap-2">
           <button
             onClick={resetOverrides}
-            className="rounded-md border border-magic-border px-3 py-1.5 text-xs font-semibold hover:bg-magic-soft"
+            className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold hover:bg-espark-soft"
           >
             Reset to defaults
           </button>
           <button
             onClick={runPrint}
-            className="rounded-md bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+            className="rounded-md bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
           >
             Print / PDF
           </button>
@@ -686,7 +692,7 @@ export default function TechnicalProposalView({
           <section className="quotation-sheet fp-sheet fp-cover page-break-after">
             <div className="fp-cover-inner">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Magic Tech" className="fp-cover-logo" />
+              <img src="/logo.png" alt="eSpark" className="fp-cover-logo" />
               <div className="fp-cover-middle">
                 <div className="fp-cover-band">
                   <div className="tp-cover-customer">
@@ -718,7 +724,7 @@ export default function TechnicalProposalView({
             <h1 className="fp-h1">Table of Contents</h1>
             <ol className="fp-toc">
               <li><span>Contact Details</span><span>3</span></li>
-              <li><span>Magictech Authorized Certificate</span><span>4</span></li>
+              <li><span>Authorisations &amp; Accreditations</span><span>4</span></li>
               <li><span>Solution Overview</span><span>5</span></li>
               <li className="fp-toc-sub"><span>Network Diagram / Plan / CCTV Diagram</span><span>5</span></li>
               <li className="fp-toc-sub"><span>Storage Parameters</span><span>5</span></li>
@@ -726,12 +732,12 @@ export default function TechnicalProposalView({
               <li><span>Bill of Materials</span><span>6</span></li>
               <li><span>Product Overview</span><span>7</span></li>
               <li><span>Service Contract</span><span>8</span></li>
-              <li className="fp-toc-sub"><span>Magictech Local Support</span><span>8</span></li>
+              <li className="fp-toc-sub"><span>eSpark Local Support</span><span>8</span></li>
               <li className="fp-toc-sub"><span>Service Level Requirements</span><span>9</span></li>
               <li><span>Technical Team Capabilities</span><span>10</span></li>
               <li className="fp-toc-sub"><span>Major Certificates</span><span>10</span></li>
               <li className="fp-toc-sub"><span>Project Manager Certificate</span><span>11</span></li>
-              <li><span>MagicTech References</span><span>12</span></li>
+              <li><span>eSpark References</span><span>12</span></li>
               <li><span>General Terms and Conditions</span><span>13</span></li>
             </ol>
           </TpSheet>
@@ -805,15 +811,15 @@ export default function TechnicalProposalView({
                 <TpInline
                   value={salesEmail}
                   onChange={(v) => setOverrides({ salesEmail: v })}
-                  placeholder="name@magictech-jo.com"
+                  placeholder="name@espark.dev"
                 />
               </div>
             </div>
           </TpSheet>
 
-          {/* ───── 6. Magictech Authorized Certificate ─────────────── */}
+          {/* ───── 6. eSpark Authorized Certificate ─────────────── */}
           <TpSheet>
-            <h1 className="fp-h1">Magictech Authorized Certificate</h1>
+            <h1 className="fp-h1">Authorisations &amp; Accreditations</h1>
             <p className="tp-note">
               * Please note this must be requested per project.
             </p>
@@ -1013,7 +1019,7 @@ export default function TechnicalProposalView({
               className="fp-paragraph"
               rows={5}
             />
-            <h2 className="tp-h2">Magictech Local Support</h2>
+            <h2 className="tp-h2">eSpark Local Support</h2>
             <TpTextarea
               value={localSupport}
               onChange={(v) => setOverrides({ localSupport: v })}
@@ -1038,7 +1044,7 @@ export default function TechnicalProposalView({
               className="fp-paragraph"
               rows={4}
             />
-            <h2 className="tp-h2">Magictech Low Current Team Major Certificates</h2>
+            <h2 className="tp-h2">Team Certifications</h2>
             <EditableImage
               value={overrides.teamCertImage || central.teamCerts || ""}
               onChange={(v) => setOverrides({ teamCertImage: v })}
@@ -1054,11 +1060,11 @@ export default function TechnicalProposalView({
             />
           </TpSheet>
 
-          {/* ───── 12. MagicTech References ────────────────────────── */}
+          {/* ───── 12. eSpark References ────────────────────────── */}
           <TpSheet>
-            <h1 className="fp-h1">MagicTech References</h1>
+            <h1 className="fp-h1">eSpark References</h1>
             <p className="fp-paragraph">
-              Magictech has many references in different fields for
+              eSpark has many references in different fields for
               implementation projects, managed services for the whole network,
               and service contracts.
             </p>
@@ -1134,7 +1140,7 @@ export default function TechnicalProposalView({
                   return { ...prev, references: next };
                 })
               }
-              className="no-print mt-2 rounded-md border border-magic-border px-3 py-1 text-[11px] hover:bg-magic-soft"
+              className="no-print mt-2 rounded-md border border-espark-border px-3 py-1 text-[11px] hover:bg-espark-soft"
             >
               + Add reference
             </button>
@@ -1234,7 +1240,7 @@ function TpSheet({
             <td>
               <div className="fp-brand-strip">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Magic Tech" />
+                <img src="/logo.png" alt="eSpark" />
               </div>
             </td>
           </tr>
@@ -1248,8 +1254,11 @@ function TpSheet({
           <tr>
             <td>
               <div className="footer-address">
-                COPYRIGHT © 2003-{new Date().getFullYear()} MAGIC TECH FOR
-                COMPUTERS. ALL RIGHTS RESERVED.
+                {/* Year runs from the current year only: the prior
+                    brand's 2003 founding date does not transfer, and the
+                    legal entity name is eSpark's to confirm. */}
+                COPYRIGHT © {new Date().getFullYear()} eSPARK. ALL RIGHTS
+                RESERVED.
               </div>
             </td>
           </tr>

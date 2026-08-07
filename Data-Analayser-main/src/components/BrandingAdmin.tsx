@@ -112,7 +112,7 @@ export default function BrandingAdmin({
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-magic-ink/70">
+      <p className="text-sm text-espark-ink/70">
         Each <strong>brand</strong> bundles a logo with the company-profile
         sheets printed before every quotation: <strong>page 1</strong> (cover)
         and an optional <strong>page 2</strong> (about us). In the Designer,
@@ -127,25 +127,25 @@ export default function BrandingAdmin({
         {variants.map((v, i) => (
           <div
             key={v.id}
-            className={`rounded-2xl border bg-white p-4 ${
+            className={`rounded-2xl border bg-espark-surface p-4 ${
               incompleteIds.has(v.id)
                 ? "border-amber-400"
-                : "border-magic-border"
+                : "border-espark-border"
             }`}
           >
             <div className="flex items-center justify-between gap-3 mb-3">
               <div className="flex-1">
-                <label className="block text-[10px] font-semibold uppercase text-magic-ink/60 mb-1">
+                <label className="block text-[10px] font-semibold uppercase text-espark-ink/60 mb-1">
                   Brand name
                 </label>
                 <input
                   value={v.label}
                   onChange={(e) => patchVariant(i, { label: e.target.value })}
                   disabled={readOnly}
-                  className="w-full max-w-sm rounded-md border border-magic-border px-3 py-1.5 text-sm"
-                  placeholder="e.g. Magic Tech"
+                  className="w-full max-w-sm rounded-md border border-espark-border px-3 py-1.5 text-sm"
+                  placeholder="e.g. eSpark"
                 />
-                <p className="mt-1 text-[10px] text-magic-ink/40">
+                <p className="mt-1 text-[10px] text-espark-ink/40">
                   id: <code>{v.id}</code>
                 </p>
               </div>
@@ -153,7 +153,7 @@ export default function BrandingAdmin({
                 <button
                   type="button"
                   onClick={() => removeVariant(i)}
-                  className="shrink-0 rounded-md border border-magic-border px-3 py-1.5 text-xs text-magic-ink/70 hover:bg-magic-soft"
+                  className="shrink-0 rounded-md border border-espark-border px-3 py-1.5 text-xs text-espark-ink/70 hover:bg-espark-soft"
                   title="Remove this brand"
                 >
                   Remove
@@ -196,7 +196,7 @@ export default function BrandingAdmin({
           <button
             type="button"
             onClick={addVariant}
-            className="rounded-md border border-magic-border px-4 py-2 text-sm font-semibold text-magic-ink hover:bg-magic-soft"
+            className="rounded-md border border-espark-border px-4 py-2 text-sm font-semibold text-espark-ink hover:bg-espark-soft"
           >
             + Add brand
           </button>
@@ -204,7 +204,7 @@ export default function BrandingAdmin({
             type="button"
             onClick={save}
             disabled={saving}
-            className="rounded-md bg-magic-red text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+            className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save brands"}
           </button>
@@ -257,10 +257,10 @@ function ImageSlot({
   }
 
   return (
-    <div className="rounded-xl border border-magic-border p-3">
-      <p className="text-[11px] font-semibold text-magic-ink mb-1">{title}</p>
+    <div className="rounded-xl border border-espark-border p-3">
+      <p className="text-[11px] font-semibold text-espark-ink mb-1">{title}</p>
       <div
-        className={`relative flex items-center justify-center overflow-hidden rounded-md border border-dashed border-magic-border bg-magic-soft ${
+        className={`relative flex items-center justify-center overflow-hidden rounded-md border border-dashed border-espark-border bg-espark-soft ${
           kind === "page" ? "aspect-[210/297]" : "h-24"
         }`}
       >
@@ -272,19 +272,19 @@ function ImageSlot({
             className="max-h-full max-w-full object-contain"
           />
         ) : (
-          <span className="px-2 text-center text-[11px] text-magic-ink/40">
+          <span className="px-2 text-center text-[11px] text-espark-ink/40">
             No image yet
           </span>
         )}
       </div>
-      <p className="mt-1 text-[10px] text-magic-ink/50">{hint}</p>
+      <p className="mt-1 text-[10px] text-espark-ink/50">{hint}</p>
       {!readOnly && (
         <div className="mt-2 flex items-center gap-2">
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={busy}
-            className="rounded-md border border-magic-border px-2.5 py-1 text-[11px] hover:bg-magic-soft disabled:opacity-60"
+            className="rounded-md border border-espark-border px-2.5 py-1 text-[11px] hover:bg-espark-soft disabled:opacity-60"
           >
             {busy ? "Processing…" : value ? "Replace" : "Upload"}
           </button>
@@ -292,7 +292,7 @@ function ImageSlot({
             <button
               type="button"
               onClick={() => onChange("")}
-              className="rounded-md border border-magic-border px-2.5 py-1 text-[11px] text-magic-ink/60 hover:bg-magic-soft"
+              className="rounded-md border border-espark-border px-2.5 py-1 text-[11px] text-espark-ink/60 hover:bg-espark-soft"
             >
               Remove
             </button>

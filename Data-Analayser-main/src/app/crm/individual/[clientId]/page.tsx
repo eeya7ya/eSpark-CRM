@@ -81,15 +81,15 @@ export default async function IndividualClientPage({
     !(await userHasAssignedProjectInFolder(user.id, folderId))
   ) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-3xl mx-auto p-6 text-center">
-          <h1 className="text-xl font-bold text-magic-ink mb-2">
+          <h1 className="text-xl font-bold text-espark-ink mb-2">
             You don&apos;t have access to this client
           </h1>
           <Link
             href="/crm/individual"
-            className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft transition-colors"
+            className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft transition-colors"
           >
             ← All individuals
           </Link>
@@ -109,16 +109,16 @@ export default async function IndividualClientPage({
     : null;
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-screen-2xl mx-auto px-6 py-6 lg:px-10">
         <div className="mb-4">
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm" className="hover:text-magic-red">
+            <Link href="/crm" className="hover:text-espark-primary">
               CRM
             </Link>{" "}
             {toolLabel && (
@@ -126,7 +126,7 @@ export default async function IndividualClientPage({
                 <span>→</span>{" "}
                 <Link
                   href={`/crm?tool=${tool}`}
-                  className="hover:text-magic-red"
+                  className="hover:text-espark-primary"
                 >
                   {toolLabel}
                 </Link>{" "}
@@ -135,13 +135,13 @@ export default async function IndividualClientPage({
             <span>→</span>{" "}
             <Link
               href={`/crm/individual${toolQuery}`}
-              className="hover:text-magic-red"
+              className="hover:text-espark-primary"
             >
               Individual clients
             </Link>
           </div>
           <div className="mt-1 flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-magic-ink">
+            <h1 className="text-2xl font-bold text-espark-ink">
               {folder.name}
               {folder.kind === null && (
                 <span className="ml-2 inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-800 align-middle">
@@ -161,7 +161,7 @@ export default async function IndividualClientPage({
               }}
             />
           </div>
-          <div className="mt-1 text-xs text-magic-ink/60 flex flex-wrap gap-x-4 gap-y-1">
+          <div className="mt-1 text-xs text-espark-ink/60 flex flex-wrap gap-x-4 gap-y-1">
             {folder.client_email && <span>{folder.client_email}</span>}
             {folder.client_phone && <span>{folder.client_phone}</span>}
           </div>

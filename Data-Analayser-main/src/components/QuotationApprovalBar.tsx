@@ -426,14 +426,14 @@ export default function QuotationApprovalBar({
   }
 
   return (
-    <div className="no-print rounded-xl border border-magic-border bg-white px-4 py-3 mb-3">
+    <div className="no-print rounded-xl border border-espark-border bg-espark-surface px-4 py-3 mb-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-semibold text-magic-ink/70">Approval:</span>
+          <span className="font-semibold text-espark-ink/70">Approval:</span>
           {versionKind && (
             <span
               title="A version branched off an existing quotation. It's sent to sales and tracked exactly like the original."
-              className="inline-flex items-center rounded-full border border-magic-accent/40 bg-magic-accent/10 px-2 py-0.5 text-xs font-medium text-magic-accent"
+              className="inline-flex items-center rounded-full border border-espark-accent/40 bg-espark-accent/10 px-2 py-0.5 text-xs font-medium text-espark-accent"
             >
               {versionKind}
               {state.parent_ref ? ` of ${state.parent_ref}` : ""}
@@ -467,7 +467,7 @@ export default function QuotationApprovalBar({
                 }
                 disabled={busy}
                 title="Choose which salesperson receives this quotation"
-                className="rounded border border-magic-border bg-white px-2 py-1 text-xs text-magic-ink/80 focus:outline-none focus:ring-1 focus:ring-magic-red disabled:opacity-50"
+                className="rounded border border-espark-border bg-espark-surface px-2 py-1 text-xs text-espark-ink/80 focus:outline-none focus:ring-1 focus:ring-espark-primary disabled:opacity-50"
               >
                 <option value="">Select salesperson…</option>
                 {salesUsers.map((u) => (
@@ -484,7 +484,7 @@ export default function QuotationApprovalBar({
                     ? "Re-send the latest version to the selected salesperson"
                     : "Hand the quotation to the selected salesperson"
                 }
-                className="px-3 py-1 text-xs font-semibold rounded bg-magic-red text-white hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+                className="px-3 py-1 text-xs font-semibold rounded bg-espark-primary text-white hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
               >
                 {sentToSales ? "Re-send to sales" : "Send to sales"}
               </button>
@@ -494,7 +494,7 @@ export default function QuotationApprovalBar({
             <button
               onClick={() => void reject()}
               disabled={busy}
-              className="px-3 py-1 text-xs font-semibold rounded border border-magic-border text-magic-ink/70 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50 transition-colors"
+              className="px-3 py-1 text-xs font-semibold rounded border border-espark-border text-espark-ink/70 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50 transition-colors"
             >
               Reject
             </button>
@@ -506,9 +506,9 @@ export default function QuotationApprovalBar({
           quotation that was never submitted, so the retired "Not submitted"
           row and its Submit button are gone from every new quotation. */}
       {execStatus !== "none" && (
-        <div className="mt-3 border-t border-magic-border/60 pt-3">
+        <div className="mt-3 border-t border-espark-border/60 pt-3">
           <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-semibold text-magic-ink/70">Executive:</span>
+            <span className="font-semibold text-espark-ink/70">Executive:</span>
             {execStatus === "pending" && (
               <Pill tone="muted">Awaiting confirmation</Pill>
             )}
@@ -529,10 +529,10 @@ export default function QuotationApprovalBar({
           Step 2 (after a win): Hold Delivery/Execution, Send to Delivery,
           Send to Execution, or Mark as Completed. */}
       {(canConvert || outcome || transferred || completed) && (
-        <div className="mt-3 border-t border-magic-border/60 pt-3">
+        <div className="mt-3 border-t border-espark-border/60 pt-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="font-semibold text-magic-ink/70">Deal status:</span>
+              <span className="font-semibold text-espark-ink/70">Deal status:</span>
               {completed && <Pill tone="ok">Completed ✓</Pill>}
               {outcome === "accepted" && !completed && (
                 <Pill tone="ok">Won — client accepted</Pill>
@@ -555,7 +555,7 @@ export default function QuotationApprovalBar({
               {transferred && !completed && <Pill tone="ok">In execution ✓</Pill>}
               {deliveryDone && <Pill tone="ok">Delivery requested ✓</Pill>}
               {!outcome && !transferred && !completed && (
-                <span className="text-magic-ink/45">Not decided yet</span>
+                <span className="text-espark-ink/45">Not decided yet</span>
               )}
             </div>
             {!readOnly && canConvert && (
@@ -583,7 +583,7 @@ export default function QuotationApprovalBar({
                       onClick={() => void markOutcome("held", { hold_transfer_at: null })}
                       disabled={outcomeBusy}
                       title="Park this lead — no decision yet, keep it on hold"
-                      className="px-3 py-1 text-xs font-semibold rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                      className="px-3 py-1 text-xs font-semibold rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                     >
                       Hold Lead
                     </button>
@@ -596,7 +596,7 @@ export default function QuotationApprovalBar({
                     onClick={() => setHoldOpen((v) => !v)}
                     disabled={outcomeBusy}
                     title="Won, but delivery/execution waits — park it, optionally on a schedule"
-                    className="px-3 py-1 text-xs font-semibold rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                    className="px-3 py-1 text-xs font-semibold rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                   >
                     Hold Delivery / Execution
                   </button>
@@ -612,7 +612,7 @@ export default function QuotationApprovalBar({
                     onClick={() => setConverting(true)}
                     disabled={outcomeBusy}
                     title="Hand the deal to the projects team — capture site / contact details for execution"
-                    className="px-3 py-1 text-xs font-semibold rounded bg-magic-red text-white hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1 text-xs font-semibold rounded bg-espark-primary text-white hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
                   >
                     {converted ? "Send to Execution ✓" : "Send to Execution"}
                   </button>
@@ -631,7 +631,7 @@ export default function QuotationApprovalBar({
                   onClick={() => void transferNow()}
                   disabled={outcomeBusy}
                   title="Send the held deal to the projects team now"
-                  className="px-3 py-1 text-xs font-semibold rounded bg-magic-red text-white hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+                  className="px-3 py-1 text-xs font-semibold rounded bg-espark-primary text-white hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
                 >
                   Send to Execution now
                 </button>
@@ -653,16 +653,16 @@ export default function QuotationApprovalBar({
             <PoUploadInline projectId={projectId} />
           ) : null}
           {!readOnly && holdOpen && won && (
-            <div className="mt-2 flex flex-wrap items-end gap-2 rounded-lg border border-magic-border bg-magic-soft/40 p-3">
+            <div className="mt-2 flex flex-wrap items-end gap-2 rounded-lg border border-espark-border bg-espark-soft/40 p-3">
               <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wide text-magic-ink/60">
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-espark-ink/60">
                   Auto-send to execution at (optional)
                 </label>
                 <input
                   type="datetime-local"
                   value={holdAt}
                   onChange={(e) => setHoldAt(e.target.value)}
-                  className="mt-1 rounded-md border border-magic-border px-2 py-1 text-sm"
+                  className="mt-1 rounded-md border border-espark-border px-2 py-1 text-sm"
                 />
               </div>
               <button
@@ -670,18 +670,18 @@ export default function QuotationApprovalBar({
                   void markOutcome("held", { hold_transfer_at: holdAt || null })
                 }
                 disabled={outcomeBusy}
-                className="rounded-md bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+                className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
               >
                 {holdAt ? "Hold & schedule" : "Hold (send manually later)"}
               </button>
               <button
                 onClick={() => setHoldOpen(false)}
                 disabled={outcomeBusy}
-                className="rounded-md border border-magic-border px-3 py-1.5 text-xs font-semibold hover:bg-magic-soft disabled:opacity-50"
+                className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold hover:bg-espark-soft disabled:opacity-50"
               >
                 Cancel
               </button>
-              <p className="w-full text-[11px] text-magic-ink/50">
+              <p className="w-full text-[11px] text-espark-ink/50">
                 Leave the time empty to send it to the projects team manually
                 whenever you&apos;re ready. With a time set, the deal moves
                 automatically once it passes.
@@ -689,9 +689,9 @@ export default function QuotationApprovalBar({
             </div>
           )}
           {!readOnly && deliveryOpen && won && (
-            <div className="mt-2 flex flex-wrap items-end gap-2 rounded-lg border border-magic-border bg-magic-soft/40 p-3">
+            <div className="mt-2 flex flex-wrap items-end gap-2 rounded-lg border border-espark-border bg-espark-soft/40 p-3">
               <div className="min-w-[220px] flex-1">
-                <label className="block text-[11px] font-semibold uppercase tracking-wide text-magic-ink/60">
+                <label className="block text-[11px] font-semibold uppercase tracking-wide text-espark-ink/60">
                   Delivery destination (optional)
                 </label>
                 <input
@@ -699,7 +699,7 @@ export default function QuotationApprovalBar({
                   value={deliveryDest}
                   onChange={(e) => setDeliveryDest(e.target.value)}
                   placeholder="Site address / drop-off location"
-                  className="mt-1 w-full rounded-md border border-magic-border px-2 py-1 text-sm"
+                  className="mt-1 w-full rounded-md border border-espark-border px-2 py-1 text-sm"
                 />
               </div>
               <button
@@ -712,7 +712,7 @@ export default function QuotationApprovalBar({
               <button
                 onClick={() => setDeliveryOpen(false)}
                 disabled={outcomeBusy}
-                className="rounded-md border border-magic-border px-3 py-1.5 text-xs font-semibold hover:bg-magic-soft disabled:opacity-50"
+                className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold hover:bg-espark-soft disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -753,9 +753,9 @@ function Pill({
 }) {
   const tones: Record<typeof tone, string> = {
     ok: "border-emerald-300 bg-emerald-50 text-emerald-800",
-    muted: "border-magic-border bg-magic-soft/40 text-magic-ink/60",
+    muted: "border-espark-border bg-espark-soft/40 text-espark-ink/60",
     warn: "border-amber-300 bg-amber-50 text-amber-800",
-    strong: "border-magic-red bg-magic-red/10 text-magic-red",
+    strong: "border-espark-primary bg-espark-primary/10 text-espark-primary",
   };
   return (
     <span

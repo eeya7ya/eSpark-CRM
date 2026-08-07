@@ -123,13 +123,13 @@ export default function QuotationStockCheckPanel({
   const canRequestNew = !latest || latest.status !== "pending";
 
   return (
-    <section className="no-print mt-6 rounded-2xl border border-magic-border bg-white p-4">
+    <section className="no-print mt-6 rounded-2xl border border-espark-border bg-espark-surface p-4">
       <header className="flex items-center justify-between gap-3">
         <div>
-          <h3 className="text-base font-semibold text-magic-ink">
+          <h3 className="text-base font-semibold text-espark-ink">
             Stock availability
           </h3>
-          <p className="text-xs text-magic-ink/60 mt-0.5">
+          <p className="text-xs text-espark-ink/60 mt-0.5">
             Send a copy of this quotation&apos;s BOQ to the storage team
             and wait for their per-item answer.
           </p>
@@ -138,7 +138,7 @@ export default function QuotationStockCheckPanel({
           <button
             onClick={request}
             disabled={busy || loading}
-            className="rounded-md bg-magic-red text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+            className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
           >
             {busy ? "Sending…" : "Check availability"}
           </button>
@@ -158,7 +158,7 @@ export default function QuotationStockCheckPanel({
           )}
           {latest.status === "answered" && <AnsweredView check={latest} />}
           {latest.status === "cancelled" && (
-            <p className="text-sm text-magic-ink/60">
+            <p className="text-sm text-espark-ink/60">
               Last check was cancelled on{" "}
               {new Date(latest.created_at).toLocaleString()}. Fire a new one
               when you&apos;re ready.
@@ -168,7 +168,7 @@ export default function QuotationStockCheckPanel({
       )}
 
       {!loading && !latest && (
-        <p className="mt-3 text-sm text-magic-ink/60">
+        <p className="mt-3 text-sm text-espark-ink/60">
           No stock check yet for this quotation.
         </p>
       )}
@@ -242,7 +242,7 @@ function AnsweredView({ check }: { check: StockCheck }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2 text-xs text-magic-ink/70">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-espark-ink/70">
         <span>
           Answered by <strong>{answeredBy}</strong>
           {check.answered_at && (
@@ -265,14 +265,14 @@ function AnsweredView({ check }: { check: StockCheck }) {
       </div>
 
       {check.storage_notes && (
-        <div className="rounded-md border border-magic-border bg-magic-soft/40 px-3 py-2 text-xs text-magic-ink/80">
+        <div className="rounded-md border border-espark-border bg-espark-soft/40 px-3 py-2 text-xs text-espark-ink/80">
           <strong>Storage notes:</strong> {check.storage_notes}
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-lg border border-magic-border">
+      <div className="overflow-x-auto rounded-lg border border-espark-border">
         <table className="min-w-full text-sm">
-          <thead className="bg-magic-soft text-magic-ink/70">
+          <thead className="bg-espark-soft text-espark-ink/70">
             <tr>
               <th className="p-2 text-left">#</th>
               <th className="p-2 text-left">Item</th>
@@ -281,19 +281,19 @@ function AnsweredView({ check }: { check: StockCheck }) {
               <th className="p-2 text-left">Notes</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-magic-border/60">
+          <tbody className="divide-y divide-espark-border/60">
             {check.items_json.map((it) => {
               const r = byNo.get(it.no);
               const badge = r ? statusBadge(r.status) : null;
               return (
                 <tr key={it.no}>
-                  <td className="p-2 text-xs text-magic-ink/60">{it.no}</td>
+                  <td className="p-2 text-xs text-espark-ink/60">{it.no}</td>
                   <td className="p-2">
-                    <div className="font-medium text-magic-ink">
+                    <div className="font-medium text-espark-ink">
                       {it.brand} {it.model}
                     </div>
                     {it.description && (
-                      <div className="text-xs text-magic-ink/60">
+                      <div className="text-xs text-espark-ink/60">
                         {it.description}
                       </div>
                     )}
@@ -307,10 +307,10 @@ function AnsweredView({ check }: { check: StockCheck }) {
                         {badge.label}
                       </span>
                     ) : (
-                      <span className="text-xs text-magic-ink/40">—</span>
+                      <span className="text-xs text-espark-ink/40">—</span>
                     )}
                   </td>
-                  <td className="p-2 text-xs text-magic-ink/70">
+                  <td className="p-2 text-xs text-espark-ink/70">
                     {r?.note || ""}
                   </td>
                 </tr>

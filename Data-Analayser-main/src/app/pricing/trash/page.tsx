@@ -21,7 +21,7 @@ export default async function PricingTrashPage() {
     redirect("/");
   }
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <PricingAuthProvider>
         <TrashClient />

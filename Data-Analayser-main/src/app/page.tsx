@@ -204,7 +204,7 @@ export default async function DashboardPage() {
       .slice(0, 50);
 
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <RouteRefresher renderedAt={renderedAt} />
         <main className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6 lg:px-8">
@@ -250,7 +250,7 @@ export default async function DashboardPage() {
     ]);
 
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <RouteRefresher renderedAt={renderedAt} />
         <main className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6 lg:px-8">
@@ -318,7 +318,7 @@ export default async function DashboardPage() {
     };
 
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <RouteRefresher renderedAt={renderedAt} />
         <main className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6 lg:px-8">
@@ -468,7 +468,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       {/* Keep the KPI counts in step with the database: without this, Next's
           client-side Router Cache can serve a stale RSC payload when the user

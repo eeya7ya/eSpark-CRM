@@ -193,14 +193,14 @@ export default function CrmSearch() {
           placeholder="Search companies, clients, projects, quotation REF, PO number…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-lg border border-magic-border bg-white px-3 py-2.5 text-sm focus:outline-none focus:border-magic-red"
+          className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2.5 text-sm focus:outline-none focus:border-espark-primary"
         />
         {hasQuery && (
           <button
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-magic-ink/40 hover:text-magic-ink text-lg leading-none px-1"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-espark-ink/40 hover:text-espark-ink text-lg leading-none px-1"
           >
             ×
           </button>
@@ -214,16 +214,16 @@ export default function CrmSearch() {
       )}
 
       {hasQuery && (
-        <div className="rounded-2xl border border-magic-border bg-white p-4 space-y-4">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 space-y-4">
           {loading ? (
-            <p className="text-sm text-magic-ink/60">Searching…</p>
+            <p className="text-sm text-espark-ink/60">Searching…</p>
           ) : total === 0 ? (
-            <p className="text-sm text-magic-ink/60">
+            <p className="text-sm text-espark-ink/60">
               No matches for &ldquo;{query}&rdquo;.
             </p>
           ) : (
             <>
-              <div className="text-xs text-magic-ink/50">
+              <div className="text-xs text-espark-ink/50">
                 {total} match{total === 1 ? "" : "es"} for &ldquo;{query}&rdquo;
               </div>
 
@@ -242,7 +242,7 @@ export default function CrmSearch() {
 
 function SectionHeader({ label, count }: { label: string; count: number }) {
   return (
-    <h3 className="text-xs font-semibold uppercase tracking-wide text-magic-ink/60">
+    <h3 className="text-xs font-semibold uppercase tracking-wide text-espark-ink/60">
       {label} ({count})
     </h3>
   );
@@ -250,7 +250,7 @@ function SectionHeader({ label, count }: { label: string; count: number }) {
 
 function Kind({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[10px] uppercase tracking-wide rounded-full bg-magic-soft px-2 py-0.5 text-magic-ink/60">
+    <span className="text-[10px] uppercase tracking-wide rounded-full bg-espark-soft px-2 py-0.5 text-espark-ink/60">
       {children}
     </span>
   );
@@ -266,16 +266,16 @@ function CompaniesSection({ items }: { items: CompanyHit[] }) {
           <li key={`co-${c.id}`}>
             <Link
               href={`/crm/company/${c.id}`}
-              className="block rounded-lg border border-magic-border px-3 py-2 hover:border-magic-red hover:bg-magic-soft/40 transition-colors"
+              className="block rounded-lg border border-espark-border px-3 py-2 hover:border-espark-primary hover:bg-espark-soft/40 transition-colors"
             >
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-sm text-magic-ink">
+                <span className="font-semibold text-sm text-espark-ink">
                   {c.name}
                 </span>
                 <Kind>Company</Kind>
               </div>
               {(c.industry || c.website) && (
-                <div className="text-xs text-magic-ink/60 mt-0.5">
+                <div className="text-xs text-espark-ink/60 mt-0.5">
                   {c.industry && <>{c.industry}</>}
                   {c.industry && c.website && <> · </>}
                   {c.website && <>{c.website}</>}
@@ -301,10 +301,10 @@ function ClientsSection({ items }: { items: FolderHit[] }) {
             <li key={`cl-${f.id}`}>
               <Link
                 href={base}
-                className="block rounded-lg border border-magic-border px-3 py-2 hover:border-magic-red hover:bg-magic-soft/40 transition-colors"
+                className="block rounded-lg border border-espark-border px-3 py-2 hover:border-espark-primary hover:bg-espark-soft/40 transition-colors"
               >
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-sm text-magic-ink">
+                  <span className="font-semibold text-sm text-espark-ink">
                     {f.name}
                   </span>
                   <Kind>
@@ -315,7 +315,7 @@ function ClientsSection({ items }: { items: FolderHit[] }) {
                         : "Unclassified"}
                   </Kind>
                 </div>
-                <div className="text-xs text-magic-ink/60 mt-0.5">
+                <div className="text-xs text-espark-ink/60 mt-0.5">
                   {f.company_name && <>@ {f.company_name} · </>}
                   {f.client_email && <>{f.client_email} · </>}
                   {f.client_phone && <>{f.client_phone}</>}
@@ -342,20 +342,20 @@ function ProjectsSection({ items }: { items: ProjectHit[] }) {
             <li key={`pr-${p.id}`}>
               <Link
                 href={href}
-                className="block rounded-lg border border-magic-border px-3 py-2 hover:border-magic-red hover:bg-magic-soft/40 transition-colors"
+                className="block rounded-lg border border-espark-border px-3 py-2 hover:border-espark-primary hover:bg-espark-soft/40 transition-colors"
               >
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-sm text-magic-ink">
+                  <span className="font-semibold text-sm text-espark-ink">
                     {p.name}
                   </span>
                   <Kind>Project</Kind>
                 </div>
-                <div className="text-xs text-magic-ink/60 mt-0.5">
+                <div className="text-xs text-espark-ink/60 mt-0.5">
                   {p.company_name && <>{p.company_name} · </>}
                   {p.folder_name && <>{p.folder_name}</>}
                 </div>
                 {p.description && (
-                  <div className="text-xs text-magic-ink/50 mt-0.5 line-clamp-1">
+                  <div className="text-xs text-espark-ink/50 mt-0.5 line-clamp-1">
                     {p.description}
                   </div>
                 )}
@@ -378,25 +378,25 @@ function QuotationsSection({ items }: { items: QuotationHit[] }) {
           <li key={`qq-${qq.id}`}>
             <Link
               href={quotationHref(qq)}
-              className="block rounded-lg border border-magic-border px-3 py-2 hover:border-magic-red hover:bg-magic-soft/40 transition-colors"
+              className="block rounded-lg border border-espark-border px-3 py-2 hover:border-espark-primary hover:bg-espark-soft/40 transition-colors"
             >
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono font-semibold text-sm text-magic-ink">
+                <span className="font-mono font-semibold text-sm text-espark-ink">
                   {qq.ref}
                 </span>
                 <Kind>Quotation</Kind>
                 {qq.status && (
-                  <span className="text-[10px] uppercase tracking-wide text-magic-ink/50">
+                  <span className="text-[10px] uppercase tracking-wide text-espark-ink/50">
                     {qq.status}
                   </span>
                 )}
               </div>
-              <div className="text-xs text-magic-ink/60 mt-0.5">
+              <div className="text-xs text-espark-ink/60 mt-0.5">
                 {qq.client_name && <>{qq.client_name} · </>}
                 {qq.project_name && <>{qq.project_name}</>}
               </div>
               {qq.company_name && (
-                <div className="text-xs text-magic-ink/50 mt-0.5">
+                <div className="text-xs text-espark-ink/50 mt-0.5">
                   @ {qq.company_name}
                 </div>
               )}
@@ -418,26 +418,26 @@ function PurchaseOrdersSection({ items }: { items: PoHit[] }) {
           <li key={`po-${po.id}`}>
             <Link
               href={poHref(po)}
-              className="block rounded-lg border border-magic-border px-3 py-2 hover:border-magic-red hover:bg-magic-soft/40 transition-colors"
+              className="block rounded-lg border border-espark-border px-3 py-2 hover:border-espark-primary hover:bg-espark-soft/40 transition-colors"
             >
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono font-semibold text-sm text-magic-ink">
+                <span className="font-mono font-semibold text-sm text-espark-ink">
                   {po.po_number}
                 </span>
                 <Kind>PO</Kind>
                 {po.status && (
-                  <span className="text-[10px] uppercase tracking-wide text-magic-ink/50">
+                  <span className="text-[10px] uppercase tracking-wide text-espark-ink/50">
                     {po.status}
                   </span>
                 )}
               </div>
-              <div className="text-xs text-magic-ink/60 mt-0.5">
+              <div className="text-xs text-espark-ink/60 mt-0.5">
                 {po.supplier && <>{po.supplier} · </>}
                 {po.client_name && <>{po.client_name} · </>}
                 {po.project_name && <>{po.project_name}</>}
               </div>
               {po.company_name && (
-                <div className="text-xs text-magic-ink/50 mt-0.5">
+                <div className="text-xs text-espark-ink/50 mt-0.5">
                   @ {po.company_name}
                 </div>
               )}

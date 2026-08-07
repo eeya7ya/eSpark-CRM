@@ -110,13 +110,13 @@ export default async function ProjectsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-6xl mx-auto px-6 py-6 lg:px-10">
         <div className="flex items-end justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-magic-ink">Projects</h1>
-            <p className="text-sm text-magic-ink/60 mt-0.5">
+            <h1 className="text-2xl font-bold text-espark-ink">Projects</h1>
+            <p className="text-sm text-espark-ink/60 mt-0.5">
               {rows.length} {rows.length === 1 ? "project" : "projects"} visible
               to you
               {hasProjectsModule && !hasCrmModule && " · projects module"}
@@ -133,9 +133,9 @@ export default async function ProjectsPage() {
         )}
 
         {rows.length === 0 ? (
-          <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-            <p className="text-magic-ink/70 mb-2">No projects visible yet.</p>
-            <p className="text-sm text-magic-ink/50">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+            <p className="text-espark-ink/70 mb-2">No projects visible yet.</p>
+            <p className="text-sm text-espark-ink/50">
               {hasProjectsModule
                 ? "An admin or project manager hasn't assigned you to any project. Once they do, the project will appear here."
                 : "You don't have access to the Projects module. Ask an admin in the Modules tab to grant you projects.engineer, projects.technical, or projects.manager."}
@@ -146,23 +146,23 @@ export default async function ProjectsPage() {
             {rows.map((p) => (
               <li
                 key={p.id}
-                className="rounded-xl border border-magic-border bg-white p-4 hover:shadow-md transition-shadow"
+                className="rounded-xl border border-espark-border bg-espark-surface p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
                     <Link
                       href={`/projects/${p.id}`}
-                      className="font-semibold text-magic-ink hover:text-magic-red"
+                      className="font-semibold text-espark-ink hover:text-espark-primary"
                     >
                       {p.name}
                     </Link>
                     {p.folder_name && (
-                      <span className="ml-2 text-xs text-magic-ink/50">
+                      <span className="ml-2 text-xs text-espark-ink/50">
                         in {p.folder_name}
                       </span>
                     )}
                     {p.description && (
-                      <p className="text-sm text-magic-ink/60 mt-0.5 line-clamp-2">
+                      <p className="text-sm text-espark-ink/60 mt-0.5 line-clamp-2">
                         {p.description}
                       </p>
                     )}
@@ -173,7 +173,7 @@ export default async function ProjectsPage() {
                           You: {p.my_assignment_role}
                         </span>
                       )}
-                      <span className="text-magic-ink/40">
+                      <span className="text-espark-ink/40">
                         {p.assignment_count} assigned · {p.quotation_count}{" "}
                         quotations
                         {p.owner_username && (
@@ -184,7 +184,7 @@ export default async function ProjectsPage() {
                   </div>
                   <Link
                     href={`/projects/${p.id}`}
-                    className="shrink-0 rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+                    className="shrink-0 rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
                   >
                     Open
                   </Link>
@@ -204,7 +204,7 @@ function StatusPill({ status }: { status: string }) {
       ? "border-emerald-300 bg-emerald-50 text-emerald-700"
       : status === "blocked" || status === "hold"
         ? "border-amber-300 bg-amber-50 text-amber-700"
-        : "border-magic-border bg-magic-soft/50 text-magic-ink/70";
+        : "border-espark-border bg-espark-soft/50 text-espark-ink/70";
   return (
     <span className={`inline-flex items-center rounded-full border px-2 py-0.5 font-medium ${tone}`}>
       {status}

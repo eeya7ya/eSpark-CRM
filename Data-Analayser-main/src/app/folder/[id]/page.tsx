@@ -44,10 +44,10 @@ export default async function FolderPage({
   const folderId = Number(idParam);
   if (!Number.isFinite(folderId) || folderId <= 0) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-5xl mx-auto p-6">
-          <p className="text-sm text-magic-ink/70">
+          <p className="text-sm text-espark-ink/70">
             Invalid folder id.
           </p>
         </main>
@@ -74,13 +74,13 @@ export default async function FolderPage({
   const folder = folderRows[0];
   if (!folder) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-5xl mx-auto p-6">
-          <p className="text-sm text-magic-ink/70">Client folder not found.</p>
+          <p className="text-sm text-espark-ink/70">Client folder not found.</p>
           <Link
             href="/crm"
-            className="text-magic-red underline text-sm mt-2 inline-block"
+            className="text-espark-primary underline text-sm mt-2 inline-block"
           >
             ← Back to CRM
           </Link>
@@ -94,10 +94,10 @@ export default async function FolderPage({
     !(await userHasLeadAccessToFolder(user.id, folderId))
   ) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-5xl mx-auto p-6">
-          <p className="text-sm text-magic-ink/70">
+          <p className="text-sm text-espark-ink/70">
             You don&apos;t have access to this client.
           </p>
         </main>
@@ -119,16 +119,16 @@ export default async function FolderPage({
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-screen-2xl mx-auto px-6 py-6 lg:px-10">
         <div className="mb-4 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <BackButton fallbackHref="/crm" fallbackLabel="Back" />
-            <h1 className="mt-1 text-2xl font-bold text-magic-ink">
+            <h1 className="mt-1 text-2xl font-bold text-espark-ink">
               {folder.name}
             </h1>
-            <div className="mt-1 text-xs text-magic-ink/60 flex flex-wrap gap-x-4 gap-y-1">
+            <div className="mt-1 text-xs text-espark-ink/60 flex flex-wrap gap-x-4 gap-y-1">
               {folder.client_company && <span>{folder.client_company}</span>}
               {folder.client_email && <span>{folder.client_email}</span>}
               {folder.client_phone && <span>{folder.client_phone}</span>}

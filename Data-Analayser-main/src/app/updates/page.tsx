@@ -18,7 +18,7 @@ export default async function UpdatesPage() {
   await ensureSchema();
 
   return (
-    <div className="flex min-h-screen flex-col bg-magic-soft/40">
+    <div className="flex min-h-screen flex-col bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <UpdatesFeed />

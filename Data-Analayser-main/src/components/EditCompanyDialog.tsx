@@ -62,13 +62,13 @@ export function EditCompanyDialog({
     // The backdrop intentionally has no onClick — a stray click outside the
     // panel must not discard in-progress edits. Closing is explicit via the
     // × / Cancel buttons only.
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl space-y-3">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4">
+      <div className="w-full max-w-md rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-magic-ink">Edit company</h3>
+          <h3 className="font-semibold text-espark-ink">Edit company</h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
           >
             ×
           </button>
@@ -80,7 +80,7 @@ export function EditCompanyDialog({
           onChange={(e) => setName(e.target.value)}
           disabled={busy}
           autoFocus
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <div className="grid grid-cols-2 gap-2">
           <input
@@ -89,7 +89,7 @@ export function EditCompanyDialog({
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
           <input
             type="text"
@@ -97,7 +97,7 @@ export function EditCompanyDialog({
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
         </div>
         <input
@@ -106,7 +106,7 @@ export function EditCompanyDialog({
           value={sizeBucket}
           onChange={(e) => setSizeBucket(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <textarea
           placeholder="Notes (optional)"
@@ -114,7 +114,7 @@ export function EditCompanyDialog({
           onChange={(e) => setNotes(e.target.value)}
           disabled={busy}
           rows={3}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         {error && (
           <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1">
@@ -125,14 +125,14 @@ export function EditCompanyDialog({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+            className="rounded border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy || !name.trim()}
-            className="rounded bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+            className="rounded bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
           >
             {busy ? "Saving…" : "Save"}
           </button>
@@ -149,7 +149,7 @@ export function EditCompanyButton({ company }: { company: EditableCompany }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+        className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
       >
         Edit
       </button>

@@ -117,8 +117,8 @@ export default function HelpTip({
           e.preventDefault();
           setOpen((o) => !o);
         }}
-        className={`inline-flex ${dim} shrink-0 items-center justify-center rounded-full border border-magic-border/70 bg-white/80 text-magic-ink/45 align-middle shadow-sm transition-colors hover:border-magic-red/40 hover:bg-magic-red/5 hover:text-magic-red focus:outline-none focus-visible:ring-2 focus-visible:ring-magic-red/40 ${
-          open ? "border-magic-red/40 bg-magic-red/5 text-magic-red" : ""
+        className={`inline-flex ${dim} shrink-0 items-center justify-center rounded-full border border-espark-border/70 bg-espark-surface/80 text-espark-ink/45 align-middle shadow-sm transition-colors hover:border-espark-primary/40 hover:bg-espark-primary/5 hover:text-espark-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-espark-primary/40 ${
+          open ? "border-espark-primary/40 bg-espark-primary/5 text-espark-primary" : ""
         } ${className || ""}`}
       >
         <HelpCircle className={icon} strokeWidth={2.25} />
@@ -131,12 +131,12 @@ export default function HelpTip({
               role="dialog"
               aria-labelledby={titleId}
               style={{ top: pos.top, left: pos.left }}
-              className="fixed z-[70] w-72 max-w-[calc(100vw-16px)] rounded-2xl border border-magic-border bg-white p-4 text-left shadow-mt-lift"
+              className="fixed z-[70] w-72 max-w-[calc(100vw-16px)] rounded-2xl border border-espark-border bg-espark-surface p-4 text-left shadow-es-lift"
             >
               <div className="mb-1 flex items-start justify-between gap-2">
                 <h4
                   id={titleId}
-                  className="text-sm font-bold leading-snug text-magic-ink"
+                  className="text-sm font-bold leading-snug text-espark-ink"
                 >
                   {content.title}
                 </h4>
@@ -144,12 +144,12 @@ export default function HelpTip({
                   type="button"
                   aria-label="Close"
                   onClick={() => setOpen(false)}
-                  className="-mr-1 -mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-magic-ink/40 hover:bg-magic-soft hover:text-magic-ink"
+                  className="-mr-1 -mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-espark-ink/40 hover:bg-espark-soft hover:text-espark-ink"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
-              <p className="text-[13px] leading-relaxed text-magic-ink/70">
+              <p className="text-[13px] leading-relaxed text-espark-ink/70">
                 {content.body}
               </p>
             </div>,

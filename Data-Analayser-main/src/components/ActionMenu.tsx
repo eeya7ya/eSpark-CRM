@@ -66,8 +66,8 @@ export default function ActionMenu({
   const sizeCls = size === "md" ? "px-4 py-2 text-sm" : "px-3 py-1.5 text-xs";
   const variantCls =
     variant === "primary"
-      ? "bg-magic-red text-white hover:bg-red-700"
-      : "border border-magic-red text-magic-red hover:bg-magic-red hover:text-white";
+      ? "bg-espark-primary text-white hover:bg-red-700"
+      : "border border-espark-primary text-espark-primary hover:bg-espark-primary hover:text-white";
 
   return (
     <div ref={ref} className="relative inline-block">
@@ -92,7 +92,7 @@ export default function ActionMenu({
       </button>
       {open && (
         <div
-          className={`absolute z-50 mt-1 min-w-[12rem] rounded-md border border-magic-border bg-white py-1 text-sm shadow-lg ${
+          className={`absolute z-50 mt-1 min-w-[12rem] rounded-md border border-espark-border bg-espark-surface py-1 text-sm shadow-lg ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
@@ -107,7 +107,7 @@ export default function ActionMenu({
               }}
               disabled={it.disabled}
               title={it.title}
-              className="block w-full px-3 py-1.5 text-left font-medium text-magic-ink hover:bg-magic-header disabled:cursor-not-allowed disabled:opacity-40"
+              className="block w-full px-3 py-1.5 text-left font-medium text-espark-ink hover:bg-espark-header disabled:cursor-not-allowed disabled:opacity-40"
             >
               {it.label}
             </button>

@@ -140,12 +140,12 @@ export default function QuickCatalogPicker({
   if (collapsed) {
     return (
       <aside
-        className={`no-print flex flex-col items-center gap-3 rounded-2xl border border-magic-border bg-white p-3 ${className ?? ""}`}
+        className={`no-print flex flex-col items-center gap-3 rounded-2xl border border-espark-border bg-espark-surface p-3 ${className ?? ""}`}
       >
         <button
           onClick={() => setCollapsed(false)}
           title="Show quick catalogue picker"
-          className="rounded-md border border-magic-red text-magic-red px-2 py-1 text-[11px] font-semibold hover:bg-magic-red hover:text-white"
+          className="rounded-md border border-espark-primary text-espark-primary px-2 py-1 text-[11px] font-semibold hover:bg-espark-primary hover:text-white"
         >
           ◀ Catalogue
         </button>
@@ -155,14 +155,14 @@ export default function QuickCatalogPicker({
 
   return (
     <aside
-      className={`no-print flex flex-col gap-3 rounded-2xl border border-magic-border bg-white p-4 ${className ?? ""}`}
+      className={`no-print flex flex-col gap-3 rounded-2xl border border-espark-border bg-espark-surface p-4 ${className ?? ""}`}
     >
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-magic-ink">Quick catalogue</h4>
+        <h4 className="text-sm font-semibold text-espark-ink">Quick catalogue</h4>
         <button
           onClick={() => setCollapsed(true)}
           title="Collapse picker"
-          className="text-magic-ink/50 hover:text-magic-red text-xs"
+          className="text-espark-ink/50 hover:text-espark-primary text-xs"
         >
           ✕
         </button>
@@ -172,11 +172,11 @@ export default function QuickCatalogPicker({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search model, brand, keyword…"
-        className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm placeholder:text-magic-ink/30 focus:outline-none focus:border-magic-red focus:ring-2 focus:ring-magic-red/20"
+        className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm placeholder:text-espark-ink/30 focus:outline-none focus:border-espark-primary focus:ring-2 focus:ring-espark-primary/20"
       />
 
       <div>
-        <label className="block text-[10px] font-semibold uppercase text-magic-ink/60 mb-1">
+        <label className="block text-[10px] font-semibold uppercase text-espark-ink/60 mb-1">
           Add to page
         </label>
         {existingPages.length > 0 && (
@@ -193,8 +193,8 @@ export default function QuickCatalogPicker({
                   }}
                   className={`rounded-full border px-2 py-0.5 text-[10px] transition-colors ${
                     active
-                      ? "bg-magic-red text-white border-magic-red"
-                      : "bg-white border-magic-border hover:bg-magic-soft"
+                      ? "bg-espark-primary text-white border-espark-primary"
+                      : "bg-espark-surface border-espark-border hover:bg-espark-soft"
                   }`}
                 >
                   {p}
@@ -207,12 +207,12 @@ export default function QuickCatalogPicker({
           value={customPage}
           onChange={(e) => setCustomPage(e.target.value)}
           placeholder="…or type a new page name"
-          className="w-full rounded-lg border border-magic-border bg-white px-2.5 py-1.5 text-xs placeholder:text-magic-ink/30 focus:outline-none focus:border-magic-red"
+          className="w-full rounded-lg border border-espark-border bg-espark-surface px-2.5 py-1.5 text-xs placeholder:text-espark-ink/30 focus:outline-none focus:border-espark-primary"
         />
       </div>
 
       <div>
-        <label className="block text-[10px] font-semibold uppercase text-magic-ink/60 mb-1">
+        <label className="block text-[10px] font-semibold uppercase text-espark-ink/60 mb-1">
           Quantity
         </label>
         <input
@@ -220,23 +220,23 @@ export default function QuickCatalogPicker({
           min={1}
           value={qty}
           onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-          className="w-20 rounded-lg border border-magic-border bg-white px-2 py-1 text-xs"
+          className="w-20 rounded-lg border border-espark-border bg-espark-surface px-2 py-1 text-xs"
         />
       </div>
 
-      <div className="flex-1 min-h-[120px] max-h-[50vh] overflow-y-auto border-t border-magic-border/60 pt-2">
+      <div className="flex-1 min-h-[120px] max-h-[50vh] overflow-y-auto border-t border-espark-border/60 pt-2">
         {!debounced && (
-          <p className="text-[11px] text-magic-ink/50 text-center py-4">
+          <p className="text-[11px] text-espark-ink/50 text-center py-4">
             Type a keyword above to search the catalogue.
           </p>
         )}
         {debounced && loading && (
-          <p className="text-[11px] text-magic-ink/50 text-center py-4 animate-pulse">
+          <p className="text-[11px] text-espark-ink/50 text-center py-4 animate-pulse">
             Searching…
           </p>
         )}
         {debounced && !loading && products.length === 0 && (
-          <p className="text-[11px] text-magic-ink/50 text-center py-4">
+          <p className="text-[11px] text-espark-ink/50 text-center py-4">
             No products found for &quot;{debounced}&quot;.
           </p>
         )}
@@ -244,24 +244,24 @@ export default function QuickCatalogPicker({
           {products.map((p) => (
             <li
               key={p.id}
-              className="rounded-lg border border-magic-border/60 px-2 py-1.5 hover:border-magic-red/50 hover:bg-magic-soft/30 transition-colors"
+              className="rounded-lg border border-espark-border/60 px-2 py-1.5 hover:border-espark-primary/50 hover:bg-espark-soft/30 transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <div className="text-[11px] font-semibold text-magic-ink truncate">
+                  <div className="text-[11px] font-semibold text-espark-ink truncate">
                     {p.model || "—"}
                   </div>
-                  <div className="text-[10px] text-magic-ink/60 truncate">
+                  <div className="text-[10px] text-espark-ink/60 truncate">
                     {p.vendor}
                     {p.system ? ` · ${p.system}` : ""}
                   </div>
                   {p.description && (
-                    <div className="text-[10px] text-magic-ink/50 line-clamp-2 mt-0.5">
+                    <div className="text-[10px] text-espark-ink/50 line-clamp-2 mt-0.5">
                       {p.description}
                     </div>
                   )}
                   {p.price_si > 0 && (
-                    <div className="text-[10px] text-magic-red font-semibold mt-0.5">
+                    <div className="text-[10px] text-espark-primary font-semibold mt-0.5">
                       {p.currency || "JOD"} {Number(p.price_si).toFixed(2)}
                     </div>
                   )}
@@ -270,7 +270,7 @@ export default function QuickCatalogPicker({
                   onClick={() => handleAdd(p)}
                   title={`Add to "${resolvedPage || `${p.vendor} ${p.system}`.trim() || "General"}"`}
                   aria-label="Add product"
-                  className="shrink-0 w-6 h-6 rounded-full bg-magic-red text-white flex items-center justify-center text-xs font-bold hover:bg-red-700 active:scale-95 transition-transform"
+                  className="shrink-0 w-6 h-6 rounded-full bg-espark-primary text-white flex items-center justify-center text-xs font-bold hover:bg-red-700 active:scale-95 transition-transform"
                 >
                   +
                 </button>

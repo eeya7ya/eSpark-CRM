@@ -99,7 +99,7 @@ const VERB_TONE: Record<string, string> = {
   claimed_with_assignment: "bg-emerald-500",
   released: "bg-amber-500",
   reclaimed: "bg-emerald-500",
-  quotation_sent_to_sales: "bg-magic-red",
+  quotation_sent_to_sales: "bg-espark-primary",
   quotation_accepted: "bg-emerald-500",
   quotation_change_requested: "bg-amber-500",
 };
@@ -198,7 +198,7 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 shadow-sm">
         <PageLoader label="Loading the lead…" />
       </div>
     );
@@ -235,24 +235,24 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <div className="space-y-4 lg:col-span-2">
         {/* ── Lead header card ─────────────────────────────────────────── */}
-        <div className="overflow-hidden rounded-2xl border border-magic-border bg-white shadow-sm">
-          <div className="border-b border-magic-border/60 bg-gradient-to-br from-magic-soft/60 via-white to-white px-6 py-5">
+        <div className="overflow-hidden rounded-2xl border border-espark-border bg-espark-surface shadow-sm">
+          <div className="border-b border-espark-border/60 bg-gradient-to-br from-espark-soft/60 via-espark-surface to-espark-surface px-6 py-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-[11px] font-semibold tracking-wide text-magic-red">
+                  <span className="font-mono text-[11px] font-semibold tracking-wide text-espark-primary">
                     {lead.ref}
                   </span>
-                  <span className="text-[11px] text-magic-ink/40">
+                  <span className="text-[11px] text-espark-ink/40">
                     Opened {relative(lead.created_at)}
                   </span>
                   {lead.updated_at && lead.updated_at !== lead.created_at && (
-                    <span className="text-[11px] text-magic-ink/40">
+                    <span className="text-[11px] text-espark-ink/40">
                       · last update {relative(lead.updated_at)}
                     </span>
                   )}
                 </div>
-                <h2 className="mt-1 text-2xl font-bold text-magic-ink">
+                <h2 className="mt-1 text-2xl font-bold text-espark-ink">
                   {lead.title}
                 </h2>
               </div>
@@ -273,11 +273,11 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
 
           <div className="px-6 py-5">
             {lead.description ? (
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-magic-ink/85">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-espark-ink/85">
                 {lead.description}
               </p>
             ) : (
-              <p className="text-sm italic text-magic-ink/45">
+              <p className="text-sm italic text-espark-ink/45">
                 No description was attached to this request.
               </p>
             )}
@@ -312,12 +312,12 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
                 Deliberately NOT shown as the active linkage; the presales
                 tree below is the canonical filing. */}
             {(lead.company_name || lead.folder_name || contactName) && (
-              <div className="mt-5 rounded-xl border border-dashed border-magic-border/80 bg-magic-soft/30 px-4 py-3">
+              <div className="mt-5 rounded-xl border border-dashed border-espark-border/80 bg-espark-soft/30 px-4 py-3">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-magic-ink/55">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-espark-ink/55">
                     Quick reference (from sales)
                   </span>
-                  <span className="text-[10px] text-magic-ink/40">
+                  <span className="text-[10px] text-espark-ink/40">
                     For context — presales files this lead under its own
                     tree.
                   </span>
@@ -354,9 +354,9 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
             (Mark as Win / Lost / Hold, and the post-win follow-ups) lives on
             the quotation itself. Give sales a one-click path there. */}
         {lead.quotation_id && lead.quotation_sent_at && (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-magic-red/30 bg-magic-red/5 px-5 py-4">
-            <div className="min-w-0 text-sm text-magic-ink/80">
-              <span className="font-semibold text-magic-ink">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-espark-primary/30 bg-espark-primary/5 px-5 py-4">
+            <div className="min-w-0 text-sm text-espark-ink/80">
+              <span className="font-semibold text-espark-ink">
                 Quotation {lead.quotation_ref || `#${lead.quotation_id}`} is ready.
               </span>{" "}
               Open it to mark the deal as <b>Win</b>, <b>Lost</b> or <b>Hold</b>{" "}
@@ -365,7 +365,7 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
             </div>
             <a
               href={`/quotation?id=${lead.quotation_id}`}
-              className="shrink-0 rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-magic-red/90"
+              className="shrink-0 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/90"
             >
               Open quotation →
             </a>
@@ -376,42 +376,42 @@ export default function LeadDetailClient({ leadId }: { leadId: number }) {
         <LeadLifecycleMap lead={lead} />
 
         {/* ── Timeline card ────────────────────────────────────────────── */}
-        <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
           <div className="mb-4 flex items-baseline justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+            <h3 className="text-sm font-bold uppercase tracking-wide text-espark-ink/70">
               Timeline
             </h3>
-            <span className="text-[11px] text-magic-ink/40">
+            <span className="text-[11px] text-espark-ink/40">
               {events.length} event{events.length === 1 ? "" : "s"}
             </span>
           </div>
           {events.length === 0 ? (
-            <p className="rounded-lg border border-dashed border-magic-border/70 px-4 py-6 text-center text-sm text-magic-ink/45">
+            <p className="rounded-lg border border-dashed border-espark-border/70 px-4 py-6 text-center text-sm text-espark-ink/45">
               No activity yet.
             </p>
           ) : (
-            <ol className="relative space-y-4 border-l border-magic-border/60 pl-5">
+            <ol className="relative space-y-4 border-l border-espark-border/60 pl-5">
               {events.map((e) => (
                 <li key={e.id} className="relative">
                   <span
-                    className={`absolute -left-[1.6rem] top-1 h-3 w-3 rounded-full ring-4 ring-white ${VERB_TONE[e.verb] ?? "bg-magic-ink/40"}`}
+                    className={`absolute -left-[1.6rem] top-1 h-3 w-3 rounded-full ring-4 ring-white ${VERB_TONE[e.verb] ?? "bg-espark-ink/40"}`}
                   />
                   <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-magic-ink/75">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-espark-ink/75">
                       {VERB_LABEL[e.verb] ?? e.verb.replace(/_/g, " ")}
                     </span>
-                    <span className="text-[11px] text-magic-ink/40">
+                    <span className="text-[11px] text-espark-ink/40">
                       {new Date(e.created_at).toLocaleString()}
                     </span>
-                    <span className="text-[11px] text-magic-ink/40">
+                    <span className="text-[11px] text-espark-ink/40">
                       · {relative(e.created_at)}
                     </span>
                   </div>
                   {e.message && (
-                    <p className="mt-1 text-sm text-magic-ink/80">{e.message}</p>
+                    <p className="mt-1 text-sm text-espark-ink/80">{e.message}</p>
                   )}
                   {e.actor_username && (
-                    <p className="mt-0.5 text-[11px] text-magic-ink/45">
+                    <p className="mt-0.5 text-[11px] text-espark-ink/45">
                       by {e.actor_name || e.actor_username}
                     </p>
                   )}
@@ -491,8 +491,8 @@ function OwnershipPanel({
   }
 
   return (
-    <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
-      <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
+      <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-espark-ink/70">
         Ownership
       </h3>
 
@@ -505,12 +505,12 @@ function OwnershipPanel({
             <button
               type="button"
               onClick={onClaimRequested}
-              className="mt-3 w-full rounded-lg bg-magic-red px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90"
+              className="mt-3 w-full rounded-lg bg-espark-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90"
             >
               Claim & file this lead
             </button>
           ) : (
-            <p className="mt-3 text-xs italic text-magic-ink/50">
+            <p className="mt-3 text-xs italic text-espark-ink/50">
               Waiting for a presales person to claim this lead.
             </p>
           )}
@@ -536,13 +536,13 @@ function OwnershipPanel({
               type="button"
               onClick={() => void release()}
               disabled={busy !== null}
-              className="mt-3 w-full rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+              className="mt-3 w-full rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
             >
               {busy === "release" ? "Releasing…" : "Release back to queue"}
             </button>
           )}
           {!isOwner && !isAdmin && (
-            <p className="mt-2 text-[11px] text-magic-ink/45">
+            <p className="mt-2 text-[11px] text-espark-ink/45">
               Only the person working it can make changes.
             </p>
           )}
@@ -569,8 +569,8 @@ function PresalesFilingPanel({
 }) {
   const filed = Boolean(lead.folder_id && lead.project_id);
   return (
-    <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
-      <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
+      <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-espark-ink/70">
         Presales filing
       </h3>
       {filed ? (
@@ -593,7 +593,7 @@ function PresalesFilingPanel({
         </p>
       )}
 
-      <p className="mt-3 text-xs text-magic-ink/60">
+      <p className="mt-3 text-xs text-espark-ink/60">
         Open the workspace to add quotations, BOQs, or POs against this
         project.
       </p>
@@ -601,7 +601,7 @@ function PresalesFilingPanel({
         {lead.folder_id && (
           <a
             href={`/folder/${lead.folder_id}`}
-            className="block w-full rounded-lg bg-magic-red px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90"
+            className="block w-full rounded-lg bg-espark-primary px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90"
           >
             Open client workspace →
           </a>
@@ -609,7 +609,7 @@ function PresalesFilingPanel({
         <button
           type="button"
           onClick={onReassign}
-          className="block w-full rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+          className="block w-full rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
         >
           {filed ? "Re-file under a different tree" : "File this lead now"}
         </button>
@@ -639,11 +639,11 @@ function ReferenceItem({
   value: string;
 }) {
   return (
-    <div className="rounded-md border border-magic-border/60 bg-white px-2.5 py-1.5">
-      <div className="text-[10px] font-semibold uppercase tracking-wide text-magic-ink/45">
+    <div className="rounded-md border border-espark-border/60 bg-espark-surface px-2.5 py-1.5">
+      <div className="text-[10px] font-semibold uppercase tracking-wide text-espark-ink/45">
         {label}
       </div>
-      <div className="truncate text-sm font-medium text-magic-ink/90">
+      <div className="truncate text-sm font-medium text-espark-ink/90">
         {value}
       </div>
     </div>
@@ -653,10 +653,10 @@ function ReferenceItem({
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-[10px] font-semibold uppercase tracking-wide text-magic-ink/50">
+      <dt className="text-[10px] font-semibold uppercase tracking-wide text-espark-ink/50">
         {label}
       </dt>
-      <dd className="text-sm text-magic-ink">{value}</dd>
+      <dd className="text-sm text-espark-ink">{value}</dd>
     </div>
   );
 }

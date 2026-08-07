@@ -56,9 +56,9 @@ export default function UnclassifiedClientsList({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-        <p className="text-magic-ink/70 mb-2">No unclassified clients.</p>
-        <p className="text-sm text-magic-ink/50">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+        <p className="text-espark-ink/70 mb-2">No unclassified clients.</p>
+        <p className="text-sm text-espark-ink/50">
           Every folder you can see already has a kind.
         </p>
       </div>
@@ -76,20 +76,20 @@ export default function UnclassifiedClientsList({
         {items.map((f) => (
           <li
             key={f.id}
-            className="rounded-xl border border-magic-border bg-white p-4 hover:shadow-md transition-shadow"
+            className="rounded-xl border border-espark-border bg-espark-surface p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
                 <Link
                   href={`/folder/${f.id}`}
-                  className="font-semibold text-magic-ink hover:text-magic-red"
+                  className="font-semibold text-espark-ink hover:text-espark-primary"
                 >
                   {f.name}
                 </Link>
                 <span className="ml-2 inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-800">
                   Unclassified
                 </span>
-                <div className="text-xs text-magic-ink/60 mt-0.5">
+                <div className="text-xs text-espark-ink/60 mt-0.5">
                   {f.company_name && <>linked: {f.company_name} · </>}
                   {f.client_company && !f.company_name && (
                     <>{f.client_company} · </>
@@ -97,7 +97,7 @@ export default function UnclassifiedClientsList({
                   {f.client_email && <>{f.client_email} · </>}
                   {f.owner_username && <>owner @{f.owner_username}</>}
                 </div>
-                <div className="text-xs text-magic-ink/50 mt-1">
+                <div className="text-xs text-espark-ink/50 mt-1">
                   {f.project_count} project
                   {f.project_count === 1 ? "" : "s"} · {f.quotation_count}{" "}
                   quotation{f.quotation_count === 1 ? "" : "s"}
@@ -113,14 +113,14 @@ export default function UnclassifiedClientsList({
               <div className="flex items-center gap-1.5 shrink-0">
                 <Link
                   href={`/folder/${f.id}`}
-                  className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+                  className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
                 >
                   Open
                 </Link>
                 <button
                   onClick={() => void softDelete(f.id)}
                   disabled={busy}
-                  className="px-2 py-1.5 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
+                  className="px-2 py-1.5 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
                 >
                   Delete
                 </button>

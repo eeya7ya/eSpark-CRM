@@ -361,7 +361,7 @@ export default function FolderProjectsClient({
   // including its own "No projects yet" empty state.
   if (loadingProjects) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-12 flex items-center justify-center">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-12 flex items-center justify-center">
         <Spinner size={28} label={`Loading ${folderName}…`} />
       </div>
     );
@@ -370,7 +370,7 @@ export default function FolderProjectsClient({
   return (
     <CrmCapsProvider initial={initialCaps}>
     <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
-      <aside className="rounded-2xl border border-magic-border bg-white p-4">
+      <aside className="rounded-2xl border border-espark-border bg-espark-surface p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
           <button
             type="button"
@@ -378,9 +378,9 @@ export default function FolderProjectsClient({
             aria-expanded={mobileSidebarOpen}
             className="flex min-w-0 items-center gap-2 text-left lg:cursor-default"
           >
-            <h2 className="font-semibold text-sm text-magic-ink">
+            <h2 className="font-semibold text-sm text-espark-ink">
               Projects
-              <span className="ml-1 text-magic-ink/40 lg:hidden">
+              <span className="ml-1 text-espark-ink/40 lg:hidden">
                 ({projects.length})
               </span>
             </h2>
@@ -392,7 +392,7 @@ export default function FolderProjectsClient({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className={`h-4 w-4 text-magic-ink/50 transition-transform lg:hidden ${
+              className={`h-4 w-4 text-espark-ink/50 transition-transform lg:hidden ${
                 mobileSidebarOpen ? "rotate-180" : ""
               }`}
               aria-hidden
@@ -400,7 +400,7 @@ export default function FolderProjectsClient({
               <polyline points="6 9 12 15 18 9" />
             </svg>
             {!mobileSidebarOpen && activeProject && (
-              <span className="ml-1 truncate text-xs text-magic-ink/60 lg:hidden">
+              <span className="ml-1 truncate text-xs text-espark-ink/60 lg:hidden">
                 · {activeProject.name}
               </span>
             )}
@@ -426,13 +426,13 @@ export default function FolderProjectsClient({
             placeholder="Search projects…"
             value={projectQuery}
             onChange={(e) => setProjectQuery(e.target.value)}
-            className="mb-2 w-full rounded border border-magic-border bg-white px-2 py-1 text-xs"
+            className="mb-2 w-full rounded border border-espark-border bg-espark-surface px-2 py-1 text-xs"
           />
         )}
         {loadingProjects ? (
-          <div className="text-xs text-magic-ink/50">Loading projects…</div>
+          <div className="text-xs text-espark-ink/50">Loading projects…</div>
         ) : projects.length === 0 ? (
-          <div className="text-xs text-magic-ink/50">
+          <div className="text-xs text-espark-ink/50">
             No projects yet for {folderName}. Create the first one.
           </div>
         ) : (
@@ -449,7 +449,7 @@ export default function FolderProjectsClient({
               : projects;
             if (visible.length === 0) {
               return (
-                <div className="text-xs text-magic-ink/50">
+                <div className="text-xs text-espark-ink/50">
                   No projects match &quot;{projectQuery}&quot;.
                 </div>
               );
@@ -494,16 +494,16 @@ export default function FolderProjectsClient({
                         }}
                         className={`w-full text-left rounded-md px-3 py-2 text-sm border transition-colors ${
                           isDropTarget
-                            ? "border-magic-red bg-magic-red/10 text-magic-ink ring-2 ring-magic-red/30"
+                            ? "border-espark-primary bg-espark-primary/10 text-espark-ink ring-2 ring-espark-primary/30"
                             : isActive
-                              ? "border-magic-red bg-magic-red/5 text-magic-ink"
-                              : "border-transparent hover:bg-magic-soft text-magic-ink/80"
+                              ? "border-espark-primary bg-espark-primary/5 text-espark-ink"
+                              : "border-transparent hover:bg-espark-soft text-espark-ink/80"
                         }`}
                         title={p.description || undefined}
                       >
                         <div className="font-semibold truncate">{p.name}</div>
                         {p.description && (
-                          <div className="text-[10px] text-magic-ink/50 truncate">
+                          <div className="text-[10px] text-espark-ink/50 truncate">
                             {p.description}
                           </div>
                         )}
@@ -547,7 +547,7 @@ export default function FolderProjectsClient({
             }}
           />
         ) : (
-          <div className="rounded-2xl border border-magic-border bg-white p-8 text-center text-sm text-magic-ink/60">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center text-sm text-espark-ink/60">
             Select a project on the left, or create a new one.
           </div>
         )}
@@ -607,7 +607,7 @@ function NewProjectButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-md bg-magic-red text-white px-2.5 py-1 text-xs font-semibold hover:bg-red-700"
+        className="rounded-md bg-espark-primary text-white px-2.5 py-1 text-xs font-semibold hover:bg-red-700"
       >
         + New
       </button>
@@ -629,10 +629,10 @@ function NewProjectButton({
       onClick={close}
     >
       <div
-        className="w-full max-w-sm rounded-2xl border border-magic-border bg-white p-5 shadow-2xl"
+        className="w-full max-w-sm rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="text-xs font-semibold uppercase text-magic-ink/60 mb-3">
+        <div className="text-xs font-semibold uppercase text-espark-ink/60 mb-3">
           New project
         </div>
         <input
@@ -641,14 +641,14 @@ function NewProjectButton({
           onChange={(e) => setName(e.target.value)}
           placeholder="Project name"
           autoFocus
-          className="w-full rounded-md border border-magic-border px-3 py-2 text-sm mb-2"
+          className="w-full rounded-md border border-espark-border px-3 py-2 text-sm mb-2"
         />
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={2}
           placeholder="Optional description"
-          className="w-full rounded-md border border-magic-border px-3 py-2 text-sm mb-2"
+          className="w-full rounded-md border border-espark-border px-3 py-2 text-sm mb-2"
         />
         {error && (
           <div className="mb-2 rounded-md bg-red-50 px-2 py-1 text-xs text-red-700">
@@ -660,7 +660,7 @@ function NewProjectButton({
             type="button"
             onClick={close}
             disabled={busy}
-            className="rounded-md border border-magic-border px-3 py-1.5 text-xs hover:bg-magic-soft disabled:opacity-50"
+            className="rounded-md border border-espark-border px-3 py-1.5 text-xs hover:bg-espark-soft disabled:opacity-50"
           >
             Cancel
           </button>
@@ -668,7 +668,7 @@ function NewProjectButton({
             type="button"
             onClick={submit}
             disabled={busy || !name.trim()}
-            className="rounded-md bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700 disabled:opacity-50"
+            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700 disabled:opacity-50"
           >
             {busy ? "Creating…" : "Create"}
           </button>
@@ -750,7 +750,7 @@ function ProjectPanel({
   }, [tabs, tab]);
 
   return (
-    <div className="rounded-2xl border border-magic-border bg-white">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface">
       <ProjectHeader
         project={project}
         onProjectUpdate={onProjectUpdate}
@@ -758,7 +758,7 @@ function ProjectPanel({
         canRequestQuotation={caps.canRequestQuotation}
         initialRfq={initialRfq}
       />
-      <div className="border-b border-magic-border px-2 sm:px-4 flex gap-1 overflow-x-auto">
+      <div className="border-b border-espark-border px-2 sm:px-4 flex gap-1 overflow-x-auto">
         {tabs.map(([key, label]) => {
           const isActive = tab === key;
           return (
@@ -768,8 +768,8 @@ function ProjectPanel({
               onClick={() => setTab(key)}
               className={`whitespace-nowrap px-3 sm:px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition-colors ${
                 isActive
-                  ? "border-magic-red text-magic-red"
-                  : "border-transparent text-magic-ink/60 hover:text-magic-ink"
+                  ? "border-espark-primary text-espark-primary"
+                  : "border-transparent text-espark-ink/60 hover:text-espark-ink"
               }`}
             >
               {label}
@@ -900,19 +900,19 @@ function ProjectHeader({
 
   if (editing) {
     return (
-      <div className="px-4 pt-4 pb-3 border-b border-magic-border">
+      <div className="px-4 pt-4 pb-3 border-b border-espark-border">
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-md border border-magic-border px-2 py-1.5 text-base font-semibold mb-2"
+          className="w-full rounded-md border border-espark-border px-2 py-1.5 text-base font-semibold mb-2"
         />
         <textarea
           value={description}
           rows={2}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description (optional)"
-          className="w-full rounded-md border border-magic-border px-2 py-1.5 text-sm mb-2"
+          className="w-full rounded-md border border-espark-border px-2 py-1.5 text-sm mb-2"
         />
         <div className="flex gap-2 justify-end">
           <button
@@ -923,7 +923,7 @@ function ProjectHeader({
               setDescription(project.description ?? "");
             }}
             disabled={busy}
-            className="rounded-md border border-magic-border px-3 py-1.5 text-xs hover:bg-magic-soft disabled:opacity-50"
+            className="rounded-md border border-espark-border px-3 py-1.5 text-xs hover:bg-espark-soft disabled:opacity-50"
           >
             Cancel
           </button>
@@ -931,7 +931,7 @@ function ProjectHeader({
             type="button"
             onClick={save}
             disabled={busy || !name.trim()}
-            className="rounded-md bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700 disabled:opacity-50"
+            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save"}
           </button>
@@ -941,13 +941,13 @@ function ProjectHeader({
   }
 
   return (
-    <div className="px-4 pt-4 pb-3 border-b border-magic-border flex items-start justify-between gap-3">
+    <div className="px-4 pt-4 pb-3 border-b border-espark-border flex items-start justify-between gap-3">
       <div className="min-w-0">
-        <h2 className="text-lg font-bold text-magic-ink truncate">
+        <h2 className="text-lg font-bold text-espark-ink truncate">
           {project.name}
         </h2>
         {project.description && (
-          <p className="text-xs text-magic-ink/60 mt-0.5">
+          <p className="text-xs text-espark-ink/60 mt-0.5">
             {project.description}
           </p>
         )}
@@ -964,7 +964,7 @@ function ProjectHeader({
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="rounded-md border border-magic-border px-2.5 py-1 text-xs hover:bg-magic-soft"
+          className="rounded-md border border-espark-border px-2.5 py-1 text-xs hover:bg-espark-soft"
         >
           Rename
         </button>
@@ -1058,7 +1058,7 @@ function QuotationsTab({
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-magic-ink/60">
+        <span className="text-xs text-espark-ink/60">
           {items === null
             ? "Loading…"
             : `${items.length} quotation${items.length === 1 ? "" : "s"}`}
@@ -1066,7 +1066,7 @@ function QuotationsTab({
         {showAuthoring && (
           <Link
             href={`/designer?folder=${project.folder_id}&project=${project.id}`}
-            className="rounded-md bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700"
+            className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-red-700"
           >
             + New quotation in this project
           </Link>
@@ -1077,11 +1077,11 @@ function QuotationsTab({
           <Spinner size={20} label="Loading quotations…" />
         </div>
       ) : items.length === 0 ? (
-        <div className="text-xs text-magic-ink/50">
+        <div className="text-xs text-espark-ink/50">
           No quotations yet for this project.
         </div>
       ) : (
-        <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+        <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
           {items.map((row) =>
             row.read_only ? (
               // Surfaced from the lead-linked presales project — view-only.
@@ -1090,24 +1090,24 @@ function QuotationsTab({
               // copy / delete affordances.
               <li
                 key={row.id}
-                className="px-3 py-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 hover:bg-magic-soft/40"
+                className="px-3 py-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 hover:bg-espark-soft/40"
               >
                 <div className="min-w-0 flex items-baseline gap-2">
                   <Link
                     href={`/quotation?id=${row.id}&view=1`}
-                    className="font-mono text-sm text-magic-red hover:underline shrink-0"
+                    className="font-mono text-sm text-espark-primary hover:underline shrink-0"
                   >
                     {row.ref}
                   </Link>
-                  <span className="text-sm text-magic-ink truncate min-w-0">
+                  <span className="text-sm text-espark-ink truncate min-w-0">
                     {row.project_name || "—"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="rounded-full border border-magic-border bg-magic-soft/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-magic-ink/50">
+                  <span className="rounded-full border border-espark-border bg-espark-soft/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-espark-ink/50">
                     View only
                   </span>
-                  <span className="text-[10px] uppercase text-magic-ink/50">
+                  <span className="text-[10px] uppercase text-espark-ink/50">
                     {row.status || "active"}
                   </span>
                 </div>
@@ -1122,18 +1122,18 @@ function QuotationsTab({
                   onDragStart("quotation", row.id);
                 }}
                 onDragEnd={onDragEnd}
-                className="px-3 py-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 hover:bg-magic-soft/40 cursor-grab active:cursor-grabbing"
+                className="px-3 py-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 hover:bg-espark-soft/40 cursor-grab active:cursor-grabbing"
                 title="Drag onto a project in the sidebar to move this quotation"
               >
                 <div className="min-w-0 flex items-baseline gap-2">
                   <Link
                     href={`/quotation?id=${row.id}`}
-                    className="font-mono text-sm text-magic-red hover:underline shrink-0"
+                    className="font-mono text-sm text-espark-primary hover:underline shrink-0"
                     draggable={false}
                   >
                     {row.ref}
                   </Link>
-                  <span className="text-sm text-magic-ink truncate min-w-0">
+                  <span className="text-sm text-espark-ink truncate min-w-0">
                     {row.project_name || "—"}
                   </span>
                 </div>
@@ -1145,7 +1145,7 @@ function QuotationsTab({
                     currentProjectName={project.name}
                     onChanged={() => setReloadToken((t) => t + 1)}
                   />
-                  <span className="text-[10px] uppercase text-magic-ink/50">
+                  <span className="text-[10px] uppercase text-espark-ink/50">
                     {row.status || "active"}
                   </span>
                 </div>
@@ -1156,8 +1156,8 @@ function QuotationsTab({
       )}
 
       {(showAuthoring || files.length > 0) && (
-      <div className="mt-5 border-t border-magic-border/60 pt-4">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-magic-ink/60 mb-2">
+      <div className="mt-5 border-t border-espark-border/60 pt-4">
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-espark-ink/60 mb-2">
           Existing quotation files
         </h4>
         {showAuthoring && (
@@ -1170,13 +1170,13 @@ function QuotationsTab({
         )}
         <div className="mt-3">
           {files.length === 0 ? (
-            <div className="text-xs text-magic-ink/50">
+            <div className="text-xs text-espark-ink/50">
               {showAuthoring
                 ? "No uploaded quotation files. Use the button above to attach an old Excel or PDF quotation."
                 : "No uploaded quotation files yet."}
             </div>
           ) : (
-            <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+            <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
               {files.map((f) => (
                 <FileRowItem
                   key={f.id}
@@ -1272,12 +1272,12 @@ function PosTab({
 
       <div className="mt-4">
         {files.length === 0 ? (
-          <div className="text-xs text-magic-ink/50">
+          <div className="text-xs text-espark-ink/50">
             No purchase orders uploaded yet. Use the button above to attach a PO
             document.
           </div>
         ) : (
-          <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+          <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
             {files.map((f) => (
               <FileRowItem
                 key={f.id}
@@ -1294,11 +1294,11 @@ function PosTab({
       </div>
 
       {items && items.length > 0 && (
-        <div className="mt-5 border-t border-magic-border/60 pt-4">
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-magic-ink/60 mb-2">
+        <div className="mt-5 border-t border-espark-border/60 pt-4">
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-espark-ink/60 mb-2">
             Purchase orders from the PO module
           </h4>
-          <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+          <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
             {items.map((row) => (
               <li
                 key={row.id}
@@ -1309,16 +1309,16 @@ function PosTab({
                   onDragStart("po", row.id);
                 }}
                 onDragEnd={onDragEnd}
-                className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-magic-soft/40 cursor-grab active:cursor-grabbing"
+                className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-espark-soft/40 cursor-grab active:cursor-grabbing"
                 title="Drag onto a project in the sidebar to move this PO"
               >
                 <div className="min-w-0">
                   <span className="font-mono text-sm">{row.po_number}</span>
-                  <span className="ml-2 text-sm text-magic-ink/70 truncate">
+                  <span className="ml-2 text-sm text-espark-ink/70 truncate">
                     {row.supplier || "—"}
                   </span>
                 </div>
-                <div className="text-xs text-magic-ink/60">
+                <div className="text-xs text-espark-ink/60">
                   {row.currency} {Number(row.amount).toFixed(2)}
                 </div>
               </li>
@@ -1443,13 +1443,13 @@ function FilesTab({
       )}
 
       {!loading && kindFiltered.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] text-magic-ink/60">
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] text-espark-ink/60">
           <label className="flex items-center gap-1">
             <span>User:</span>
             <Select
               value={userFilter}
               onChange={(next) => setUserFilter(next)}
-              className="rounded-md border border-magic-border px-2 py-1 text-[11px] bg-white"
+              className="rounded-md border border-espark-border px-2 py-1 text-[11px] bg-espark-surface"
             >
               <option value="all">All users</option>
               {owners.map((name) => (
@@ -1464,15 +1464,15 @@ function FilesTab({
             onClick={() => setSortByUser((v) => !v)}
             className={`rounded-md border px-2 py-1 text-[11px] ${
               sortByUser
-                ? "border-magic-red text-magic-red bg-magic-red/5"
-                : "border-magic-border hover:bg-magic-soft"
+                ? "border-espark-primary text-espark-primary bg-espark-primary/5"
+                : "border-espark-border hover:bg-espark-soft"
             }`}
             title="Group the files by who uploaded them"
           >
             {sortByUser ? "✓ Sorted by user" : "Sort by user"}
           </button>
           {(userFilter !== "all" || sortByUser) && (
-            <span className="text-magic-ink/40">
+            <span className="text-espark-ink/40">
               {visible.length} of {kindFiltered.length} file
               {kindFiltered.length === 1 ? "" : "s"}
             </span>
@@ -1486,13 +1486,13 @@ function FilesTab({
             <Spinner size={20} label="Loading files…" />
           </div>
         ) : kindFiltered.length === 0 ? (
-          <div className="text-xs text-magic-ink/50">{emptyLabel}</div>
+          <div className="text-xs text-espark-ink/50">{emptyLabel}</div>
         ) : visible.length === 0 ? (
-          <div className="text-xs text-magic-ink/50">
+          <div className="text-xs text-espark-ink/50">
             No files uploaded by {userFilter}.
           </div>
         ) : (
-          <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+          <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
             {visible.map((f) => (
               <FileRowItem
                 key={f.id}
@@ -1620,9 +1620,9 @@ function FileUploader({
           : "DWG up to 50 MB · video up to 200 MB · image up to 15 MB · PDF up to 25 MB · other up to 50 MB";
 
   return (
-    <div className="rounded-lg border border-dashed border-magic-border bg-magic-soft/30 p-4">
+    <div className="rounded-lg border border-dashed border-espark-border bg-espark-soft/30 p-4">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="rounded-md bg-magic-red text-white px-3 py-1.5 text-xs font-semibold cursor-pointer hover:bg-red-700">
+        <label className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold cursor-pointer hover:bg-red-700">
           {busy ? "Uploading…" : buttonLabel}
           <input
             type="file"
@@ -1635,9 +1635,9 @@ function FileUploader({
             }}
           />
         </label>
-        <span className="text-[11px] text-magic-ink/60">{limitsHint}</span>
+        <span className="text-[11px] text-espark-ink/60">{limitsHint}</span>
         {progressLabel && (
-          <span className="text-[11px] text-magic-ink/70">{progressLabel}</span>
+          <span className="text-[11px] text-espark-ink/70">{progressLabel}</span>
         )}
       </div>
       {error && (
@@ -1716,12 +1716,12 @@ function FileRowItem({
         onDragStart("file", file.id);
       }}
       onDragEnd={onDragEnd}
-      className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-magic-soft/40 cursor-grab active:cursor-grabbing"
+      className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-espark-soft/40 cursor-grab active:cursor-grabbing"
       title="Drag onto a project in the sidebar to move this file"
     >
       <div className="min-w-0">
-        <div className="text-sm text-magic-ink truncate">{file.filename}</div>
-        <div className="text-[10px] text-magic-ink/50">
+        <div className="text-sm text-espark-ink truncate">{file.filename}</div>
+        <div className="text-[10px] text-espark-ink/50">
           {file.mime} · {formatBytes(file.size_bytes)} · by{" "}
           {file.owner_name || "Unknown"}
         </div>
@@ -1731,7 +1731,7 @@ function FileRowItem({
           type="button"
           onClick={() => open(false)}
           disabled={busy !== null}
-          className="rounded-md border border-magic-border px-2 py-1 text-xs hover:bg-magic-soft disabled:opacity-50"
+          className="rounded-md border border-espark-border px-2 py-1 text-xs hover:bg-espark-soft disabled:opacity-50"
         >
           {busy === "view" ? "…" : "View"}
         </button>
@@ -1739,7 +1739,7 @@ function FileRowItem({
           type="button"
           onClick={() => open(true)}
           disabled={busy !== null}
-          className="rounded-md border border-magic-border px-2 py-1 text-xs hover:bg-magic-soft disabled:opacity-50"
+          className="rounded-md border border-espark-border px-2 py-1 text-xs hover:bg-espark-soft disabled:opacity-50"
         >
           {busy === "download" ? "…" : "Download"}
         </button>
@@ -1983,15 +1983,15 @@ function ProposalsListTab({
     <div className="space-y-3">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h3 className="text-sm font-semibold text-magic-ink">{title}</h3>
-          <p className="text-xs text-magic-ink/60">{subtitle}</p>
+          <h3 className="text-sm font-semibold text-espark-ink">{title}</h3>
+          <p className="text-xs text-espark-ink/60">{subtitle}</p>
         </div>
         {canAuthor && (
           <button
             type="button"
             onClick={() => void createBlank()}
             disabled={creating}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-60"
           >
             {creating && <Spinner size={12} className="text-white" />}
             + {newLabel}
@@ -2015,12 +2015,12 @@ function ProposalsListTab({
         </div>
       )}
       {items === null && !error && (
-        <div className="rounded-md border border-magic-border bg-white px-3 py-3 text-xs text-magic-ink/60">
+        <div className="rounded-md border border-espark-border bg-espark-surface px-3 py-3 text-xs text-espark-ink/60">
           Loading…
         </div>
       )}
       {items !== null && items.length === 0 && (
-        <div className="rounded-lg border border-dashed border-magic-border bg-magic-soft/30 px-4 py-6 text-center text-xs text-magic-ink/70">
+        <div className="rounded-lg border border-dashed border-espark-border bg-espark-soft/30 px-4 py-6 text-center text-xs text-espark-ink/70">
           {emptyHint}
         </div>
       )}
@@ -2029,23 +2029,23 @@ function ProposalsListTab({
           {items.map((q) => (
             <li
               key={q.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-magic-border bg-white px-3 py-2.5"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-espark-border bg-espark-surface px-3 py-2.5"
             >
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 text-sm font-semibold text-magic-ink">
-                  <span className="rounded bg-magic-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-magic-red">
+                <div className="flex items-center gap-2 text-sm font-semibold text-espark-ink">
+                  <span className="rounded bg-espark-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-espark-primary">
                     {q.ref}
                   </span>
                   <span className="truncate">
                     {q.project_name || "Untitled quotation"}
                   </span>
                   {q.status && q.status !== "active" && (
-                    <span className="rounded bg-magic-border/40 px-1.5 py-0.5 text-[10px] uppercase text-magic-ink/70">
+                    <span className="rounded bg-espark-border/40 px-1.5 py-0.5 text-[10px] uppercase text-espark-ink/70">
                       {q.status}
                     </span>
                   )}
                 </div>
-                <div className="mt-0.5 text-[11px] text-magic-ink/60">
+                <div className="mt-0.5 text-[11px] text-espark-ink/60">
                   Created{" "}
                   {new Date(q.created_at).toLocaleDateString("en-GB", {
                     day: "2-digit",
@@ -2060,7 +2060,7 @@ function ProposalsListTab({
                     type="button"
                     onClick={() => void createRevision(q)}
                     disabled={busyId != null}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-magic-border px-2.5 py-1.5 text-xs font-medium text-magic-ink/70 transition-colors hover:border-magic-red hover:text-magic-red disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-espark-border px-2.5 py-1.5 text-xs font-medium text-espark-ink/70 transition-colors hover:border-espark-primary hover:text-espark-primary disabled:opacity-50"
                     title="Create a new revision of this proposal in this project"
                   >
                     {busyId === q.id && <Spinner size={12} />}
@@ -2071,7 +2071,7 @@ function ProposalsListTab({
                   href={openHref(q.id)}
                   target="_blank"
                   rel="noopener"
-                  className="rounded-md bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+                  className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
                 >
                   {ctaLabel}
                 </a>

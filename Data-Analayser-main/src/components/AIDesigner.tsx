@@ -190,7 +190,7 @@ export default function AIDesigner({
           <Select
             value={systemId}
             onChange={(next) => setSystemId(next)}
-            className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+            className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           >
             <option value="">\u2014 Auto (cross-vendor) \u2014</option>
             {systemsBy.map(([vendor, list]) => (
@@ -204,13 +204,13 @@ export default function AIDesigner({
             ))}
           </Select>
           <div className="mt-3">
-            <label className="block text-[10px] font-semibold uppercase text-magic-ink/60 mb-1">
+            <label className="block text-[10px] font-semibold uppercase text-espark-ink/60 mb-1">
               Groq design model
             </label>
             <Select
               value={designModel}
               onChange={(next) => setDesignModel(next as GroqChatModelId)}
-              className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
             >
               {GROQ_CHAT_MODELS.map((m) => (
                 <option key={m.id} value={m.id} title={m.description}>
@@ -218,7 +218,7 @@ export default function AIDesigner({
                 </option>
               ))}
             </Select>
-            <p className="mt-1 text-[11px] text-magic-ink/50">
+            <p className="mt-1 text-[11px] text-espark-ink/50">
               {GROQ_CHAT_MODELS.find((m) => m.id === designModel)?.description}
             </p>
           </div>
@@ -233,21 +233,21 @@ export default function AIDesigner({
               setConvHistory([]);
               setAnswers({});
             }}
-            className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+            className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
             placeholder="e.g. 20 IP bullet cameras 4MP ColorVu for a warehouse, with NVR and 4TB storage"
           />
           <div className="mt-3 grid grid-cols-2 gap-2">
             <button
               onClick={runDesign}
               disabled={loading || !brief.trim()}
-              className="rounded-md bg-magic-red text-white py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+              className="rounded-md bg-espark-primary text-white py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
             >
               {loading ? "Designing\u2026" : "Design with Groq"}
             </button>
             <button
               onClick={runWebSearch}
               disabled={webLoading || !brief.trim()}
-              className="rounded-md border border-magic-red text-magic-red py-2 text-sm font-semibold hover:bg-magic-red/5 disabled:opacity-60"
+              className="rounded-md border border-espark-primary text-espark-primary py-2 text-sm font-semibold hover:bg-espark-primary/5 disabled:opacity-60"
               title="Deep web search via Groq agentic model"
             >
               {webLoading ? "Searching web\u2026" : "Deep web search"}
@@ -260,23 +260,23 @@ export default function AIDesigner({
             <div className="space-y-3">
               {result.followup_questions.map((q) => (
                 <div key={q.id}>
-                  <label className="text-xs font-semibold text-magic-ink/80">
+                  <label className="text-xs font-semibold text-espark-ink/80">
                     {q.question}
                   </label>
-                  <p className="text-[11px] text-magic-ink/50">{q.why}</p>
+                  <p className="text-[11px] text-espark-ink/50">{q.why}</p>
                   <input
                     value={answers[q.id] || ""}
                     onChange={(e) =>
                       setAnswers({ ...answers, [q.id]: e.target.value })
                     }
-                    className="mt-1 w-full rounded-md border border-magic-border px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-espark-border px-3 py-2 text-sm"
                   />
                 </div>
               ))}
               <button
                 onClick={runDesign}
                 disabled={loading}
-                className="w-full rounded-md bg-magic-ink text-white py-2 text-sm font-semibold hover:bg-black disabled:opacity-60"
+                className="w-full rounded-md bg-espark-ink text-espark-on-ink py-2 text-sm font-semibold hover:bg-black disabled:opacity-60"
               >
                 {loading ? "Re-designing\u2026" : "Submit answers & re-design"}
               </button>
@@ -286,7 +286,7 @@ export default function AIDesigner({
 
         {webResult && (
           <Card title="Deep web search result">
-            <pre className="whitespace-pre-wrap text-[11px] font-mono bg-magic-soft/40 rounded p-3 max-h-64 overflow-auto">
+            <pre className="whitespace-pre-wrap text-[11px] font-mono bg-espark-soft/40 rounded p-3 max-h-64 overflow-auto">
               {webResult}
             </pre>
           </Card>
@@ -297,11 +297,11 @@ export default function AIDesigner({
       <section className="space-y-4">
         {result?.summary && (
           <Card title="Design summary">
-            <p className="text-sm text-magic-ink/80 whitespace-pre-wrap">
+            <p className="text-sm text-espark-ink/80 whitespace-pre-wrap">
               {result.summary}
             </p>
             {result.notes && (
-              <p className="mt-2 text-xs text-magic-ink/60 whitespace-pre-wrap">
+              <p className="mt-2 text-xs text-espark-ink/60 whitespace-pre-wrap">
                 {result.notes}
               </p>
             )}
@@ -319,28 +319,28 @@ export default function AIDesigner({
             <div className="overflow-auto max-h-96">
               <table className="w-full text-[11px] border-collapse">
                 <thead>
-                  <tr className="bg-magic-soft text-left">
-                    <th className="p-1.5 border border-magic-border">Brand</th>
-                    <th className="p-1.5 border border-magic-border">Model</th>
-                    <th className="p-1.5 border border-magic-border">Qty</th>
-                    <th className="p-1.5 border border-magic-border">Price</th>
-                    <th className="p-1.5 border border-magic-border">Description</th>
+                  <tr className="bg-espark-soft text-left">
+                    <th className="p-1.5 border border-espark-border">Brand</th>
+                    <th className="p-1.5 border border-espark-border">Model</th>
+                    <th className="p-1.5 border border-espark-border">Qty</th>
+                    <th className="p-1.5 border border-espark-border">Price</th>
+                    <th className="p-1.5 border border-espark-border">Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   {result.items.map((it, i) => (
-                    <tr key={i} className="hover:bg-magic-soft/30">
-                      <td className="p-1.5 border border-magic-border font-semibold">
+                    <tr key={i} className="hover:bg-espark-soft/30">
+                      <td className="p-1.5 border border-espark-border font-semibold">
                         {it.brand}
                       </td>
-                      <td className="p-1.5 border border-magic-border">{it.model}</td>
-                      <td className="p-1.5 border border-magic-border text-center">
+                      <td className="p-1.5 border border-espark-border">{it.model}</td>
+                      <td className="p-1.5 border border-espark-border text-center">
                         {it.quantity}
                       </td>
-                      <td className="p-1.5 border border-magic-border text-right">
+                      <td className="p-1.5 border border-espark-border text-right">
                         {Number(it.unit_price).toFixed(2)}
                       </td>
-                      <td className="p-1.5 border border-magic-border text-magic-ink/70">
+                      <td className="p-1.5 border border-espark-border text-espark-ink/70">
                         {it.description || it.reason || "—"}
                       </td>
                     </tr>
@@ -350,14 +350,14 @@ export default function AIDesigner({
             </div>
             <button
               onClick={addItemsToDraft}
-              className="mt-3 w-full rounded-md bg-magic-red text-white py-2 text-sm font-semibold hover:bg-red-700"
+              className="mt-3 w-full rounded-md bg-espark-primary text-white py-2 text-sm font-semibold hover:bg-red-700"
             >
               Add {result.items.length} items to quotation draft
             </button>
             {addedCount > 0 && (
               <p className="mt-2 text-[11px] text-green-700 italic">
                 {addedCount} item(s) added to draft. Open the{" "}
-                <Link href="/designer" className="underline text-magic-red">
+                <Link href="/designer" className="underline text-espark-primary">
                   Designer
                 </Link>{" "}
                 to see them in the quotation.
@@ -367,8 +367,8 @@ export default function AIDesigner({
         )}
 
         {!result && !webResult && (
-          <div className="rounded-2xl border border-dashed border-magic-border bg-magic-soft/20 p-8 text-center">
-            <p className="text-sm text-magic-ink/50">
+          <div className="rounded-2xl border border-dashed border-espark-border bg-espark-soft/20 p-8 text-center">
+            <p className="text-sm text-espark-ink/50">
               Describe your project and click &ldquo;Design with Groq&rdquo; to
               generate a bill of quantities. The AI will recommend products from
               the catalogue and you can add them to your quotation draft.
@@ -388,7 +388,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-magic-border bg-white p-4">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface p-4">
       <h3 className="text-sm font-semibold mb-3">{title}</h3>
       {children}
     </div>

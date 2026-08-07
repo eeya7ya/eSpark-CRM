@@ -37,20 +37,20 @@ export default async function LeadAssignPage({
   if (!(await canClaimLead(user))) redirect("/leads");
 
   return (
-    <div className="min-h-screen bg-magic-soft/30">
+    <div className="min-h-screen bg-espark-soft/30">
       <TopBar user={user} />
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
         <header className="mb-5">
           <Link
             href="/leads"
-            className="text-xs font-semibold uppercase tracking-wide text-magic-ink/50 hover:text-magic-red"
+            className="text-xs font-semibold uppercase tracking-wide text-espark-ink/50 hover:text-espark-primary"
           >
             ← Back to leads
           </Link>
-          <h1 className="mt-2 text-2xl font-bold text-magic-ink">
+          <h1 className="mt-2 text-2xl font-bold text-espark-ink">
             File this lead under a presales tree
           </h1>
-          <p className="mt-1 text-sm text-magic-ink/60">
+          <p className="mt-1 text-sm text-espark-ink/60">
             Pick the Company / Individual → Client → Project the work belongs
             under. The presales filing is separate from any loose hints sales
             attached.

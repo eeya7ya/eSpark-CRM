@@ -23,11 +23,11 @@ export default async function DeliveryPage() {
 
   if (!isDelivery) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="mx-auto max-w-2xl px-6 py-10 text-center">
-          <h1 className="mb-2 text-xl font-bold text-magic-ink">Delivery</h1>
-          <p className="text-sm text-magic-ink/60">
+          <h1 className="mb-2 text-xl font-bold text-espark-ink">Delivery</h1>
+          <p className="text-sm text-espark-ink/60">
             You need a delivery role to open the delivery queue.
           </p>
         </main>
@@ -36,20 +36,20 @@ export default async function DeliveryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto max-w-screen-2xl space-y-5 px-4 py-6 sm:px-6 lg:px-8">
         <div>
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span> Delivery
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-magic-ink">
+          <h1 className="mt-1 text-2xl font-bold text-espark-ink">
             Delivery queue
           </h1>
-          <p className="mt-0.5 text-sm text-magic-ink/60">
+          <p className="mt-0.5 text-sm text-espark-ink/60">
             Requests raised by sales and projects — schedule them, assign a
             driver, and track each one through to delivered.
           </p>

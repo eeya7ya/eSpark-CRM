@@ -42,7 +42,7 @@ const DEFAULT_CONFIG: ServerConfig = {
 };
 
 const inputCls =
-  "w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-2 focus:ring-magic-red/20";
+  "w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-2 focus:ring-espark-primary/20";
 
 export default function EmailAdminPanel() {
   const [config, setConfig] = useState<ServerConfig>(DEFAULT_CONFIG);
@@ -189,9 +189,9 @@ export default function EmailAdminPanel() {
       )}
 
       {/* ── Shared mail server ──────────────────────────────────────────── */}
-      <div className="rounded-xl border border-magic-border bg-white p-5">
-        <h3 className="font-semibold text-magic-ink mb-1">Mail server</h3>
-        <p className="text-sm text-magic-ink/60 mb-4">
+      <div className="rounded-xl border border-espark-border bg-espark-surface p-5">
+        <h3 className="font-semibold text-espark-ink mb-1">Mail server</h3>
+        <p className="text-sm text-espark-ink/60 mb-4">
           One IMAP/SMTP server for all custom-domain mailboxes (e.g.{" "}
           <code>mail.yourcompany.com</code>). Nothing here is hardcoded.
         </p>
@@ -253,11 +253,11 @@ export default function EmailAdminPanel() {
         </div>
 
         {/* Test with a real mailbox before saving */}
-        <div className="mt-5 rounded-lg border border-magic-border/70 bg-magic-soft/30 p-4">
-          <div className="text-xs font-semibold uppercase tracking-wide text-magic-ink/60 mb-2">
+        <div className="mt-5 rounded-lg border border-espark-border/70 bg-espark-soft/30 p-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-espark-ink/60 mb-2">
             Test connection
           </div>
-          <p className="text-xs text-magic-ink/60 mb-3">
+          <p className="text-xs text-espark-ink/60 mb-3">
             Verify the settings above with any real mailbox on this server. These
             credentials are only used for the test — they are not stored.
           </p>
@@ -279,7 +279,7 @@ export default function EmailAdminPanel() {
           <button
             onClick={() => void testConfig()}
             disabled={testing || !config.imap_host || !testUser || !testPass}
-            className="mt-3 rounded-lg border border-magic-red px-4 py-2 text-sm font-semibold text-magic-red hover:bg-magic-red hover:text-white disabled:opacity-50 transition-colors"
+            className="mt-3 rounded-lg border border-espark-primary px-4 py-2 text-sm font-semibold text-espark-primary hover:bg-espark-primary hover:text-white disabled:opacity-50 transition-colors"
           >
             {testing ? "Testing…" : "Test connection"}
           </button>
@@ -300,7 +300,7 @@ export default function EmailAdminPanel() {
           <button
             onClick={() => void saveConfig()}
             disabled={savingCfg}
-            className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
           >
             {savingCfg ? "Saving…" : "Save mail server settings"}
           </button>
@@ -317,17 +317,17 @@ export default function EmailAdminPanel() {
       </div>
 
       {/* ── Per-user mailboxes ──────────────────────────────────────────── */}
-      <div className="rounded-xl border border-magic-border bg-white p-5">
-        <h3 className="font-semibold text-magic-ink mb-1">User mailboxes</h3>
-        <p className="text-sm text-magic-ink/60 mb-4">
+      <div className="rounded-xl border border-espark-border bg-espark-surface p-5">
+        <h3 className="font-semibold text-espark-ink mb-1">User mailboxes</h3>
+        <p className="text-sm text-espark-ink/60 mb-4">
           Assign each user an address + password on the server above. Passwords
           are stored AES-256-GCM encrypted. Users read &amp; send from{" "}
           <code>/email</code>.
         </p>
-        <div className="overflow-x-auto rounded-lg border border-magic-border">
+        <div className="overflow-x-auto rounded-lg border border-espark-border">
           <table className="w-full text-sm">
-            <thead className="bg-magic-soft/60">
-              <tr className="text-left text-xs uppercase text-magic-ink/60">
+            <thead className="bg-espark-soft/60">
+              <tr className="text-left text-xs uppercase text-espark-ink/60">
                 <th className="px-3 py-2 font-semibold">User</th>
                 <th className="px-3 py-2 font-semibold">Mailbox</th>
                 <th className="px-3 py-2 font-semibold">Status</th>
@@ -336,29 +336,29 @@ export default function EmailAdminPanel() {
             </thead>
             <tbody>
               {accounts.map((a) => (
-                <tr key={a.user_id} className="border-t border-magic-border/60">
+                <tr key={a.user_id} className="border-t border-espark-border/60">
                   <td className="px-3 py-2">
-                    <div className="font-medium text-magic-ink">
+                    <div className="font-medium text-espark-ink">
                       {a.display_name || a.username}
                     </div>
-                    <div className="text-xs text-magic-ink/50">
+                    <div className="text-xs text-espark-ink/50">
                       @{a.username} · {a.role}
                     </div>
                   </td>
                   <td className="px-3 py-2">
                     {a.email_address ? (
-                      <span className="text-magic-ink/80">{a.email_address}</span>
+                      <span className="text-espark-ink/80">{a.email_address}</span>
                     ) : (
-                      <span className="text-magic-ink/30">— none —</span>
+                      <span className="text-espark-ink/30">— none —</span>
                     )}
                   </td>
                   <td className="px-3 py-2">
                     {testingUserId === a.user_id ? (
-                      <span className="text-xs font-semibold text-magic-ink/60">
+                      <span className="text-xs font-semibold text-espark-ink/60">
                         Testing… (can take ~15s)
                       </span>
                     ) : !a.email_address ? (
-                      <span className="text-xs text-magic-ink/40">unassigned</span>
+                      <span className="text-xs text-espark-ink/40">unassigned</span>
                     ) : a.last_test_ok === true ? (
                       <span className="text-xs font-semibold text-emerald-700">
                         ✓ connection OK
@@ -373,14 +373,14 @@ export default function EmailAdminPanel() {
                     ) : a.enabled === false ? (
                       <span className="text-xs text-amber-700">disabled</span>
                     ) : (
-                      <span className="text-xs text-magic-ink/40">not tested</span>
+                      <span className="text-xs text-espark-ink/40">not tested</span>
                     )}
                   </td>
                   <td className="px-3 py-2">
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => setEditing(a)}
-                        className="rounded border border-magic-border px-2 py-1 text-xs font-medium text-magic-ink/70 hover:bg-magic-soft"
+                        className="rounded border border-espark-border px-2 py-1 text-xs font-medium text-espark-ink/70 hover:bg-espark-soft"
                       >
                         {a.email_address ? "Edit" : "Assign"}
                       </button>
@@ -389,13 +389,13 @@ export default function EmailAdminPanel() {
                           <button
                             onClick={() => void testAccount(a.user_id)}
                             disabled={testingUserId !== null}
-                            className="rounded border border-magic-border px-2 py-1 text-xs font-medium text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+                            className="rounded border border-espark-border px-2 py-1 text-xs font-medium text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
                           >
                             {testingUserId === a.user_id ? "Testing…" : "Test"}
                           </button>
                           <button
                             onClick={() => void removeAccount(a.user_id)}
-                            className="rounded border border-magic-border px-2 py-1 text-xs font-medium text-magic-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+                            className="rounded border border-espark-border px-2 py-1 text-xs font-medium text-espark-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
                           >
                             Remove
                           </button>
@@ -407,7 +407,7 @@ export default function EmailAdminPanel() {
               ))}
               {accounts.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-3 py-6 text-center text-magic-ink/50">
+                  <td colSpan={4} className="px-3 py-6 text-center text-espark-ink/50">
                     No users found.
                   </td>
                 </tr>
@@ -480,14 +480,14 @@ function MailboxEditor({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl space-y-3"
+        className="w-full max-w-md rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3"
       >
-        <h3 className="font-semibold text-magic-ink">
+        <h3 className="font-semibold text-espark-ink">
           Mailbox for {account.display_name || account.username}
         </h3>
         <Field label="Email address">
@@ -522,7 +522,7 @@ function MailboxEditor({
             placeholder={account.has_password ? "••••••••" : "Mailbox password"}
           />
         </Field>
-        <label className="flex items-center gap-2 text-sm text-magic-ink/80">
+        <label className="flex items-center gap-2 text-sm text-espark-ink/80">
           <input
             type="checkbox"
             checked={enabled}
@@ -539,14 +539,14 @@ function MailboxEditor({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+            className="rounded border border-espark-border px-3 py-1.5 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={() => void save()}
             disabled={busy || !email.trim()}
-            className="rounded bg-magic-red px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+            className="rounded bg-espark-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save mailbox"}
           </button>
@@ -565,7 +565,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-magic-ink/60">
+      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-espark-ink/60">
         {label}
       </span>
       {children}

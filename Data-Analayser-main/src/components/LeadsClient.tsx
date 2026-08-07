@@ -329,8 +329,8 @@ export default function LeadsClient({
               }}
               className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors ${
                 junk
-                  ? "border-magic-red bg-magic-red text-white"
-                  : "border-magic-border bg-white text-magic-ink/65 hover:bg-magic-soft"
+                  ? "border-espark-primary bg-espark-primary text-white"
+                  : "border-espark-border bg-espark-surface text-espark-ink/65 hover:bg-espark-soft"
               }`}
             >
               {junk ? "← Back to queue" : "Junk"}
@@ -343,12 +343,12 @@ export default function LeadsClient({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search ref, title, owner…"
-              className="w-52 rounded-lg border border-magic-border bg-white px-3 py-1.5 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+              className="w-52 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
             />
             <Select
               value={sort}
               onChange={(next) => setSort(next as SortKey)}
-              className="rounded-lg border border-magic-border bg-white px-2.5 py-1.5 text-sm text-magic-ink/80 focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red"
+              className="rounded-lg border border-espark-border bg-espark-surface px-2.5 py-1.5 text-sm text-espark-ink/80 focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary"
               title="Sort"
             >
               <option value="newest">Newest first</option>
@@ -359,7 +359,7 @@ export default function LeadsClient({
             {canCreate && (
               <Link
                 href="/leads/new"
-                className="rounded-lg bg-magic-red px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-magic-red/90"
+                className="rounded-lg bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-espark-primary/90"
               >
                 + New lead
               </Link>
@@ -391,7 +391,7 @@ export default function LeadsClient({
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(360px,400px)]">
         <div className="space-y-2">
           {loading ? (
-            <div className="rounded-2xl border border-magic-border bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-espark-border bg-espark-surface p-6 shadow-sm">
               <PageLoader label="Loading leads…" />
             </div>
           ) : visible.length === 0 ? (
@@ -428,7 +428,7 @@ export default function LeadsClient({
               onPurge={() => void junkAction(selected.id, "purge")}
             />
           ) : (
-            <div className="rounded-2xl border border-dashed border-magic-border bg-white/60 p-8 text-center text-sm text-magic-ink/55">
+            <div className="rounded-2xl border border-dashed border-espark-border bg-espark-surface/60 p-8 text-center text-sm text-espark-ink/55">
               Pick a lead on the left to see its details here.
             </div>
           )}
@@ -454,10 +454,10 @@ function LeadRowCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`group flex w-full items-stretch gap-3 overflow-hidden rounded-xl border bg-white text-left transition-all ${
+      className={`group flex w-full items-stretch gap-3 overflow-hidden rounded-xl border bg-espark-surface text-left transition-all ${
         selected
-          ? "border-magic-red shadow-sm ring-1 ring-magic-red/20"
-          : "border-magic-border hover:border-magic-ink/20 hover:shadow-sm"
+          ? "border-espark-primary shadow-sm ring-1 ring-espark-primary/20"
+          : "border-espark-border hover:border-espark-ink/20 hover:shadow-sm"
       }`}
     >
       <span
@@ -465,50 +465,50 @@ function LeadRowCard({
       />
       <div className="flex flex-1 flex-col gap-1 px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[11px] font-semibold text-magic-ink/55">
+          <span className="font-mono text-[11px] font-semibold text-espark-ink/55">
             {lead.quote_ref ?? "No reference yet"}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px] text-magic-ink/55">
+          <span className="inline-flex items-center gap-1 text-[11px] text-espark-ink/55">
             <span
               className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOT[lead.priority] ?? PRIORITY_DOT.normal}`}
             />
             {lead.priority}
           </span>
-          <span className="text-magic-ink/30">·</span>
-          <span className="text-[11px] text-magic-ink/55">
+          <span className="text-espark-ink/30">·</span>
+          <span className="text-[11px] text-espark-ink/55">
             {LEAD_STATUS_LABEL[lead.status as keyof typeof LEAD_STATUS_LABEL] ?? lead.status}
           </span>
-          <span className="ml-auto text-[10px] text-magic-ink/40">
+          <span className="ml-auto text-[10px] text-espark-ink/40">
             {relative(lead.created_at)}
             {updated ? ` · upd ${relative(lead.updated_at)}` : ""}
           </span>
         </div>
-        <div className="text-sm font-semibold text-magic-ink">
+        <div className="text-sm font-semibold text-espark-ink">
           {lead.title}
         </div>
         {lead.description && (
-          <p className="line-clamp-1 text-xs text-magic-ink/55">
+          <p className="line-clamp-1 text-xs text-espark-ink/55">
             {lead.description}
           </p>
         )}
-        <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-magic-ink/55">
+        <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-espark-ink/55">
           <span className="inline-flex items-center gap-1.5">
             <Avatar name={lead.created_by_username} muted />
             <span>{lead.created_by_username ?? "—"}</span>
           </span>
-          <span className="text-magic-ink/30">→</span>
+          <span className="text-espark-ink/30">→</span>
           {lead.assigned_to_username ? (
             <span className="inline-flex items-center gap-1.5">
               <Avatar name={lead.assigned_to_username} accent={mine} />
-              <span className={mine ? "font-semibold text-magic-red" : ""}>
+              <span className={mine ? "font-semibold text-espark-primary" : ""}>
                 {mine ? "You" : lead.assigned_to_username}
               </span>
             </span>
           ) : (
-            <span className="text-magic-ink/40">Unclaimed</span>
+            <span className="text-espark-ink/40">Unclaimed</span>
           )}
           {lead.requested_timeline_at && (
-            <span className="ml-auto text-[10px] text-magic-ink/45">
+            <span className="ml-auto text-[10px] text-espark-ink/45">
               Needed by{" "}
               {new Date(lead.requested_timeline_at).toLocaleDateString()}
             </span>
@@ -547,25 +547,25 @@ function LeadDetailPane({
   // re-checks; this just governs button visibility.)
   const canJunk = !junk && isPresales;
   return (
-    <div className="rounded-2xl border border-magic-border bg-white shadow-sm">
-      <div className="border-b border-magic-border/60 px-5 py-4">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface shadow-sm">
+      <div className="border-b border-espark-border/60 px-5 py-4">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[11px] font-semibold text-magic-ink/55">
+          <span className="font-mono text-[11px] font-semibold text-espark-ink/55">
             {lead.quote_ref ?? "No reference yet"}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px] text-magic-ink/55">
+          <span className="inline-flex items-center gap-1 text-[11px] text-espark-ink/55">
             <span
               className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOT[lead.priority] ?? PRIORITY_DOT.normal}`}
             />
             {lead.priority}
           </span>
-          <span className="text-magic-ink/30">·</span>
-          <span className="text-[11px] text-magic-ink/55">
+          <span className="text-espark-ink/30">·</span>
+          <span className="text-[11px] text-espark-ink/55">
             {LEAD_STATUS_LABEL[lead.status as keyof typeof LEAD_STATUS_LABEL] ?? lead.status}
           </span>
         </div>
-        <h3 className="mt-1 text-lg font-bold text-magic-ink">{lead.title}</h3>
-        <p className="mt-0.5 text-[11px] text-magic-ink/45">
+        <h3 className="mt-1 text-lg font-bold text-espark-ink">{lead.title}</h3>
+        <p className="mt-0.5 text-[11px] text-espark-ink/45">
           Opened {relative(lead.created_at)}
           {updated ? ` · updated ${relative(lead.updated_at)}` : ""}
         </p>
@@ -573,11 +573,11 @@ function LeadDetailPane({
 
       <div className="space-y-4 px-5 py-4">
         {lead.description ? (
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-magic-ink/85">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-espark-ink/85">
             {lead.description}
           </p>
         ) : (
-          <p className="text-sm italic text-magic-ink/45">
+          <p className="text-sm italic text-espark-ink/45">
             No description was attached to this request.
           </p>
         )}
@@ -606,11 +606,11 @@ function LeadDetailPane({
         </dl>
 
         {(lead.company_id || lead.folder_id || lead.project_id) && (
-          <div className="rounded-xl border border-dashed border-magic-border bg-magic-soft/30 px-3 py-2.5">
-            <div className="text-[10px] font-semibold uppercase tracking-wide text-magic-ink/55">
+          <div className="rounded-xl border border-dashed border-espark-border bg-espark-soft/30 px-3 py-2.5">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-espark-ink/55">
               {lead.project_id ? "Presales filing" : "Quick reference (from sales)"}
             </div>
-            <p className="mt-1 text-xs text-magic-ink/70">
+            <p className="mt-1 text-xs text-espark-ink/70">
               {lead.project_id
                 ? "Filed under a presales project. Open the workspace to keep working."
                 : "Sales attached these hints when opening the lead — context only. The presales tree is set when you claim & file."}
@@ -625,7 +625,7 @@ function LeadDetailPane({
                 type="button"
                 onClick={onRestore}
                 disabled={actBusy}
-                className="rounded-lg bg-magic-red px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90 disabled:opacity-50"
+                className="rounded-lg bg-espark-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90 disabled:opacity-50"
               >
                 Restore
               </button>
@@ -644,7 +644,7 @@ function LeadDetailPane({
                 <button
                   type="button"
                   onClick={onAssign}
-                  className="rounded-lg bg-magic-red px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90"
+                  className="rounded-lg bg-espark-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90"
                 >
                   Claim &amp; file →
                 </button>
@@ -652,14 +652,14 @@ function LeadDetailPane({
               {isPresales && mine && lead.folder_id && (
                 <Link
                   href={`/folder/${lead.folder_id}`}
-                  className="rounded-lg bg-magic-red px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90"
+                  className="rounded-lg bg-espark-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90"
                 >
                   Open client workspace →
                 </Link>
               )}
               <Link
                 href={`/leads/${lead.id}`}
-                className="rounded-lg border border-magic-border px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+                className="rounded-lg border border-espark-border px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
               >
                 Open full lead
               </Link>
@@ -668,7 +668,7 @@ function LeadDetailPane({
                   type="button"
                   onClick={onJunk}
                   disabled={actBusy}
-                  className="ml-auto rounded-lg border border-magic-border px-3 py-2 text-xs font-semibold text-magic-ink/60 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50"
+                  className="ml-auto rounded-lg border border-espark-border px-3 py-2 text-xs font-semibold text-espark-ink/60 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50"
                   title="Move this lead to junk (restorable)"
                 >
                   Move to junk
@@ -692,7 +692,7 @@ function Avatar({
   accent?: boolean;
 }) {
   const tone = accent
-    ? "bg-magic-red/15 text-magic-red"
+    ? "bg-espark-primary/15 text-espark-primary"
     : muted
       ? "bg-slate-100 text-slate-600"
       : "bg-slate-100 text-slate-600";
@@ -714,10 +714,10 @@ function DetailField({
 }) {
   return (
     <div>
-      <dt className="text-[10px] font-semibold uppercase tracking-wide text-magic-ink/50">
+      <dt className="text-[10px] font-semibold uppercase tracking-wide text-espark-ink/50">
         {label}
       </dt>
-      <dd className="text-sm font-medium text-magic-ink">{value}</dd>
+      <dd className="text-sm font-medium text-espark-ink">{value}</dd>
     </div>
   );
 }
@@ -745,7 +745,7 @@ function EmptyState({
             ? "No leads are being worked right now."
             : "No leads yet.";
   return (
-    <div className="rounded-2xl border border-dashed border-magic-border bg-white p-10 text-center text-sm text-magic-ink/55">
+    <div className="rounded-2xl border border-dashed border-espark-border bg-espark-surface p-10 text-center text-sm text-espark-ink/55">
       {msg}
     </div>
   );
@@ -764,7 +764,7 @@ function SegTabs({
 }) {
   return (
     <div
-      className={`inline-flex items-center gap-1 rounded-xl border border-magic-border bg-white p-1 ${subtle ? "" : "shadow-sm"}`}
+      className={`inline-flex items-center gap-1 rounded-xl border border-espark-border bg-espark-surface p-1 ${subtle ? "" : "shadow-sm"}`}
     >
       {options.map((o) => {
         const active = value === o.value;
@@ -776,9 +776,9 @@ function SegTabs({
             className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
               active
                 ? subtle
-                  ? "bg-magic-soft text-magic-ink"
-                  : "bg-magic-ink text-white shadow-sm"
-                : "text-magic-ink/65 hover:bg-magic-soft"
+                  ? "bg-espark-soft text-espark-ink"
+                  : "bg-espark-ink text-espark-on-ink shadow-sm"
+                : "text-espark-ink/65 hover:bg-espark-soft"
             }`}
           >
             {o.label}
@@ -787,7 +787,7 @@ function SegTabs({
                 className={`inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[10px] font-bold ${
                   active && !subtle
                     ? "bg-white/20 text-white"
-                    : "bg-magic-soft text-magic-ink/60"
+                    : "bg-espark-soft text-espark-ink/60"
                 }`}
               >
                 {o.badge}

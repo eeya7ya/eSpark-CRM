@@ -60,13 +60,13 @@ export default function MyAssignmentCard({ projectId }: { projectId: number }) {
     <section className="rounded-2xl border border-cyan-200 bg-cyan-50/60 p-5">
       <div className="mb-3 flex items-center gap-2">
         <UserCheck className="h-4 w-4 text-cyan-700" />
-        <h2 className="text-lg font-semibold text-magic-ink">Your assignment</h2>
+        <h2 className="text-lg font-semibold text-espark-ink">Your assignment</h2>
       </div>
       <div className="space-y-3">
         {mine.map((a) => (
           <div
             key={a.id}
-            className="rounded-xl border border-cyan-200 bg-white p-4"
+            className="rounded-xl border border-cyan-200 bg-espark-surface p-4"
           >
             <span className="inline-flex items-center rounded-full border border-cyan-300 bg-cyan-50 px-2 py-0.5 text-xs font-semibold text-cyan-800">
               {ROLE_LABEL[a.role] ?? a.role}
@@ -96,7 +96,7 @@ export default function MyAssignmentCard({ projectId }: { projectId: number }) {
               </div>
             </dl>
             {a.assigned_by_username && (
-              <p className="mt-2 text-[11px] text-magic-ink/45">
+              <p className="mt-2 text-[11px] text-espark-ink/45">
                 Assigned by {a.assigned_by_username}
               </p>
             )}
@@ -124,11 +124,11 @@ function Field({
       : null;
   return (
     <div>
-      <dt className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-magic-ink/50">
+      <dt className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-espark-ink/50">
         {icon}
         {label}
       </dt>
-      <dd className="mt-0.5 whitespace-pre-wrap text-sm text-magic-ink">
+      <dd className="mt-0.5 whitespace-pre-wrap text-sm text-espark-ink">
         {value ? (
           mapsHref ? (
             <a
@@ -143,7 +143,7 @@ function Field({
             value
           )
         ) : (
-          <span className="text-magic-ink/35">—</span>
+          <span className="text-espark-ink/35">—</span>
         )}
       </dd>
     </div>

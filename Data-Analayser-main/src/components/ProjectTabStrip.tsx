@@ -18,7 +18,7 @@ export default function ProjectTabStrip({ base }: { base: string }) {
   ];
 
   return (
-    <div className="border-b border-magic-border">
+    <div className="border-b border-espark-border">
       <nav className="flex items-center gap-1">
         {tabs.map((t) => {
           const active =
@@ -32,8 +32,8 @@ export default function ProjectTabStrip({ base }: { base: string }) {
               href={t.href}
               className={`-mb-px px-4 py-2 text-sm font-semibold border-b-2 transition-colors ${
                 active
-                  ? "border-magic-red text-magic-red"
-                  : "border-transparent text-magic-ink/60 hover:text-magic-ink"
+                  ? "border-espark-primary text-espark-primary"
+                  : "border-transparent text-espark-ink/60 hover:text-espark-ink"
               }`}
             >
               {t.label}

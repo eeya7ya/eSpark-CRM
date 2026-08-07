@@ -171,7 +171,7 @@ export default function ScheduleBoard() {
           <button
             type="button"
             onClick={() => setWeekStart(isoDate(addDays(fromIso(weekStart), -7)))}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-magic-border bg-white text-magic-ink/70 hover:bg-magic-soft"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-espark-border bg-espark-surface text-espark-ink/70 hover:bg-espark-soft"
             aria-label="Previous week"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -179,23 +179,23 @@ export default function ScheduleBoard() {
           <button
             type="button"
             onClick={() => setWeekStart(isoDate(startOfWeek(new Date())))}
-            className="rounded-lg border border-magic-border bg-white px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+            className="rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
           >
             This week
           </button>
           <button
             type="button"
             onClick={() => setWeekStart(isoDate(addDays(fromIso(weekStart), 7)))}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-magic-border bg-white text-magic-ink/70 hover:bg-magic-soft"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-espark-border bg-espark-surface text-espark-ink/70 hover:bg-espark-soft"
             aria-label="Next week"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
-          <span className="ml-2 text-sm font-semibold text-magic-ink">
+          <span className="ml-2 text-sm font-semibold text-espark-ink">
             {fmtRange(from, to)}
           </span>
         </div>
-        {loading && <span className="text-xs text-magic-ink/40">Loading…</span>}
+        {loading && <span className="text-xs text-espark-ink/40">Loading…</span>}
       </div>
 
       {error && (
@@ -208,13 +208,13 @@ export default function ScheduleBoard() {
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={() => onDrop(null, null)}
-        className="rounded-xl border border-dashed border-magic-border bg-magic-soft/30 p-3"
+        className="rounded-xl border border-dashed border-espark-border bg-espark-soft/30 p-3"
       >
-        <div className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-magic-ink/40">
+        <div className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-espark-ink/40">
           <Inbox className="h-3.5 w-3.5" /> Unscheduled ({unscheduled.length})
         </div>
         {unscheduled.length === 0 ? (
-          <p className="text-xs text-magic-ink/40">
+          <p className="text-xs text-espark-ink/40">
             Nothing waiting. Assignments without a day land here — drag them
             onto a technician and day.
           </p>
@@ -228,16 +228,16 @@ export default function ScheduleBoard() {
       </div>
 
       {/* Tech × day grid */}
-      <div className="overflow-x-auto rounded-2xl border border-magic-border bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-espark-border bg-espark-surface">
         <div className="min-w-[900px]">
           {/* Header */}
-          <div className="grid grid-cols-[180px_repeat(7,1fr)] border-b border-magic-border bg-magic-soft/40 text-xs font-semibold text-magic-ink/60">
+          <div className="grid grid-cols-[180px_repeat(7,1fr)] border-b border-espark-border bg-espark-soft/40 text-xs font-semibold text-espark-ink/60">
             <div className="px-3 py-2">Technician</div>
             {days.map((d) => (
               <div
                 key={d}
                 className={`px-2 py-2 text-center ${
-                  d === todayIso ? "bg-magic-red/5 text-magic-red" : ""
+                  d === todayIso ? "bg-espark-primary/5 text-espark-primary" : ""
                 }`}
               >
                 {fmtDay(d)}
@@ -246,7 +246,7 @@ export default function ScheduleBoard() {
           </div>
 
           {techs.length === 0 ? (
-            <p className="px-3 py-8 text-center text-sm text-magic-ink/40">
+            <p className="px-3 py-8 text-center text-sm text-espark-ink/40">
               No technicians yet. Grant users a projects-module role
               (technical / engineer / manager) in Admin → Modules.
             </p>
@@ -254,13 +254,13 @@ export default function ScheduleBoard() {
             techs.map((t) => (
               <div
                 key={t.id}
-                className="grid grid-cols-[180px_repeat(7,1fr)] border-b border-magic-border/60 last:border-0"
+                className="grid grid-cols-[180px_repeat(7,1fr)] border-b border-espark-border/60 last:border-0"
               >
                 <div className="px-3 py-2">
-                  <div className="truncate text-sm font-semibold text-magic-ink">
+                  <div className="truncate text-sm font-semibold text-espark-ink">
                     {t.display_name || t.username}
                   </div>
-                  <div className="truncate text-[11px] text-magic-ink/45">
+                  <div className="truncate text-[11px] text-espark-ink/45">
                     {t.roles.map((r) => ROLE_LABEL[r] ?? r).join(" · ")}
                   </div>
                 </div>
@@ -272,8 +272,8 @@ export default function ScheduleBoard() {
                       key={d}
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => onDrop(t.id, d)}
-                      className={`min-h-[64px] border-l border-magic-border/40 p-1 ${
-                        d === todayIso ? "bg-magic-red/[0.03]" : ""
+                      className={`min-h-[64px] border-l border-espark-border/40 p-1 ${
+                        d === todayIso ? "bg-espark-primary/[0.03]" : ""
                       } ${overbooked ? "ring-1 ring-inset ring-amber-300" : ""}`}
                     >
                       {overbooked && (
@@ -300,7 +300,7 @@ export default function ScheduleBoard() {
         </div>
       </div>
 
-      <p className="text-xs text-magic-ink/40">
+      <p className="text-xs text-espark-ink/40">
         Drag a card to another day or technician to reschedule. Drag it to the
         Unscheduled tray to clear its date. Assignments are created on a
         project&apos;s page; this board arranges them.
@@ -332,7 +332,7 @@ function Card({
         e.dataTransfer.effectAllowed = "move";
         onDragStart();
       }}
-      className={`cursor-grab rounded-md border border-magic-border border-l-[3px] bg-white px-2 py-1 text-xs shadow-sm active:cursor-grabbing ${
+      className={`cursor-grab rounded-md border border-espark-border border-l-[3px] bg-espark-surface px-2 py-1 text-xs shadow-sm active:cursor-grabbing ${
         ROLE_TONE[a.role] ?? "border-l-gray-300"
       } ${compact ? "w-44" : ""}`}
       title={`${a.project_name}${a.client_name ? ` · ${a.client_name}` : ""} · ${ROLE_LABEL[a.role] ?? a.role}`}
@@ -341,11 +341,11 @@ function Card({
         href={`/projects/${a.project_id}`}
         onClick={(e) => e.stopPropagation()}
         draggable={false}
-        className="block truncate font-semibold text-magic-ink hover:text-magic-red"
+        className="block truncate font-semibold text-espark-ink hover:text-espark-primary"
       >
         {a.project_name}
       </Link>
-      <div className="truncate text-[10px] text-magic-ink/45">
+      <div className="truncate text-[10px] text-espark-ink/45">
         {a.client_name ? `${a.client_name} · ` : ""}
         {ROLE_LABEL[a.role] ?? a.role}
       </div>

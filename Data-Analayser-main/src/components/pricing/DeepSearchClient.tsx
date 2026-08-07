@@ -178,7 +178,7 @@ export default function DeepSearchClient() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search an item model (e.g. cable, LED panel)…"
-            className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-10 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
+            className="w-full rounded-xl border border-gray-200 bg-espark-surface py-3 pl-10 pr-10 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
           />
           {loading ? (
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -200,7 +200,7 @@ export default function DeepSearchClient() {
           <Select
             value={sort}
             onChange={(next) => setSort(next as SortKey)}
-            className="rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm text-gray-700 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
+            className="rounded-xl border border-gray-200 bg-espark-surface px-3 py-3 text-sm text-gray-700 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20"
           >
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -248,7 +248,7 @@ export default function DeepSearchClient() {
           subtitle={`No line item matches “${query.trim()}”.`}
         />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-espark-surface shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
@@ -330,7 +330,7 @@ export default function DeepSearchClient() {
 
 function SummaryCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+    <div className="rounded-xl border border-gray-200 bg-espark-surface px-4 py-3 shadow-sm">
       <div className="text-[11px] font-medium uppercase tracking-wider text-gray-400">
         {label}
       </div>

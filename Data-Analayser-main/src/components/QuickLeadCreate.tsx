@@ -315,14 +315,14 @@ export default function QuickLeadCreate() {
 
   if (!open) {
     return (
-      <div className="rounded-2xl border border-dashed border-magic-border bg-white/60 p-4">
+      <div className="rounded-2xl border border-dashed border-espark-border bg-espark-surface/60 p-4">
         <button
           type="button"
           onClick={() => {
             setOpen(true);
             setDone(null);
           }}
-          className="inline-flex items-center gap-2 rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-magic-red/90"
+          className="inline-flex items-center gap-2 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/90"
         >
           <Plus className="h-4 w-4" />
           New lead
@@ -345,15 +345,15 @@ export default function QuickLeadCreate() {
   }
 
   return (
-    <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-espark-ink/70">
           New lead
         </h2>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-md p-1 text-magic-ink/50 hover:bg-magic-soft"
+          className="rounded-md p-1 text-espark-ink/50 hover:bg-espark-soft"
           aria-label="Close"
         >
           <X className="h-4 w-4" />
@@ -361,24 +361,24 @@ export default function QuickLeadCreate() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="sm:col-span-2 block text-xs font-semibold text-magic-ink/60">
+        <label className="sm:col-span-2 block text-xs font-semibold text-espark-ink/60">
           What does the client need?
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. CCTV + access control for a villa in Abdoun"
-            className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+            className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
           />
         </label>
 
-        <label className="block text-xs font-semibold text-magic-ink/60">
+        <label className="block text-xs font-semibold text-espark-ink/60">
           Priority
           <Select
             value={priority}
             onChange={(next) =>
               setPriority(next as (typeof PRIORITIES)[number])
             }
-            className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink bg-white"
+            className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink bg-espark-surface"
           >
             {PRIORITIES.map((p) => (
               <option key={p} value={p}>
@@ -388,7 +388,7 @@ export default function QuickLeadCreate() {
           </Select>
         </label>
 
-        <label className="block text-xs font-semibold text-magic-ink/60">
+        <label className="block text-xs font-semibold text-espark-ink/60">
           Client
           <Select
             value={mode}
@@ -399,7 +399,7 @@ export default function QuickLeadCreate() {
               // switched back to "decide later".
               if (v === "none") setFiles([]);
             }}
-            className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink bg-white"
+            className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink bg-espark-surface"
           >
             <option value="none">Decide later (presales files it)</option>
             <option value="existing">Existing client</option>
@@ -409,12 +409,12 @@ export default function QuickLeadCreate() {
         </label>
 
         {mode === "existing" && (
-          <label className="sm:col-span-2 block text-xs font-semibold text-magic-ink/60">
+          <label className="sm:col-span-2 block text-xs font-semibold text-espark-ink/60">
             Pick the client
             <Select
               value={existingFolderId}
               onChange={(next) => setExistingFolderId(next)}
-              className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink bg-white"
+              className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink bg-espark-surface"
             >
               <option value="">
                 {foldersLoaded ? "Select a client…" : "Loading…"}
@@ -431,31 +431,31 @@ export default function QuickLeadCreate() {
 
         {mode === "company" && (
           <>
-            <label className="block text-xs font-semibold text-magic-ink/60">
+            <label className="block text-xs font-semibold text-espark-ink/60">
               Company name
               <input
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="e.g. Najd Company"
-                className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+                className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
               />
             </label>
-            <label className="block text-xs font-semibold text-magic-ink/60">
+            <label className="block text-xs font-semibold text-espark-ink/60">
               Client name
               <input
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="e.g. Al-Hashimiah School"
-                className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+                className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
               />
             </label>
-            <label className="sm:col-span-2 block text-xs font-semibold text-magic-ink/60">
+            <label className="sm:col-span-2 block text-xs font-semibold text-espark-ink/60">
               Project name
               <input
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 placeholder="e.g. CCTV & access control (defaults to the client name)"
-                className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+                className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
               />
             </label>
           </>
@@ -463,22 +463,22 @@ export default function QuickLeadCreate() {
 
         {mode === "individual" && (
           <>
-            <label className="block text-xs font-semibold text-magic-ink/60">
+            <label className="block text-xs font-semibold text-espark-ink/60">
               Customer name
               <input
                 value={individualName}
                 onChange={(e) => setIndividualName(e.target.value)}
                 placeholder="e.g. Laith Talib"
-                className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+                className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
               />
             </label>
-            <label className="block text-xs font-semibold text-magic-ink/60">
+            <label className="block text-xs font-semibold text-espark-ink/60">
               Project name
               <input
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 placeholder="defaults to the customer name"
-                className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+                className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
               />
             </label>
           </>
@@ -487,10 +487,10 @@ export default function QuickLeadCreate() {
         {mode !== "none" && (
           <div className="sm:col-span-2 space-y-2">
             <div>
-              <span className="block text-xs font-semibold text-magic-ink/60">
+              <span className="block text-xs font-semibold text-espark-ink/60">
                 Files
               </span>
-              <p className="text-[11px] text-magic-ink/45">
+              <p className="text-[11px] text-espark-ink/45">
                 Attach the RFQ, BOQ, drawings or photos — they&apos;re saved in
                 the client&apos;s folder (BOQs / Files) for presales.
               </p>
@@ -505,7 +505,7 @@ export default function QuickLeadCreate() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 rounded-lg border border-dashed border-magic-border bg-magic-soft/40 px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:border-magic-red/40 hover:text-magic-red"
+              className="inline-flex items-center gap-2 rounded-lg border border-dashed border-espark-border bg-espark-soft/40 px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:border-espark-primary/40 hover:text-espark-primary"
             >
               <Paperclip className="h-4 w-4" />
               Attach files
@@ -516,19 +516,19 @@ export default function QuickLeadCreate() {
                 {files.map((f, i) => (
                   <li
                     key={i}
-                    className="flex items-center gap-2 rounded-lg border border-magic-border bg-white px-2.5 py-1.5 text-xs"
+                    className="flex items-center gap-2 rounded-lg border border-espark-border bg-espark-surface px-2.5 py-1.5 text-xs"
                   >
-                    <FileText className="h-3.5 w-3.5 shrink-0 text-magic-ink/40" />
-                    <span className="min-w-0 flex-1 truncate text-magic-ink/80">
+                    <FileText className="h-3.5 w-3.5 shrink-0 text-espark-ink/40" />
+                    <span className="min-w-0 flex-1 truncate text-espark-ink/80">
                       {f.name}
                     </span>
-                    <span className="shrink-0 text-magic-ink/40">
+                    <span className="shrink-0 text-espark-ink/40">
                       {(f.size / 1024 / 1024).toFixed(1)} MB
                     </span>
                     <button
                       type="button"
                       onClick={() => removeFile(i)}
-                      className="shrink-0 text-magic-ink/40 hover:text-magic-red"
+                      className="shrink-0 text-espark-ink/40 hover:text-espark-primary"
                       aria-label={`Remove ${f.name}`}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -539,14 +539,14 @@ export default function QuickLeadCreate() {
             )}
 
             {mode === "existing" && existingFolderId && (
-              <div className="rounded-lg border border-magic-border/70 bg-magic-soft/30 px-2.5 py-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-magic-ink/45">
+              <div className="rounded-lg border border-espark-border/70 bg-espark-soft/30 px-2.5 py-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-espark-ink/45">
                   Already in this client
                 </span>
                 {existingLoading ? (
-                  <p className="mt-1 text-[11px] text-magic-ink/45">Loading…</p>
+                  <p className="mt-1 text-[11px] text-espark-ink/45">Loading…</p>
                 ) : existingFiles.length === 0 ? (
-                  <p className="mt-1 text-[11px] text-magic-ink/40">
+                  <p className="mt-1 text-[11px] text-espark-ink/40">
                     No files yet.
                   </p>
                 ) : (
@@ -554,13 +554,13 @@ export default function QuickLeadCreate() {
                     {existingFiles.map((f) => (
                       <li
                         key={f.id}
-                        className="flex items-center gap-2 text-[11px] text-magic-ink/70"
+                        className="flex items-center gap-2 text-[11px] text-espark-ink/70"
                       >
-                        <FileText className="h-3 w-3 shrink-0 text-magic-ink/35" />
+                        <FileText className="h-3 w-3 shrink-0 text-espark-ink/35" />
                         <span className="min-w-0 flex-1 truncate">
                           {f.filename}
                         </span>
-                        <span className="shrink-0 uppercase text-magic-ink/35">
+                        <span className="shrink-0 uppercase text-espark-ink/35">
                           {f.kind}
                         </span>
                       </li>
@@ -572,13 +572,13 @@ export default function QuickLeadCreate() {
           </div>
         )}
 
-        <label className="sm:col-span-2 block text-xs font-semibold text-magic-ink/60">
+        <label className="sm:col-span-2 block text-xs font-semibold text-espark-ink/60">
           Notes (optional)
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
-            className="mt-1 w-full rounded-lg border border-magic-border px-3 py-2 text-sm font-normal text-magic-ink"
+            className="mt-1 w-full rounded-lg border border-espark-border px-3 py-2 text-sm font-normal text-espark-ink"
           />
         </label>
       </div>
@@ -594,14 +594,14 @@ export default function QuickLeadCreate() {
           type="button"
           onClick={() => void submit()}
           disabled={busy}
-          className="inline-flex items-center gap-2 rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
         >
           {busy ? busyNote ?? "Creating…" : "Create lead"}
         </button>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-lg border border-magic-border px-4 py-2 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft"
+          className="rounded-lg border border-espark-border px-4 py-2 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft"
         >
           Cancel
         </button>

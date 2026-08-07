@@ -77,17 +77,17 @@ export default async function DesignerPage({
     }
     if (!Number.isFinite(quotationId) || quotationId <= 0) {
       return (
-        <div className="min-h-screen bg-magic-soft/40">
+        <div className="min-h-screen bg-espark-soft/40">
           <TopBar user={user} />
           <main className="max-w-screen-2xl mx-auto px-6 py-6 lg:px-10">
-            <p className="text-sm text-magic-ink/70">Quotation not found.</p>
+            <p className="text-sm text-espark-ink/70">Quotation not found.</p>
           </main>
         </div>
       );
     }
     const appSettings = await settingsPromise;
     return (
-      <div className="min-h-screen bg-magic-soft/40 print-root">
+      <div className="min-h-screen bg-espark-soft/40 print-root">
         <div className="no-print">
           <TopBar user={user} />
         </div>
@@ -98,10 +98,10 @@ export default async function DesignerPage({
               fallbackLabel="Back"
               className="mb-2"
             />
-            <h1 className="text-2xl font-bold text-magic-ink">
+            <h1 className="text-2xl font-bold text-espark-ink">
               Editing quotation #{quotationId}
             </h1>
-            <p className="text-sm text-magic-ink/70">
+            <p className="text-sm text-espark-ink/70">
               Edit the quotation below. Changes are saved when you click Save
               updates.
             </p>
@@ -127,11 +127,11 @@ export default async function DesignerPage({
           {/* Bottom "back to previous page" affordance — returns the user to
               wherever they drilled in from (the quotations list / project),
               falling back to the CRM hub when there's no history to pop. */}
-          <div className="no-print mt-8 flex justify-center border-t border-magic-border/60 pt-5">
+          <div className="no-print mt-8 flex justify-center border-t border-espark-border/60 pt-5">
             <BackButton
               fallbackHref="/crm"
               fallbackLabel="Back to previous page"
-              className="rounded-lg border border-magic-border px-4 py-2 hover:bg-magic-soft"
+              className="rounded-lg border border-espark-border px-4 py-2 hover:bg-espark-soft"
             />
           </div>
         </main>
@@ -173,7 +173,7 @@ export default async function DesignerPage({
   // "Designer" feel like it dumped you on the clients list.
 
   return (
-    <div className="min-h-screen bg-magic-soft/40 print-root">
+    <div className="min-h-screen bg-espark-soft/40 print-root">
       <div className="no-print">
         <TopBar user={user} />
       </div>
@@ -184,10 +184,10 @@ export default async function DesignerPage({
             fallbackLabel="Back"
             className="mb-2"
           />
-          <h1 className="text-2xl font-bold text-magic-ink">
+          <h1 className="text-2xl font-bold text-espark-ink">
             Quotation Designer
           </h1>
-          <p className="text-sm text-magic-ink/70">
+          <p className="text-sm text-espark-ink/70">
             Build and edit your quotation. Choose a pricing category, modify
             the table, and save when ready.
           </p>
@@ -200,11 +200,11 @@ export default async function DesignerPage({
           appSettings={await settingsPromise}
         />
         {/* Bottom "back to previous page" affordance for the create flow. */}
-        <div className="no-print mt-8 flex justify-center border-t border-magic-border/60 pt-5">
+        <div className="no-print mt-8 flex justify-center border-t border-espark-border/60 pt-5">
           <BackButton
             fallbackHref="/crm"
             fallbackLabel="Back to previous page"
-            className="rounded-lg border border-magic-border px-4 py-2 hover:bg-magic-soft"
+            className="rounded-lg border border-espark-border px-4 py-2 hover:bg-espark-soft"
           />
         </div>
       </main>

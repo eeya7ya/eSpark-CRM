@@ -51,13 +51,13 @@ export default function UserScopePicker() {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <label className="text-xs font-semibold text-magic-ink/60">
+      <label className="text-xs font-semibold text-espark-ink/60">
         Filter by user
       </label>
       <Select
         value={current}
         onChange={(next) => update(next)}
-        className="rounded-md border border-magic-border bg-white px-2 py-1 text-sm"
+        className="rounded-md border border-espark-border bg-espark-surface px-2 py-1 text-sm"
       >
         <option value="">All users</option>
         {users.map((u) => (
@@ -69,7 +69,7 @@ export default function UserScopePicker() {
       {current && (
         <button
           onClick={() => update("")}
-          className="text-xs text-magic-red hover:underline"
+          className="text-xs text-espark-primary hover:underline"
           type="button"
         >
           clear

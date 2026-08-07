@@ -86,18 +86,18 @@ export default async function CompanyDetailPage({
   const assignedCo = isAdmin ? [] : await assignedCompanyIds(user.id);
   if (!ownsCompany && !assignedCo.includes(companyId)) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-3xl mx-auto p-6 text-center">
-          <h1 className="text-xl font-bold text-magic-ink mb-2">
+          <h1 className="text-xl font-bold text-espark-ink mb-2">
             You don&apos;t have access to this company
           </h1>
-          <p className="text-sm text-magic-ink/60">
+          <p className="text-sm text-espark-ink/60">
             Ask the owner to share access or an admin to grant module roles.
           </p>
           <Link
             href="/crm/company"
-            className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft transition-colors"
+            className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft transition-colors"
           >
             ← All companies
           </Link>
@@ -137,16 +137,16 @@ export default async function CompanyDetailPage({
   `) as ContactRow[];
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-5xl mx-auto px-6 py-8 lg:px-10 space-y-5">
         <div>
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm" className="hover:text-magic-red">
+            <Link href="/crm" className="hover:text-espark-primary">
               CRM
             </Link>{" "}
             {toolLabel && (
@@ -154,7 +154,7 @@ export default async function CompanyDetailPage({
                 <span>→</span>{" "}
                 <Link
                   href={`/crm?tool=${tool}`}
-                  className="hover:text-magic-red"
+                  className="hover:text-espark-primary"
                 >
                   {toolLabel}
                 </Link>{" "}
@@ -163,13 +163,13 @@ export default async function CompanyDetailPage({
             <span>→</span>{" "}
             <Link
               href={`/crm/company${toolQuery}`}
-              className="hover:text-magic-red"
+              className="hover:text-espark-primary"
             >
               Companies
             </Link>
           </div>
           <div className="mt-1 flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-magic-ink">
+            <h1 className="text-2xl font-bold text-espark-ink">
               {company.name}
               {company.deleted_at && (
                 <span className="ml-2 inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-800 align-middle">
@@ -188,7 +188,7 @@ export default async function CompanyDetailPage({
               }}
             />
           </div>
-          <div className="mt-1 text-xs text-magic-ink/60 flex flex-wrap gap-x-4 gap-y-1">
+          <div className="mt-1 text-xs text-espark-ink/60 flex flex-wrap gap-x-4 gap-y-1">
             {company.industry && <span>{company.industry}</span>}
             {company.website && (
               <a
@@ -199,7 +199,7 @@ export default async function CompanyDetailPage({
                 }
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-magic-red"
+                className="hover:text-espark-primary"
               >
                 {company.website}
               </a>
@@ -207,20 +207,20 @@ export default async function CompanyDetailPage({
             {company.size_bucket && <span>{company.size_bucket}</span>}
           </div>
           {company.notes && (
-            <p className="mt-3 text-sm text-magic-ink/80 whitespace-pre-line">
+            <p className="mt-3 text-sm text-espark-ink/80 whitespace-pre-line">
               {company.notes}
             </p>
           )}
         </div>
 
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             People at this company
-            <span className="ml-2 text-xs font-normal text-magic-ink/60">
+            <span className="ml-2 text-xs font-normal text-espark-ink/60">
               ({contactRows.length})
             </span>
           </h2>
-          <p className="text-xs text-magic-ink/50 -mt-2 mb-3">
+          <p className="text-xs text-espark-ink/50 -mt-2 mb-3">
             Each person is a client — click the name to open their projects
             and quotations.
           </p>

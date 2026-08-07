@@ -222,7 +222,7 @@ export async function buildDbSnapshotZip(q: SqlClient): Promise<DbSnapshot> {
   zip.file(
     "README.txt",
     [
-      "MagicTech database snapshot (Cloudflare R2)",
+      "eSpark database snapshot (Cloudflare R2)",
       "===========================================",
       `Generated: ${manifest.generatedAt}`,
       `Tables: ${manifest.tableCount}  Rows: ${manifest.totalRows}`,

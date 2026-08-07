@@ -80,9 +80,9 @@ const SEVERITY_STYLES: Record<
   { dot: string; chip: string; title: string }
 > = {
   critical: {
-    dot: "bg-magic-red",
-    chip: "bg-magic-red/10 text-magic-red border-magic-red/30",
-    title: "text-magic-red",
+    dot: "bg-espark-primary",
+    chip: "bg-espark-primary/10 text-espark-primary border-espark-primary/30",
+    title: "text-espark-primary",
   },
   warning: {
     dot: "bg-amber-500",
@@ -285,7 +285,7 @@ export default function NotificationsBell() {
             ? "No notifications"
             : `${count} notification${count === 1 ? "" : "s"}`
         }
-        className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-magic-border/60 bg-white/60 text-magic-ink/70 hover:bg-magic-soft hover:text-magic-ink transition-colors"
+        className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-espark-border/60 bg-espark-surface/60 text-espark-ink/70 hover:bg-espark-soft hover:text-espark-ink transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -303,7 +303,7 @@ export default function NotificationsBell() {
         {count > 0 && (
           <span
             className={`absolute -top-1 -right-1 inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full text-white text-[9px] font-bold px-1 ${
-              hasCritical ? "bg-magic-red" : "bg-amber-500"
+              hasCritical ? "bg-espark-primary" : "bg-amber-500"
             }`}
           >
             {count > 99 ? "99+" : count}
@@ -312,20 +312,20 @@ export default function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-1 w-[22rem] max-w-[calc(100vw-1rem)] rounded-xl border border-magic-border bg-white shadow-lg py-2 z-50">
+        <div className="absolute right-0 mt-1 w-[22rem] max-w-[calc(100vw-1rem)] rounded-xl border border-espark-border bg-espark-surface shadow-lg py-2 z-50">
           <div className="px-3 py-1 flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-magic-ink/60">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-espark-ink/60">
               Notifications
             </h3>
             {count > 0 && (
-              <span className="text-[10px] text-magic-ink/40">
+              <span className="text-[10px] text-espark-ink/40">
                 {count} active
               </span>
             )}
           </div>
-          <div className="h-px bg-magic-border/60 my-1" />
+          <div className="h-px bg-espark-border/60 my-1" />
           {count === 0 ? (
-            <p className="px-3 py-6 text-center text-xs text-magic-ink/50">
+            <p className="px-3 py-6 text-center text-xs text-espark-ink/50">
               You&apos;re all caught up.
             </p>
           ) : (
@@ -344,7 +344,7 @@ export default function NotificationsBell() {
                           openNotif(n);
                         }
                       }}
-                      className="cursor-pointer px-3 py-2 hover:bg-magic-soft/60 focus:bg-magic-soft/60 focus:outline-none transition-colors"
+                      className="cursor-pointer px-3 py-2 hover:bg-espark-soft/60 focus:bg-espark-soft/60 focus:outline-none transition-colors"
                     >
                       <div className="flex items-start gap-2">
                         <span
@@ -357,7 +357,7 @@ export default function NotificationsBell() {
                             {n.title}
                           </p>
                           {n.body && (
-                            <p className="mt-0.5 text-[11px] text-magic-ink/60 leading-snug">
+                            <p className="mt-0.5 text-[11px] text-espark-ink/60 leading-snug">
                               {n.body}
                             </p>
                           )}
@@ -377,7 +377,7 @@ export default function NotificationsBell() {
                                     e.stopPropagation();
                                     openSecondary(n);
                                   }}
-                                  className="inline-flex items-center rounded-md border border-magic-border bg-white px-2 py-0.5 text-[10px] font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+                                  className="inline-flex items-center rounded-md border border-espark-border bg-espark-surface px-2 py-0.5 text-[10px] font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
                                 >
                                   {n.secondary.label}
                                 </button>
@@ -396,9 +396,9 @@ export default function NotificationsBell() {
           {pushState !== "loading" &&
             pushState !== "unsupported" &&
             pushState !== "unconfigured" && (
-              <div className="mt-1 border-t border-magic-border/60 px-3 pt-2">
+              <div className="mt-1 border-t border-espark-border/60 px-3 pt-2">
                 {pushState === "denied" ? (
-                  <p className="text-[11px] text-magic-ink/50">
+                  <p className="text-[11px] text-espark-ink/50">
                     Notifications are blocked in your browser. Enable them in
                     the site settings to get alerts on this device.
                   </p>
@@ -407,7 +407,7 @@ export default function NotificationsBell() {
                     type="button"
                     onClick={() => void togglePush()}
                     disabled={pushBusy}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-magic-border bg-white px-2.5 py-1 text-[11px] font-semibold text-magic-ink/80 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-espark-border bg-espark-surface px-2.5 py-1 text-[11px] font-semibold text-espark-ink/80 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                   >
                     {pushState === "on"
                       ? "Disable device notifications"
@@ -415,7 +415,7 @@ export default function NotificationsBell() {
                   </button>
                 )}
                 {pushMsg && (
-                  <p className="mt-1 text-[11px] text-magic-ink/50">{pushMsg}</p>
+                  <p className="mt-1 text-[11px] text-espark-ink/50">{pushMsg}</p>
                 )}
               </div>
             )}

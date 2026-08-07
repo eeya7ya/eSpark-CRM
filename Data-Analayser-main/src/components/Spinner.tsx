@@ -27,7 +27,7 @@ export default function Spinner({
     <span
       role="status"
       aria-live="polite"
-      className={`inline-flex items-center gap-2 text-magic-ink/70 ${className}`}
+      className={`inline-flex items-center gap-2 text-espark-ink/70 ${className}`}
     >
       <span
         aria-hidden="true"
@@ -57,7 +57,7 @@ export default function Spinner({
         })}
       </span>
       {label && (
-        <span className="text-xs font-medium text-magic-ink/70">{label}</span>
+        <span className="text-xs font-medium text-espark-ink/70">{label}</span>
       )}
     </span>
   );

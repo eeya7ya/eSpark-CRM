@@ -71,14 +71,14 @@ export default function PresalesPricingAccessClient({
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-magic-border bg-white shadow-mt-soft">
+      <div className="overflow-hidden rounded-2xl border border-espark-border bg-espark-surface shadow-es-soft">
         {members.length === 0 && (
-          <p className="p-6 text-center text-sm text-magic-ink/60">
+          <p className="p-6 text-center text-sm text-espark-ink/60">
             No presales members yet. Ask an admin to assign the Presales role,
             then grant pricing access here.
           </p>
         )}
-        <ul className="divide-y divide-magic-border">
+        <ul className="divide-y divide-espark-border">
           {members.map((m) => {
             const name = m.display_name?.trim() || m.username;
             const busy = pending.has(m.id);
@@ -88,10 +88,10 @@ export default function PresalesPricingAccessClient({
                 className="flex items-center justify-between gap-4 px-5 py-4"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-magic-ink">
+                  <p className="truncate text-sm font-semibold text-espark-ink">
                     {name}
                   </p>
-                  <p className="truncate text-xs text-magic-ink/50">
+                  <p className="truncate text-xs text-espark-ink/50">
                     @{m.username}
                     {m.is_manager && " · Presales manager"}
                   </p>
@@ -111,11 +111,11 @@ export default function PresalesPricingAccessClient({
                     disabled={busy}
                     onClick={() => toggle(m)}
                     className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-                      m.has_pricing ? "bg-emerald-500" : "bg-magic-ink/20"
+                      m.has_pricing ? "bg-emerald-500" : "bg-espark-ink/20"
                     }`}
                   >
                     <span
-                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                      className={`inline-block h-5 w-5 transform rounded-full bg-espark-surface shadow transition-transform ${
                         m.has_pricing ? "translate-x-5" : "translate-x-0.5"
                       }`}
                     />
@@ -127,7 +127,7 @@ export default function PresalesPricingAccessClient({
         </ul>
       </div>
 
-      <p className="flex items-center gap-2 text-xs text-magic-ink/50">
+      <p className="flex items-center gap-2 text-xs text-espark-ink/50">
         <Tags className="h-3.5 w-3.5" />
         {nonManagers.filter((m) => m.has_pricing).length} of {nonManagers.length}{" "}
         presales members can open the Pricing module.

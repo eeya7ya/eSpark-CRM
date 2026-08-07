@@ -22,23 +22,23 @@ export default async function InstallationCalculatorAdminPage() {
   if (!user) redirect("/login");
   if (!canReadAll(user)) redirect("/crm");
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-10">
-        <div className="mb-4 text-xs text-magic-ink/50">
-          <Link href="/" className="hover:text-magic-red">
+        <div className="mb-4 text-xs text-espark-ink/50">
+          <Link href="/" className="hover:text-espark-primary">
             Dashboard
           </Link>{" "}
           <span>→</span>{" "}
-          <Link href="/admin" className="hover:text-magic-red">
+          <Link href="/admin" className="hover:text-espark-primary">
             Admin
           </Link>{" "}
           <span>→</span> <span>Installation Calculator</span>
         </div>
-        <h1 className="text-2xl font-bold text-magic-ink mb-2">
+        <h1 className="text-2xl font-bold text-espark-ink mb-2">
           Installation Calculator
         </h1>
-        <p className="text-sm text-magic-ink/70 mb-6">
+        <p className="text-sm text-espark-ink/70 mb-6">
           The rate book the Designer&apos;s Installation Calculator draws from.
           Set the cost of each conduit, cable, labour day, location uplift and
           accessory; the calculator combines them into one installation row on

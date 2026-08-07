@@ -200,7 +200,7 @@ export async function POST() {
         {
           role: "system",
           content:
-            "You are MagicTech's sales operations assistant for a low-current / " +
+            "You are eSpark's sales operations assistant for a low-current / " +
             "ICT / AV / security systems integrator. Given a snapshot of the " +
             "live sales pipeline, write a short, prioritised briefing: the 3–5 " +
             "highest-impact actions to take today, most urgent first. Reference " +

@@ -168,7 +168,7 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="h-14 rounded-2xl border border-magic-border bg-white animate-pulse"
+            className="h-14 rounded-2xl border border-espark-border bg-espark-surface animate-pulse"
           />
         ))}
       </div>
@@ -189,17 +189,17 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
 
       {/* Companies section */}
       <section>
-        <h2 className="text-sm font-semibold text-magic-ink/80 mb-2">
+        <h2 className="text-sm font-semibold text-espark-ink/80 mb-2">
           Companies ({companies.length})
         </h2>
         {companies.length === 0 ? (
-          <div className="rounded-2xl border border-magic-border bg-white p-4 text-sm text-magic-ink/40">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 text-sm text-espark-ink/40">
             No companies in trash.
           </div>
         ) : (
-          <div className="rounded-2xl border border-magic-border bg-white overflow-hidden">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="text-magic-red text-xs uppercase bg-magic-soft/20">
+              <thead className="text-espark-primary text-xs uppercase bg-espark-soft/20">
                 <tr>
                   <th className="p-3 text-left">Name</th>
                   <th className="p-3 text-left">Industry</th>
@@ -214,12 +214,12 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
                   return (
                     <tr
                       key={c.id}
-                      className="border-t border-magic-border hover:bg-magic-soft/10"
+                      className="border-t border-espark-border hover:bg-espark-soft/10"
                     >
                       <td className="p-3 font-semibold">{c.name}</td>
-                      <td className="p-3 text-magic-ink/70">{c.industry || "—"}</td>
-                      <td className="p-3 text-magic-ink/70">{c.website || "—"}</td>
-                      <td className="p-3 text-xs text-magic-ink/60">
+                      <td className="p-3 text-espark-ink/70">{c.industry || "—"}</td>
+                      <td className="p-3 text-espark-ink/70">{c.website || "—"}</td>
+                      <td className="p-3 text-xs text-espark-ink/60">
                         {formatDateTime(c.deleted_at)}
                       </td>
                       <td className="p-3 text-right whitespace-nowrap">
@@ -249,17 +249,17 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
 
       {/* Clients / folders section */}
       <section>
-        <h2 className="text-sm font-semibold text-magic-ink/80 mb-2">
+        <h2 className="text-sm font-semibold text-espark-ink/80 mb-2">
           Clients ({folders.length})
         </h2>
         {folders.length === 0 ? (
-          <div className="rounded-2xl border border-magic-border bg-white p-4 text-sm text-magic-ink/40">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 text-sm text-espark-ink/40">
             No clients in trash.
           </div>
         ) : (
-          <div className="rounded-2xl border border-magic-border bg-white overflow-hidden">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="text-magic-red text-xs uppercase bg-magic-soft/20">
+              <thead className="text-espark-primary text-xs uppercase bg-espark-soft/20">
                 <tr>
                   <th className="p-3 text-left">Name</th>
                   <th className="p-3 text-left">Email</th>
@@ -275,13 +275,13 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
                   return (
                     <tr
                       key={f.id}
-                      className="border-t border-magic-border hover:bg-magic-soft/10"
+                      className="border-t border-espark-border hover:bg-espark-soft/10"
                     >
                       <td className="p-3 font-semibold">{f.name}</td>
-                      <td className="p-3 text-magic-ink/70">{f.client_email || "—"}</td>
-                      <td className="p-3 text-magic-ink/70">{f.client_phone || "—"}</td>
-                      <td className="p-3 text-magic-ink/70">{f.client_company || "—"}</td>
-                      <td className="p-3 text-xs text-magic-ink/60">
+                      <td className="p-3 text-espark-ink/70">{f.client_email || "—"}</td>
+                      <td className="p-3 text-espark-ink/70">{f.client_phone || "—"}</td>
+                      <td className="p-3 text-espark-ink/70">{f.client_company || "—"}</td>
+                      <td className="p-3 text-xs text-espark-ink/60">
                         {formatDateTime(f.deleted_at)}
                       </td>
                       <td className="p-3 text-right whitespace-nowrap">
@@ -311,17 +311,17 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
 
       {/* Quotations section */}
       <section>
-        <h2 className="text-sm font-semibold text-magic-ink/80 mb-2">
+        <h2 className="text-sm font-semibold text-espark-ink/80 mb-2">
           Quotations ({quotations.length})
         </h2>
         {quotations.length === 0 ? (
-          <div className="rounded-2xl border border-magic-border bg-white p-4 text-sm text-magic-ink/40">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-4 text-sm text-espark-ink/40">
             No quotations in trash.
           </div>
         ) : (
-          <div className="rounded-2xl border border-magic-border bg-white overflow-hidden">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="text-magic-red text-xs uppercase bg-magic-soft/20">
+              <thead className="text-espark-primary text-xs uppercase bg-espark-soft/20">
                 <tr>
                   <th className="p-3 text-left">Ref</th>
                   <th className="p-3 text-left">Project</th>
@@ -337,12 +337,12 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
                   return (
                     <tr
                       key={r.id}
-                      className="border-t border-magic-border hover:bg-magic-soft/10"
+                      className="border-t border-espark-border hover:bg-espark-soft/10"
                     >
                       <td className="p-3 font-mono">
                         <Link
                           href={`/quotation?id=${r.id}`}
-                          className="text-magic-red hover:underline"
+                          className="text-espark-primary hover:underline"
                         >
                           {r.ref}
                         </Link>
@@ -350,7 +350,7 @@ export default function TrashView({ isAdmin }: { isAdmin: boolean }) {
                       <td className="p-3">{r.project_name}</td>
                       <td className="p-3">{r.client_name || "—"}</td>
                       <td className="p-3">{r.site_name}</td>
-                      <td className="p-3 text-xs text-magic-ink/60">
+                      <td className="p-3 text-xs text-espark-ink/60">
                         {formatDateTime(r.deleted_at)}
                       </td>
                       <td className="p-3 text-right whitespace-nowrap">

@@ -177,7 +177,7 @@ export default function DesignerShell({
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8">
         <PageLoader label={`Loading quotation #${quotationId}…`} />
       </div>
     );
@@ -191,13 +191,13 @@ export default function DesignerShell({
         <div className="mt-3 flex items-center gap-2">
           <button
             onClick={() => setReloadTick((t) => t + 1)}
-            className="rounded-md bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+            className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
           >
             Retry
           </button>
           <button
             onClick={() => router.push("/crm")}
-            className="rounded-md border border-magic-border px-3 py-1.5 text-xs font-semibold hover:bg-magic-soft"
+            className="rounded-md border border-espark-border px-3 py-1.5 text-xs font-semibold hover:bg-espark-soft"
           >
             Back to CRM
           </button>

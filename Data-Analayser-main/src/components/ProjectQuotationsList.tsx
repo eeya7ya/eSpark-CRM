@@ -52,40 +52,40 @@ export default function ProjectQuotationsList({
         placeholder="Search ref, project name, client, status…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+        className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
       />
 
       {visible.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           {query
             ? `No matches for "${query}".`
             : "No quotations filed under this project yet."}
         </p>
       ) : (
-        <ul className="divide-y divide-magic-border/60 rounded-lg border border-magic-border overflow-hidden">
+        <ul className="divide-y divide-espark-border/60 rounded-lg border border-espark-border overflow-hidden">
           {visible.map((row) => (
             <li
               key={row.id}
-              className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-magic-soft/40"
+              className="px-3 py-2 flex items-center justify-between gap-3 hover:bg-espark-soft/40"
             >
               <div className="min-w-0">
                 <Link
                   href={`${base}/quotations/${row.id}`}
-                  className="font-mono text-sm font-semibold text-magic-red hover:underline"
+                  className="font-mono text-sm font-semibold text-espark-primary hover:underline"
                 >
                   {row.ref}
                 </Link>
-                <span className="ml-2 text-sm text-magic-ink/80 truncate">
+                <span className="ml-2 text-sm text-espark-ink/80 truncate">
                   {row.project_name || "—"}
                 </span>
                 {row.client_name && (
-                  <span className="ml-2 text-xs text-magic-ink/50">
+                  <span className="ml-2 text-xs text-espark-ink/50">
                     · {row.client_name}
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider">
-                <span className="text-magic-ink/50">{row.status}</span>
+                <span className="text-espark-ink/50">{row.status}</span>
                 {row.approved_at ? (
                   <span className="rounded-full bg-emerald-50 text-emerald-700 border border-emerald-300 px-1.5 py-0.5">
                     approved

@@ -9,7 +9,7 @@ export default async function PricingNoManufacturerPage() {
   const user = await getSessionUser();
   if (!user) redirect("/login");
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <NoManufacturerClient />
     </div>

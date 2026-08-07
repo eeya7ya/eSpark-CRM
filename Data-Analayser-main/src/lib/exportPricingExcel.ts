@@ -51,7 +51,7 @@ export async function buildPricingWorkbookBlob(
   const totals = calculateTotals(calculated);
 
   const wb = new Workbook();
-  wb.creator = "MagicTech Pricing";
+  wb.creator = "eSpark Pricing";
   const ws = wb.addWorksheet("Pricing", {
     views: [{ state: "frozen", ySplit: 5 }],
   });

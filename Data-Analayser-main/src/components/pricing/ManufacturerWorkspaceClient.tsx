@@ -116,7 +116,7 @@ export default function ManufacturerWorkspaceClient() {
                     setEditName(manufacturer!.name);
                   }
                 }}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-lg font-bold text-gray-900 focus:border-cyan-400 focus:outline-none"
+                className="rounded-lg border border-gray-200 bg-espark-surface px-3 py-1.5 text-lg font-bold text-gray-900 focus:border-cyan-400 focus:outline-none"
               />
               <button
                 onClick={handleSaveName}

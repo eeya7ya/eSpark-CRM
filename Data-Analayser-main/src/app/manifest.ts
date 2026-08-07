@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 /**
- * PWA manifest — makes MagicTech installable ("Add to Home Screen" /
+ * PWA manifest — makes eSpark installable ("Add to Home Screen" /
  * "Install app") on desktop and mobile. Served at /manifest.webmanifest
  * by Next.js. Icons are padded square renders of the brand logo (see
  * public/icons) so the installed icon and the browser tab favicon both
@@ -9,8 +9,8 @@ import type { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "MagicTech — Data Analytics & Quotation Platform",
-    short_name: "MagicTech",
+    name: "eSpark — Data Analytics & Quotation Platform",
+    short_name: "eSpark",
     description:
       "Data analytics and quotation platform powered by AI.",
     id: "/",
@@ -18,8 +18,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "any",
-    background_color: "#F3F5FB",
-    theme_color: "#E2231A",
+    background_color: "#eae5e1",
+    theme_color: "#4c626a",
     icons: [
       {
         src: "/icons/icon-192.png",

@@ -19,11 +19,11 @@ export default async function NewLeadPage({
 
   if (!(await canCreateLead(user))) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="mx-auto max-w-2xl px-6 py-10 text-center">
-          <h1 className="mb-2 text-xl font-bold text-magic-ink">Open a lead</h1>
-          <p className="text-sm text-magic-ink/60">
+          <h1 className="mb-2 text-xl font-bold text-espark-ink">Open a lead</h1>
+          <p className="text-sm text-espark-ink/60">
             You need a CRM role (sales, sales_manager, presales, or
             presales_manager) to open a lead. Ask an admin in Admin → Modules.
           </p>
@@ -89,20 +89,20 @@ export default async function NewLeadPage({
   const isRfq = Boolean(context);
 
   return (
-    <div className="min-h-screen bg-magic-soft/30">
+    <div className="min-h-screen bg-espark-soft/30">
       <TopBar user={user} />
       <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
         <header className="mb-5">
           <Link
             href="/leads"
-            className="text-xs font-semibold uppercase tracking-wide text-magic-ink/50 hover:text-magic-red"
+            className="text-xs font-semibold uppercase tracking-wide text-espark-ink/50 hover:text-espark-primary"
           >
             ← Back to leads
           </Link>
-          <h1 className="mt-2 text-2xl font-bold text-magic-ink">
+          <h1 className="mt-2 text-2xl font-bold text-espark-ink">
             {isRfq ? "Request for Quotation" : "Open a new lead"}
           </h1>
-          <p className="mt-1 text-sm text-magic-ink/60">
+          <p className="mt-1 text-sm text-espark-ink/60">
             Once submitted, it lands in the shared presales queue — a presales
             person claims it and builds the quotation.
           </p>

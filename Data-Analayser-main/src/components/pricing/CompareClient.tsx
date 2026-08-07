@@ -137,7 +137,7 @@ export default function ComparePage() {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-3 text-xs shadow-lg">
+      <div className="rounded-xl border border-gray-200 bg-espark-surface p-3 text-xs shadow-lg">
         <p className="mb-2 font-semibold text-gray-800">{label}</p>
         {payload.map((entry: any) => (
           <div key={entry.dataKey} className="flex items-center justify-between gap-4 py-0.5">
@@ -242,7 +242,7 @@ export default function ComparePage() {
                   key={d.manufacturer.id}
                   href={`/pricing/manufacturer/${d.manufacturer.id}`}
                   className={cn(
-                    "group rounded-xl border border-gray-200 bg-white p-4 transition-all",
+                    "group rounded-xl border border-gray-200 bg-espark-surface p-4 transition-all",
                     "hover:border-gray-300 hover:shadow-md hover:shadow-gray-100"
                   )}
                 >
@@ -292,7 +292,7 @@ export default function ComparePage() {
 
           {/* Revenue comparison chart */}
           {summaries.length > 0 && (
-            <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="rounded-xl border border-gray-200 bg-espark-surface p-5">
               <h3 className="mb-4 text-sm font-semibold text-gray-700">
                 Revenue vs Landed Cost (JOD)
               </h3>
@@ -347,7 +347,7 @@ export default function ComparePage() {
               return (
                 <div
                   key={d.manufacturer.id}
-                  className="rounded-xl border border-gray-200 bg-white overflow-hidden"
+                  className="rounded-xl border border-gray-200 bg-espark-surface overflow-hidden"
                 >
                   {/* Manufacturer header */}
                   <div

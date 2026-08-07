@@ -109,15 +109,15 @@ export default function CompanyListClient({
           placeholder="Search company name, website, industry…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 min-w-0 rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+          className="flex-1 min-w-0 rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
-        <label className="flex items-center gap-1.5 text-xs text-magic-ink/60">
+        <label className="flex items-center gap-1.5 text-xs text-espark-ink/60">
           <span className="hidden sm:inline">Sort</span>
           <Select
             value={sortKey}
             onChange={(next) => setSortKey(next as ListSortKey)}
             aria-label="Sort companies"
-            className="rounded-lg border border-magic-border bg-white px-2 py-2 text-sm text-magic-ink"
+            className="rounded-lg border border-espark-border bg-espark-surface px-2 py-2 text-sm text-espark-ink"
           >
             {LIST_SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -128,13 +128,13 @@ export default function CompanyListClient({
         </label>
         <Link
           href="/crm/trash"
-          className="rounded-lg border border-magic-border px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+          className="rounded-lg border border-espark-border px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
         >
           Trash
         </Link>
         <button
           onClick={() => setCreating(true)}
-          className="rounded-lg bg-magic-red text-white px-3 py-2 text-sm font-semibold hover:bg-magic-red/90 transition-colors"
+          className="rounded-lg bg-espark-primary text-white px-3 py-2 text-sm font-semibold hover:bg-espark-primary/90 transition-colors"
         >
           + New company
         </button>
@@ -147,8 +147,8 @@ export default function CompanyListClient({
       )}
 
       {visible.length === 0 ? (
-        <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-          <p className="text-sm text-magic-ink/60">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+          <p className="text-sm text-espark-ink/60">
             {query
               ? `No companies match "${query}".`
               : "No companies yet. Use + New company to add the first one."}
@@ -159,17 +159,17 @@ export default function CompanyListClient({
           {visible.map((c) => (
             <li
               key={c.id}
-              className="rounded-xl border border-magic-border bg-white p-4 hover:shadow-md transition-shadow"
+              className="rounded-xl border border-espark-border bg-espark-surface p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <Link
                     href={`/crm/company/${c.id}${backTool}`}
-                    className="font-semibold text-magic-ink hover:text-magic-red"
+                    className="font-semibold text-espark-ink hover:text-espark-primary"
                   >
                     {c.name}
                   </Link>
-                  <div className="text-xs text-magic-ink/60 mt-0.5">
+                  <div className="text-xs text-espark-ink/60 mt-0.5">
                     {c.industry && <>{c.industry} · </>}
                     {c.website && (
                       <a
@@ -180,13 +180,13 @@ export default function CompanyListClient({
                         }
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:text-magic-red"
+                        className="hover:text-espark-primary"
                       >
                         {c.website}
                       </a>
                     )}
                   </div>
-                  <div className="text-xs text-magic-ink/50 mt-1">
+                  <div className="text-xs text-espark-ink/50 mt-1">
                     {c.client_count} client{c.client_count === 1 ? "" : "s"} ·{" "}
                     {c.quotation_count} quotation
                     {c.quotation_count === 1 ? "" : "s"} ·{" "}
@@ -196,21 +196,21 @@ export default function CompanyListClient({
                 <div className="flex items-center gap-1.5 shrink-0">
                   <Link
                     href={`/crm/company/${c.id}${backTool}`}
-                    className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+                    className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
                   >
                     Open
                   </Link>
                   <button
                     onClick={() => setEditing(c)}
                     disabled={busy}
-                    className="px-2 py-1.5 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+                    className="px-2 py-1.5 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => void softDelete(c.id)}
                     disabled={busy}
-                    className="px-2 py-1.5 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
+                    className="px-2 py-1.5 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-red-50 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors"
                   >
                     Delete
                   </button>
@@ -287,18 +287,18 @@ function NewCompanyModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl space-y-3"
+        className="w-full max-w-md rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-magic-ink">New company</h3>
+          <h3 className="font-semibold text-espark-ink">New company</h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
           >
             ×
           </button>
@@ -310,7 +310,7 @@ function NewCompanyModal({
           onChange={(e) => setName(e.target.value)}
           disabled={busy}
           autoFocus
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         {conflicts.length > 0 && (
           <p className="rounded border border-amber-300 bg-amber-50 px-2 py-1.5 text-xs text-amber-800">
@@ -325,7 +325,7 @@ function NewCompanyModal({
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
           <input
             type="text"
@@ -333,7 +333,7 @@ function NewCompanyModal({
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
             disabled={busy}
-            className="rounded border border-magic-border bg-white px-3 py-2 text-sm"
+            className="rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
           />
         </div>
         <textarea
@@ -342,7 +342,7 @@ function NewCompanyModal({
           onChange={(e) => setNotes(e.target.value)}
           disabled={busy}
           rows={3}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         {error && (
           <p className="text-xs text-red-700 bg-red-50 border border-red-200 rounded px-2 py-1">
@@ -353,14 +353,14 @@ function NewCompanyModal({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+            className="rounded border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy || !name.trim() || conflicts.length > 0}
-            className="rounded bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+            className="rounded bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
           >
             {busy ? "Creating…" : "Create company"}
           </button>

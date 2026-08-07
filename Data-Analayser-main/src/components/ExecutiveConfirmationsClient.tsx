@@ -104,7 +104,7 @@ export default function ExecutiveConfirmationsClient({
         </div>
       )}
 
-      <p className="text-sm text-magic-ink/60">
+      <p className="text-sm text-espark-ink/60">
         {pendingCount === 0
           ? "Nothing awaiting your confirmation right now."
           : `${pendingCount} item${pendingCount === 1 ? "" : "s"} awaiting your confirmation.`}
@@ -157,21 +157,21 @@ function Section({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <Icon className="h-4 w-4 text-magic-ink/50" />
-        <h2 className="text-sm font-bold uppercase tracking-wide text-magic-ink/60">
+        <Icon className="h-4 w-4 text-espark-ink/50" />
+        <h2 className="text-sm font-bold uppercase tracking-wide text-espark-ink/60">
           {title}
         </h2>
-        <span className="inline-flex items-center rounded-full bg-magic-soft px-2 py-0.5 text-xs font-semibold text-magic-ink/60">
+        <span className="inline-flex items-center rounded-full bg-espark-soft px-2 py-0.5 text-xs font-semibold text-espark-ink/60">
           {pending.length} pending
         </span>
-        <span className="h-px flex-1 bg-magic-border/70" />
+        <span className="h-px flex-1 bg-espark-border/70" />
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-magic-border bg-white shadow-mt-soft">
+      <div className="overflow-hidden rounded-2xl border border-espark-border bg-espark-surface shadow-es-soft">
         {items.length === 0 ? (
-          <p className="p-5 text-center text-sm text-magic-ink/50">None yet.</p>
+          <p className="p-5 text-center text-sm text-espark-ink/50">None yet.</p>
         ) : (
-          <ul className="divide-y divide-magic-border">
+          <ul className="divide-y divide-espark-border">
             {[...pending, ...decided].map((i) => {
               const key = `${title}:${i.id}`;
               const isBusy =
@@ -182,10 +182,10 @@ function Section({
                   className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-magic-ink">
+                    <p className="truncate text-sm font-semibold text-espark-ink">
                       {primary(i)}
                     </p>
-                    <p className="truncate text-xs text-magic-ink/50">
+                    <p className="truncate text-xs text-espark-ink/50">
                       {secondary(i)}
                       {i.submitted_by && ` · from @${i.submitted_by}`}
                     </p>
@@ -211,7 +211,7 @@ function Section({
                         type="button"
                         disabled={isBusy}
                         onClick={() => onDecide(i, "reject")}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 disabled:opacity-50"
                       >
                         <XCircle className="h-3.5 w-3.5" />
                         Reject
@@ -246,7 +246,7 @@ function StatusPill({ status }: { status: ExecItem["exec_status"] }) {
     );
   }
   return (
-    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-magic-soft px-2.5 py-1 text-xs font-semibold text-magic-ink/60">
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-espark-soft px-2.5 py-1 text-xs font-semibold text-espark-ink/60">
       <Clock className="h-3.5 w-3.5" /> Pending
     </span>
   );

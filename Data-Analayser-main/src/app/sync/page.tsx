@@ -20,14 +20,14 @@ export default async function SyncPage() {
   await ensureSchema();
 
   return (
-    <div className="flex min-h-screen flex-col bg-magic-soft/40">
+    <div className="flex min-h-screen flex-col bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-4">
-          <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+          <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
             Sync folder
           </h1>
-          <p className="mt-0.5 text-sm text-magic-ink/60">
+          <p className="mt-0.5 text-sm text-espark-ink/60">
             Keep a folder on your PC mirrored with your files in the app — pull
             down new files and push up ones you add, automatically while
             you&rsquo;re working.

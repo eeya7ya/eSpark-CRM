@@ -3333,7 +3333,7 @@ async function _ensureSchemaOnce(): Promise<void> {
     `;
     await q`
       insert into tenants (name, slug)
-      values ('MagicTech', 'magictech')
+      values ('eSpark', 'espark')
       on conflict (slug) do nothing
     `;
     await q`
@@ -3342,7 +3342,7 @@ async function _ensureSchemaOnce(): Promise<void> {
     // Backfill any user without a tenant into the default tenant. Runs every
     // boot, so a freshly-seeded admin or a row that slipped through self-heals.
     await q`
-      update users set tenant_id = (select id from tenants where slug = 'magictech')
+      update users set tenant_id = (select id from tenants where slug = 'espark')
       where tenant_id is null
     `;
     await q`

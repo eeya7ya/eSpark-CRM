@@ -227,8 +227,8 @@ export async function POST(
     // gone); the user can still edit it freely in the Designer afterwards.
     const scopeSummary =
       `We sincerely appreciate the opportunity to collaborate with you on ` +
-      `${project.name} and thank you for your continued trust in Magic ` +
-      `Technology. The following proposal reflects the fully engineered scope ` +
+      `${project.name} and thank you for your continued trust in eSpark. ` +
+      `The following proposal reflects the fully engineered scope ` +
       `of works and the associated investment, prepared to meet your ` +
       `requirements with the highest standards of quality and reliability.`;
 

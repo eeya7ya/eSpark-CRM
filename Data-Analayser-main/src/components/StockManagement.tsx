@@ -73,7 +73,7 @@ export default function StockManagement({
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-2 border-b border-magic-border">
+      <div className="mb-4 flex items-center gap-2 border-b border-espark-border">
         <TabButton active={tab === "stock"} onClick={() => setTab("stock")}>
           Stock
         </TabButton>
@@ -175,22 +175,22 @@ function LocationsView({
         <button
           onClick={addRoot}
           disabled={busy}
-          className="rounded-lg bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+          className="rounded-lg bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
         >
           + Add top-level location
         </button>
       )}
 
       {nodes.length === 0 ? (
-        <p className="text-sm italic text-magic-ink/50">
+        <p className="text-sm italic text-espark-ink/50">
           No locations yet.{canManage ? " Add your first one above." : ""}
         </p>
       ) : (
-        <ul className="rounded-xl border border-magic-border bg-white">
+        <ul className="rounded-xl border border-espark-border bg-espark-surface">
           {nodes.map((n) => (
             <li
               key={n.id}
-              className={`flex items-center justify-between gap-2 border-b border-magic-border/40 px-3 py-2 last:border-b-0 ${
+              className={`flex items-center justify-between gap-2 border-b border-espark-border/40 px-3 py-2 last:border-b-0 ${
                 n.deleted_at ? "opacity-50" : ""
               }`}
             >
@@ -198,14 +198,14 @@ function LocationsView({
                 className="min-w-0"
                 style={{ paddingLeft: `${n.depth * 18}px` }}
               >
-                <span className="text-sm font-medium text-magic-ink">
-                  {n.depth > 0 && <span className="text-magic-ink/30">└ </span>}
+                <span className="text-sm font-medium text-espark-ink">
+                  {n.depth > 0 && <span className="text-espark-ink/30">└ </span>}
                   {n.name}
                 </span>
                 {n.deleted_at && (
                   <span className="ml-2 text-xs text-amber-700">archived</span>
                 )}
-                <div className="truncate text-xs text-magic-ink/45">{n.path}</div>
+                <div className="truncate text-xs text-espark-ink/45">{n.path}</div>
               </div>
               {canManage && (
                 <div className="flex shrink-0 items-center gap-1">
@@ -289,14 +289,14 @@ function StockView({
           placeholder="Search item (vendor / model)…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="min-w-0 flex-1 rounded border border-magic-border bg-white px-3 py-1.5 text-sm"
+          className="min-w-0 flex-1 rounded border border-espark-border bg-espark-surface px-3 py-1.5 text-sm"
         />
         <Select
           value={nodeFilter}
           onChange={(next) =>
             setNodeFilter(next === "" ? "" : Number(next))
           }
-          className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+          className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
         >
           <option value="">All locations</option>
           {activeNodes.map((n) => (
@@ -308,7 +308,7 @@ function StockView({
         {canRecord && (
           <button
             onClick={() => setShowModal(true)}
-            className="rounded bg-magic-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-magic-red/90"
+            className="rounded bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/90"
           >
             + Record movement
           </button>
@@ -316,9 +316,9 @@ function StockView({
       </div>
 
       {loading ? (
-        <p className="text-sm text-magic-ink/60">Loading stock…</p>
+        <p className="text-sm text-espark-ink/60">Loading stock…</p>
       ) : items.length === 0 ? (
-        <p className="text-sm italic text-magic-ink/50">
+        <p className="text-sm italic text-espark-ink/50">
           No stock yet. {canRecord ? 'Use "Record movement" to receive stock.' : ""}
         </p>
       ) : (
@@ -391,16 +391,16 @@ function ItemRow({
   }
 
   return (
-    <li className="rounded-xl border border-magic-border bg-white">
+    <li className="rounded-xl border border-espark-border bg-espark-surface">
       <div className="flex items-center justify-between gap-3 px-3 py-2">
         <button
           onClick={() => setOpen((v) => !v)}
           className="min-w-0 flex-1 text-left"
         >
-          <div className="truncate text-sm font-semibold text-magic-ink">
+          <div className="truncate text-sm font-semibold text-espark-ink">
             {item.label}
           </div>
-          <div className="text-xs text-magic-ink/50">
+          <div className="text-xs text-espark-ink/50">
             {placements.length} location{placements.length === 1 ? "" : "s"} · tap
             for history
           </div>
@@ -412,25 +412,25 @@ function ItemRow({
             </span>
           )}
           <div className="text-right">
-            <div className="text-lg font-bold tabular-nums text-magic-ink">
+            <div className="text-lg font-bold tabular-nums text-espark-ink">
               {item.total}
             </div>
-            <div className="text-[11px] text-magic-ink/45">on hand</div>
+            <div className="text-[11px] text-espark-ink/45">on hand</div>
           </div>
         </div>
       </div>
 
       {open && (
-        <div className="border-t border-magic-border/50 px-3 py-2">
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-magic-ink/70">
+        <div className="border-t border-espark-border/50 px-3 py-2">
+          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-espark-ink/70">
             <span className="font-semibold">By location:</span>
             {placements.length === 0 ? (
-              <span className="italic text-magic-ink/40">none on hand</span>
+              <span className="italic text-espark-ink/40">none on hand</span>
             ) : (
               placements.map((p) => (
                 <span
                   key={p.node_id}
-                  className="rounded-full bg-magic-soft px-2 py-0.5"
+                  className="rounded-full bg-espark-soft px-2 py-0.5"
                 >
                   {p.node_name}: <b>{p.qty}</b>
                 </span>
@@ -440,17 +440,17 @@ function ItemRow({
 
           {canManage && (
             <div className="mb-2 flex items-center gap-2 text-xs">
-              <span className="text-magic-ink/60">Reorder point:</span>
+              <span className="text-espark-ink/60">Reorder point:</span>
               <input
                 type="number"
                 min={0}
                 value={reorderDraft}
                 onChange={(e) => setReorderDraft(e.target.value)}
-                className="w-20 rounded border border-magic-border px-2 py-1 text-right"
+                className="w-20 rounded border border-espark-border px-2 py-1 text-right"
               />
               <button
                 onClick={() => void saveReorder()}
-                className="rounded bg-magic-ink/80 px-2 py-1 font-semibold text-white hover:bg-magic-ink"
+                className="rounded bg-espark-ink/80 px-2 py-1 font-semibold text-espark-on-ink hover:bg-espark-ink"
               >
                 Save
               </button>
@@ -505,21 +505,21 @@ function ItemHistory({
   }, [itemId, onError]);
 
   if (events === null)
-    return <p className="text-xs text-magic-ink/50">Loading history…</p>;
+    return <p className="text-xs text-espark-ink/50">Loading history…</p>;
   if (events.length === 0)
-    return <p className="text-xs italic text-magic-ink/40">No movements yet.</p>;
+    return <p className="text-xs italic text-espark-ink/40">No movements yet.</p>;
 
   return (
     <ul className="space-y-1">
       {events.map((e) => (
-        <li key={e.id} className="text-xs text-magic-ink/70">
+        <li key={e.id} className="text-xs text-espark-ink/70">
           <span
             className={`mr-1 font-mono font-semibold ${
               e.type === "OUT"
                 ? "text-red-600"
                 : e.type === "IN"
                   ? "text-emerald-600"
-                  : "text-magic-ink"
+                  : "text-espark-ink"
             }`}
           >
             {e.type}
@@ -531,7 +531,7 @@ function ItemHistory({
           {new Date(e.recorded_at).toLocaleString()}
           {" · @"}
           {e.actor_display_name || e.actor_username || "?"}
-          {e.reason && <span className="text-magic-ink/50"> · {e.reason}</span>}
+          {e.reason && <span className="text-espark-ink/50"> · {e.reason}</span>}
         </li>
       ))}
     </ul>
@@ -755,12 +755,12 @@ function MovementModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-5 shadow-xl">
+      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-espark-surface p-5 shadow-xl">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-base font-bold text-magic-ink">Record movement</h3>
+          <h3 className="text-base font-bold text-espark-ink">Record movement</h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-red"
+            className="text-espark-ink/50 hover:text-espark-primary"
           >
             ✕
           </button>
@@ -775,8 +775,8 @@ function MovementModal({
                 onClick={() => setType(t)}
                 className={`rounded-full border px-3 py-1 text-xs font-semibold ${
                   type === t
-                    ? "border-magic-red bg-magic-red text-white"
-                    : "border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                    ? "border-espark-primary bg-espark-primary text-white"
+                    : "border-espark-border text-espark-ink/70 hover:bg-espark-soft"
                 }`}
               >
                 {t}
@@ -786,12 +786,12 @@ function MovementModal({
 
           {/* Item picker — scan or search */}
           <div>
-            <label className="mb-1 block text-xs font-semibold text-magic-ink/70">
+            <label className="mb-1 block text-xs font-semibold text-espark-ink/70">
               Item
             </label>
             {picked ? (
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between rounded border border-magic-border px-2 py-1.5 text-sm">
+                <div className="flex items-center justify-between rounded border border-espark-border px-2 py-1.5 text-sm">
                   <span className="truncate">
                     {picked.label}
                     {pickedViaScan && (
@@ -806,7 +806,7 @@ function MovementModal({
                       setPickedViaScan(false);
                       setScanMsg(null);
                     }}
-                    className="ml-2 text-xs text-magic-red"
+                    className="ml-2 text-xs text-espark-primary"
                   >
                     change
                   </button>
@@ -836,12 +836,12 @@ function MovementModal({
                         void lookupCode(scanCode);
                       }
                     }}
-                    className="min-w-0 flex-1 rounded border border-magic-border px-2 py-1.5 text-sm"
+                    className="min-w-0 flex-1 rounded border border-espark-border px-2 py-1.5 text-sm"
                   />
                   <button
                     type="button"
                     onClick={() => void lookupCode(scanCode)}
-                    className="shrink-0 rounded border border-magic-border px-2 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+                    className="shrink-0 rounded border border-espark-border px-2 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
                   >
                     Scan
                   </button>
@@ -850,14 +850,14 @@ function MovementModal({
                       type="button"
                       onClick={() => setShowCamera(true)}
                       aria-label="Scan with camera"
-                      className="shrink-0 rounded border border-magic-border px-2 py-1.5 text-magic-ink/70 hover:bg-magic-soft"
+                      className="shrink-0 rounded border border-espark-border px-2 py-1.5 text-espark-ink/70 hover:bg-espark-soft"
                     >
                       <Camera className="h-4 w-4" />
                     </button>
                   )}
                 </div>
                 {scanMsg && (
-                  <p className="mb-1.5 text-xs text-magic-ink/60">{scanMsg}</p>
+                  <p className="mb-1.5 text-xs text-espark-ink/60">{scanMsg}</p>
                 )}
 
                 <input
@@ -865,10 +865,10 @@ function MovementModal({
                   placeholder="…or search vendor / model / category"
                   value={itemQuery}
                   onChange={(e) => setItemQuery(e.target.value)}
-                  className="w-full rounded border border-magic-border px-2 py-1.5 text-sm"
+                  className="w-full rounded border border-espark-border px-2 py-1.5 text-sm"
                 />
                 {results.length > 0 && (
-                  <ul className="mt-1 max-h-40 overflow-y-auto rounded border border-magic-border">
+                  <ul className="mt-1 max-h-40 overflow-y-auto rounded border border-espark-border">
                     {results.map((r) => (
                       <li key={r.id}>
                         <button
@@ -876,11 +876,11 @@ function MovementModal({
                             setPicked(r);
                             setPickedViaScan(false);
                           }}
-                          className="block w-full px-2 py-1.5 text-left text-sm hover:bg-magic-soft"
+                          className="block w-full px-2 py-1.5 text-left text-sm hover:bg-espark-soft"
                         >
                           {r.label}
                           {r.category && (
-                            <span className="text-magic-ink/40"> · {r.category}</span>
+                            <span className="text-espark-ink/40"> · {r.category}</span>
                           )}
                         </button>
                       </li>
@@ -914,8 +914,8 @@ function MovementModal({
                   onClick={() => setAdjustDir(d)}
                   className={`rounded-full border px-3 py-1 text-xs font-semibold ${
                     adjustDir === d
-                      ? "border-magic-ink bg-magic-ink text-white"
-                      : "border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                      ? "border-espark-ink bg-espark-ink text-espark-on-ink"
+                      : "border-espark-border text-espark-ink/70 hover:bg-espark-soft"
                   }`}
                 >
                   {d === "increase" ? "Increase (+)" : "Decrease (−)"}
@@ -944,7 +944,7 @@ function MovementModal({
 
           {/* Qty */}
           <div>
-            <label className="mb-1 block text-xs font-semibold text-magic-ink/70">
+            <label className="mb-1 block text-xs font-semibold text-espark-ink/70">
               Quantity
             </label>
             <input
@@ -952,13 +952,13 @@ function MovementModal({
               min={1}
               value={qty}
               onChange={(e) => setQty(e.target.value)}
-              className="w-full rounded border border-magic-border px-2 py-1.5 text-sm"
+              className="w-full rounded border border-espark-border px-2 py-1.5 text-sm"
             />
           </div>
 
           {/* Reason */}
           <div>
-            <label className="mb-1 block text-xs font-semibold text-magic-ink/70">
+            <label className="mb-1 block text-xs font-semibold text-espark-ink/70">
               Reason {type === "ADJUST" ? "(required)" : "(optional)"}
             </label>
             <input
@@ -968,7 +968,7 @@ function MovementModal({
               placeholder={
                 type === "ADJUST" ? "e.g. recount: shelf had 68, system said 70" : ""
               }
-              className="w-full rounded border border-magic-border px-2 py-1.5 text-sm"
+              className="w-full rounded border border-espark-border px-2 py-1.5 text-sm"
             />
           </div>
         </div>
@@ -977,14 +977,14 @@ function MovementModal({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft"
+            className="rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy}
-            className="rounded-lg bg-magic-red px-4 py-1.5 text-sm font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+            className="rounded-lg bg-espark-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Record"}
           </button>
@@ -1007,13 +1007,13 @@ function NodeSelect({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-semibold text-magic-ink/70">
+      <label className="mb-1 block text-xs font-semibold text-espark-ink/70">
         {label}
       </label>
       <Select
         value={value}
         onChange={(next) => onChange(next === "" ? "" : Number(next))}
-        className="w-full rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+        className="w-full rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
       >
         <option value="">— pick a location —</option>
         {nodes.map((n) => (
@@ -1042,8 +1042,8 @@ function TabButton({
       onClick={onClick}
       className={`-mb-px border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${
         active
-          ? "border-magic-red text-magic-red"
-          : "border-transparent text-magic-ink/60 hover:text-magic-ink"
+          ? "border-espark-primary text-espark-primary"
+          : "border-transparent text-espark-ink/60 hover:text-espark-ink"
       }`}
     >
       {children}
@@ -1065,7 +1065,7 @@ function IconBtn({
       onClick={onClick}
       title={label}
       aria-label={label}
-      className="rounded border border-magic-border px-2 py-1 text-xs text-magic-ink/70 hover:bg-magic-soft"
+      className="rounded border border-espark-border px-2 py-1 text-xs text-espark-ink/70 hover:bg-espark-soft"
     >
       {children}
     </button>
@@ -1168,18 +1168,18 @@ function CameraScanner({
   }, []);
 
   return (
-    <div className="mt-2 overflow-hidden rounded-lg border border-magic-border bg-black">
+    <div className="mt-2 overflow-hidden rounded-lg border border-espark-border bg-black">
       <video
         ref={videoRef}
         muted
         playsInline
         className="h-44 w-full object-cover"
       />
-      <div className="flex items-center justify-between bg-magic-soft px-2 py-1 text-xs">
-        <span className="text-magic-ink/60">
+      <div className="flex items-center justify-between bg-espark-soft px-2 py-1 text-xs">
+        <span className="text-espark-ink/60">
           Point the camera at a barcode / QR
         </span>
-        <button onClick={onClose} className="font-semibold text-magic-red">
+        <button onClick={onClose} className="font-semibold text-espark-primary">
           Close
         </button>
       </div>

@@ -84,15 +84,15 @@ export default async function CompanyClientFolderPage({
     !(await userHasAssignedProjectInFolder(user.id, folderId))
   ) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-3xl mx-auto p-6 text-center">
-          <h1 className="text-xl font-bold text-magic-ink mb-2">
+          <h1 className="text-xl font-bold text-espark-ink mb-2">
             You don&apos;t have access to this client
           </h1>
           <Link
             href={`/crm/company/${companyId}`}
-            className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft transition-colors"
+            className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft transition-colors"
           >
             ← Back to company
           </Link>
@@ -112,32 +112,32 @@ export default async function CompanyClientFolderPage({
     : null;
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-screen-2xl mx-auto px-6 py-6 lg:px-10">
         <div className="mb-4">
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm" className="hover:text-magic-red">
+            <Link href="/crm" className="hover:text-espark-primary">
               CRM
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm/company" className="hover:text-magic-red">
+            <Link href="/crm/company" className="hover:text-espark-primary">
               Companies
             </Link>{" "}
             <span>→</span>{" "}
             <Link
               href={`/crm/company/${companyId}`}
-              className="hover:text-magic-red"
+              className="hover:text-espark-primary"
             >
               {folder.company_name ?? `company #${companyId}`}
             </Link>
           </div>
           <div className="mt-1 flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-magic-ink">
+            <h1 className="text-2xl font-bold text-espark-ink">
               {folder.name}
             </h1>
             <EditFolderButton
@@ -152,7 +152,7 @@ export default async function CompanyClientFolderPage({
               }}
             />
           </div>
-          <div className="mt-1 text-xs text-magic-ink/60 flex flex-wrap gap-x-4 gap-y-1">
+          <div className="mt-1 text-xs text-espark-ink/60 flex flex-wrap gap-x-4 gap-y-1">
             {folder.client_email && <span>{folder.client_email}</span>}
             {folder.client_phone && <span>{folder.client_phone}</span>}
           </div>

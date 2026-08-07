@@ -68,7 +68,7 @@ function Kpi({
 }) {
   return (
     <div
-      className="rounded-lg border border-slate-200 bg-white p-4"
+      className="rounded-lg border border-slate-200 bg-espark-surface p-4"
       style={{ borderLeft: `3px solid ${accent ? ACCENT : "#cbd5e1"}` }}
     >
       <div className="flex items-baseline justify-between">
@@ -111,7 +111,7 @@ function Ratio({
 }) {
   const color = tone === "tax" ? TAX : tone === "accent" ? ACCENT : "#94a3b8";
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3.5">
+    <div className="rounded-lg border border-slate-200 bg-espark-surface p-3.5">
       <div className="flex items-start justify-between gap-2">
         <span className="text-[10.5px] font-semibold uppercase leading-tight tracking-wide text-slate-500">
           {label}
@@ -153,7 +153,7 @@ function Panel({
   className?: string;
 }) {
   return (
-    <div className={`rounded-lg border border-slate-200 bg-white p-4 ${className}`}>
+    <div className={`rounded-lg border border-slate-200 bg-espark-surface p-4 ${className}`}>
       <p className="font-mono text-xs font-semibold text-slate-700">{title}</p>
       {note && <p className="mt-0.5 mb-3 font-mono text-[10px] text-slate-400">{note}</p>}
       {children}
@@ -172,7 +172,7 @@ const WaterfallTooltip = ({ active, payload, label }: any) => {
   if (!entry) return null;
   const cumulative = (base?.value ?? 0) + entry.value;
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-3 text-xs shadow-lg">
+    <div className="rounded-md border border-slate-200 bg-espark-surface p-3 text-xs shadow-lg">
       <p className="mb-2 border-b border-slate-100 pb-1 font-mono font-semibold text-slate-800">
         {label}
       </p>

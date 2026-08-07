@@ -25,26 +25,35 @@ export interface BrandVariant {
 }
 
 /**
- * The default variant reuses the original Magic Tech assets that shipped
- * with the app — so quotations saved before variants existed keep rendering
- * exactly the same cover, about us and logo without any migration.
+ * The default variant carries the eSpark assets that ship with the app.
+ *
+ * `logoUrl` points at the horizontal eSpark lockup (dark ink on transparent),
+ * which is deliberately a raster rather than the themed `BrandLogo` component:
+ * the print path rasterises through html2canvas/jsPDF, and a fixed dark-ink
+ * PNG reproduces reliably on white paper regardless of the operator's theme.
+ *
+ * NOTE: `coverUrl` / `aboutUrl` still reference the A4 cover and about-us
+ * artwork inherited from the previous deployment. Those are designed marketing
+ * sheets, not generated assets — drop eSpark-branded replacements into
+ * `/public` under the same names (or add a new variant below) before sending
+ * quotations to customers.
  */
-export const DEFAULT_BRAND_VARIANT_ID = "magic-tech";
+export const DEFAULT_BRAND_VARIANT_ID = "espark";
 
 export const BRAND_VARIANTS: BrandVariant[] = [
   {
     id: DEFAULT_BRAND_VARIANT_ID,
-    label: "Magic Tech",
-    description: "Default Magic Tech branding",
+    label: "eSpark",
+    description: "Default eSpark branding",
     logoUrl: "/logo.png",
     coverUrl: "/quote-page-1.jpg",
     aboutUrl: "/quote-page-2.jpg",
   },
   {
     // BEAT logo lives at `public/logo_BEAT.jpeg` (uploaded via the GitHub
-    // web UI). Cover and about-us sheets fall back to the default Magic
-    // Tech artwork until paired BEAT-branded pages are supplied; swap
-    // `coverUrl` / `aboutUrl` once those JPGs land in `/public`.
+    // web UI). Cover and about-us sheets fall back to the default artwork
+    // until paired BEAT-branded pages are supplied; swap `coverUrl` /
+    // `aboutUrl` once those JPGs land in `/public`.
     id: "beat",
     label: "BEAT",
     description: "BEAT-branded logo (reuses default cover / about-us for now)",
@@ -79,7 +88,7 @@ export function getBrandVariant(
  * Coerce an untrusted value (admin form payload or a persisted settings row)
  * into a clean BrandVariant[]. Drops entries missing the fields a printable
  * brand actually needs (id, label, logo, cover) and de-duplicates ids so the
- * dropdown never shows two "magic-tech" rows. The about-us page is optional,
+ * dropdown never shows two "espark" rows. The about-us page is optional,
  * so a blank one is kept as `undefined` rather than rejecting the brand.
  * Returns the built-in defaults when nothing usable is supplied, guaranteeing
  * printing always has at least one brand to fall back on.

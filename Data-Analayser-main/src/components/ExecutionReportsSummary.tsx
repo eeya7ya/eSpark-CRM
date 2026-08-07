@@ -123,18 +123,18 @@ export default function ExecutionReportsSummary() {
   const projects = data?.projects ?? [];
 
   return (
-    <div className="rounded-2xl border border-magic-border bg-white/80 p-4 shadow-mt-soft backdrop-blur-sm">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface/80 p-4 shadow-es-soft backdrop-blur-sm">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h3 className="text-sm font-bold text-magic-ink">
+          <h3 className="text-sm font-bold text-espark-ink">
             Execution overview
           </h3>
-          <p className="text-xs text-magic-ink/50">
+          <p className="text-xs text-espark-ink/50">
             Completion across your projects, and every report posted{" "}
             {period === "today" ? "today" : `in ${PERIOD_LABEL[period].toLowerCase()}`}.
           </p>
         </div>
-        <div className="inline-flex rounded-lg border border-magic-border bg-magic-soft/40 p-0.5">
+        <div className="inline-flex rounded-lg border border-espark-border bg-espark-soft/40 p-0.5">
           {(["today", "week", "month"] as Period[]).map((p) => (
             <button
               key={p}
@@ -142,8 +142,8 @@ export default function ExecutionReportsSummary() {
               onClick={() => setPeriod(p)}
               className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
                 period === p
-                  ? "bg-white text-magic-red shadow-sm"
-                  : "text-magic-ink/55 hover:text-magic-ink"
+                  ? "bg-espark-surface text-espark-primary shadow-sm"
+                  : "text-espark-ink/55 hover:text-espark-ink"
               }`}
             >
               {PERIOD_LABEL[p]}
@@ -189,13 +189,13 @@ export default function ExecutionReportsSummary() {
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Project completion */}
         <div>
-          <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-magic-ink/40">
+          <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-espark-ink/40">
             Project completion
           </h4>
           {loading && projects.length === 0 ? (
-            <p className="py-6 text-center text-sm text-magic-ink/40">Loading…</p>
+            <p className="py-6 text-center text-sm text-espark-ink/40">Loading…</p>
           ) : projects.length === 0 ? (
-            <p className="py-6 text-center text-sm text-magic-ink/40">
+            <p className="py-6 text-center text-sm text-espark-ink/40">
               No projects in your portfolio yet.
             </p>
           ) : (
@@ -204,13 +204,13 @@ export default function ExecutionReportsSummary() {
                 <li key={p.id}>
                   <Link
                     href={`/projects/${p.id}`}
-                    className="block rounded-lg px-1 py-0.5 hover:bg-magic-soft/40"
+                    className="block rounded-lg px-1 py-0.5 hover:bg-espark-soft/40"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="truncate text-sm font-medium text-magic-ink">
+                      <span className="truncate text-sm font-medium text-espark-ink">
                         {p.name}
                       </span>
-                      <span className="shrink-0 text-xs font-semibold tabular-nums text-magic-ink/70">
+                      <span className="shrink-0 text-xs font-semibold tabular-nums text-espark-ink/70">
                         {p.completion}%
                       </span>
                     </div>
@@ -232,15 +232,15 @@ export default function ExecutionReportsSummary() {
 
         {/* Period reports grouped by project */}
         <div>
-          <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-magic-ink/40">
+          <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-espark-ink/40">
             {period === "today"
               ? "Today's execution"
               : `${PERIOD_LABEL[period]}'s reports`}
           </h4>
           {loading && grouped.length === 0 ? (
-            <p className="py-6 text-center text-sm text-magic-ink/40">Loading…</p>
+            <p className="py-6 text-center text-sm text-espark-ink/40">Loading…</p>
           ) : grouped.length === 0 ? (
-            <p className="py-6 text-center text-sm text-magic-ink/40">
+            <p className="py-6 text-center text-sm text-espark-ink/40">
               No reports {period === "today" ? "yet today" : "in this period"}.
             </p>
           ) : (
@@ -249,26 +249,26 @@ export default function ExecutionReportsSummary() {
                 <div key={projectId}>
                   <Link
                     href={`/projects/${projectId}`}
-                    className="text-xs font-bold text-magic-ink hover:text-magic-red"
+                    className="text-xs font-bold text-espark-ink hover:text-espark-primary"
                   >
                     {g.name}
                   </Link>
-                  <ul className="mt-1 space-y-1.5 border-l-2 border-magic-border/60 pl-3">
+                  <ul className="mt-1 space-y-1.5 border-l-2 border-espark-border/60 pl-3">
                     {g.reports.map((r) => (
                       <li key={r.id} className="text-xs">
                         <div className="flex items-center gap-1.5">
                           <KindBadge kind={r.kind} />
                           {r.progress !== null && (
-                            <span className="font-semibold tabular-nums text-magic-ink/60">
+                            <span className="font-semibold tabular-nums text-espark-ink/60">
                               {r.progress}%
                             </span>
                           )}
-                          <span className="text-magic-ink/40">
+                          <span className="text-espark-ink/40">
                             {r.author_name || r.author_username || "—"} ·{" "}
                             {timeAgo(r.created_at)}
                           </span>
                         </div>
-                        <p className="mt-0.5 whitespace-pre-wrap break-words text-magic-ink/75">
+                        <p className="mt-0.5 whitespace-pre-wrap break-words text-espark-ink/75">
                           {r.body}
                         </p>
                       </li>
@@ -295,7 +295,7 @@ function CompletionBar({ value, status }: { value: number; status: string }) {
           ? "bg-violet-500"
           : "bg-sky-500";
   return (
-    <div className="h-2 flex-1 overflow-hidden rounded-full bg-magic-soft">
+    <div className="h-2 flex-1 overflow-hidden rounded-full bg-espark-soft">
       <div
         className={`h-full rounded-full transition-all ${tone}`}
         style={{ width: `${pct}%` }}
@@ -337,15 +337,15 @@ function Stat({
   tone: keyof typeof STAT_TONES;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-magic-border bg-white px-3 py-2">
+    <div className="flex items-center gap-2 rounded-xl border border-espark-border bg-espark-surface px-3 py-2">
       <span
         className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${STAT_TONES[tone]}`}
       >
         <Icon className="h-4 w-4" />
       </span>
       <div className="min-w-0">
-        <p className="text-lg font-bold leading-none text-magic-ink">{value}</p>
-        <p className="mt-0.5 truncate text-[11px] text-magic-ink/50">{label}</p>
+        <p className="text-lg font-bold leading-none text-espark-ink">{value}</p>
+        <p className="mt-0.5 truncate text-[11px] text-espark-ink/50">{label}</p>
       </div>
     </div>
   );

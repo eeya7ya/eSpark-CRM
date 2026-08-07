@@ -64,7 +64,7 @@ function renderBody(body: string) {
     <div className="mt-2 space-y-2">
       {blocks.map((b, i) =>
         b.kind === "p" ? (
-          <p key={i} className="text-sm leading-relaxed text-magic-ink/75">
+          <p key={i} className="text-sm leading-relaxed text-espark-ink/75">
             {b.text}
           </p>
         ) : (
@@ -75,11 +75,11 @@ function renderBody(body: string) {
               const label = dash > 0 ? it.slice(0, dash).trim() : null;
               const rest = dash > 0 ? it.slice(dash + 1).trim() : it;
               return (
-                <li key={j} className="flex gap-2.5 text-sm text-magic-ink/75">
-                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-magic-red/60" />
+                <li key={j} className="flex gap-2.5 text-sm text-espark-ink/75">
+                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-espark-primary/60" />
                   <span className="leading-relaxed">
                     {label && (
-                      <span className="font-semibold text-magic-ink">
+                      <span className="font-semibold text-espark-ink">
                         {label}
                         {" — "}
                       </span>
@@ -117,23 +117,23 @@ export default function UpdatesFeed() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="overflow-hidden rounded-2xl border border-magic-border bg-gradient-to-br from-magic-red/8 via-white to-white p-6 shadow-mt-soft">
+      <div className="overflow-hidden rounded-2xl border border-espark-border bg-gradient-to-br from-espark-primary/8 via-espark-surface to-espark-surface p-6 shadow-es-soft">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-magic-red/10 text-magic-red">
+            <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-espark-primary/10 text-espark-primary">
               <Megaphone className="h-5 w-5" />
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+              <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
                 Product updates
               </h1>
-              <p className="mt-0.5 text-sm text-magic-ink/60">
+              <p className="mt-0.5 text-sm text-espark-ink/60">
                 What changed in your modules — tailored to your role, newest
                 first.
               </p>
             </div>
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-magic-red/30 bg-white px-3 py-1.5 text-xs font-semibold text-magic-red shadow-sm">
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-espark-primary/30 bg-espark-surface px-3 py-1.5 text-xs font-semibold text-espark-primary shadow-sm">
             <Sparkles className="h-3.5 w-3.5" />
             {APP_VERSION_LABEL}
           </span>
@@ -146,51 +146,51 @@ export default function UpdatesFeed() {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="h-28 animate-pulse rounded-2xl border border-magic-border bg-white/60"
+              className="h-28 animate-pulse rounded-2xl border border-espark-border bg-espark-surface/60"
             />
           ))}
         </div>
       ) : posts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-magic-border bg-white/70 px-6 py-14 text-center">
-          <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-magic-soft text-magic-ink/40">
+        <div className="rounded-2xl border border-dashed border-espark-border bg-espark-surface/70 px-6 py-14 text-center">
+          <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-espark-soft text-espark-ink/40">
             <Clock className="h-6 w-6" />
           </span>
-          <p className="mt-3 text-sm font-semibold text-magic-ink">
+          <p className="mt-3 text-sm font-semibold text-espark-ink">
             You&apos;re all caught up
           </p>
-          <p className="mt-1 text-sm text-magic-ink/55">
+          <p className="mt-1 text-sm text-espark-ink/55">
             No updates for your modules yet. New release notes will appear here.
           </p>
         </div>
       ) : (
-        <ol className="relative space-y-4 before:absolute before:bottom-2 before:left-[15px] before:top-2 before:w-px before:bg-magic-border/70">
+        <ol className="relative space-y-4 before:absolute before:bottom-2 before:left-[15px] before:top-2 before:w-px before:bg-espark-border/70">
           {posts.map((p) => (
             <li key={p.id} className="relative pl-10">
               {/* Timeline node */}
               <span
                 className={`absolute left-0 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white shadow-sm ${
                   p.pinned
-                    ? "bg-magic-red text-white"
-                    : "bg-magic-soft text-magic-ink/50"
+                    ? "bg-espark-primary text-white"
+                    : "bg-espark-soft text-espark-ink/50"
                 }`}
               >
                 <Megaphone className="h-4 w-4" />
               </span>
               <article
-                className={`rounded-2xl border bg-white p-5 shadow-mt-soft transition-shadow hover:shadow-mt-lift ${
-                  p.pinned ? "border-magic-red/30" : "border-magic-border"
+                className={`rounded-2xl border bg-espark-surface p-5 shadow-es-soft transition-shadow hover:shadow-es-lift ${
+                  p.pinned ? "border-espark-primary/30" : "border-espark-border"
                 }`}
               >
                 <div className="flex flex-wrap items-center gap-2">
                   {p.pinned && (
-                    <span className="inline-block rounded-full bg-magic-red/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-magic-red">
+                    <span className="inline-block rounded-full bg-espark-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-espark-primary">
                       New
                     </span>
                   )}
-                  <h2 className="text-base font-bold text-magic-ink">
+                  <h2 className="text-base font-bold text-espark-ink">
                     {p.title}
                   </h2>
-                  <span className="ml-auto inline-flex items-center gap-1 text-xs text-magic-ink/45">
+                  <span className="ml-auto inline-flex items-center gap-1 text-xs text-espark-ink/45">
                     <Clock className="h-3.5 w-3.5" />
                     {relativeDate(p.created_at)}
                   </span>

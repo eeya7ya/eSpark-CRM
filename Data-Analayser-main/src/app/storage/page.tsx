@@ -26,20 +26,20 @@ export default async function StoragePage() {
 
   if (!hasStorage) {
     return (
-      <div className="min-h-screen bg-magic-soft/40">
+      <div className="min-h-screen bg-espark-soft/40">
         <TopBar user={user} />
         <main className="max-w-3xl mx-auto px-6 py-10 text-center">
-          <h1 className="text-xl font-bold text-magic-ink mb-2">
+          <h1 className="text-xl font-bold text-espark-ink mb-2">
             Storage module
           </h1>
-          <p className="text-sm text-magic-ink/60">
-            You need <code className="text-xs bg-magic-soft px-1 rounded">storage.*</code>{" "}
+          <p className="text-sm text-espark-ink/60">
+            You need <code className="text-xs bg-espark-soft px-1 rounded">storage.*</code>{" "}
             access to open the stock-checks inbox. Ask an admin in the Modules
             tab.
           </p>
           <Link
             href="/crm"
-            className="inline-block mt-4 rounded-lg border border-magic-border px-3 py-1.5 text-sm font-semibold hover:bg-magic-soft"
+            className="inline-block mt-4 rounded-lg border border-espark-border px-3 py-1.5 text-sm font-semibold hover:bg-espark-soft"
           >
             Back to CRM
           </Link>
@@ -49,13 +49,13 @@ export default async function StoragePage() {
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-6xl mx-auto px-6 py-6 lg:px-10">
         <div className="flex items-end justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-magic-ink">Stock checks</h1>
-            <p className="text-sm text-magic-ink/60 mt-0.5">
+            <h1 className="text-2xl font-bold text-espark-ink">Stock checks</h1>
+            <p className="text-sm text-espark-ink/60 mt-0.5">
               BOQ availability requests from quotations — answer Available /
               Partial / Out per item.
             </p>

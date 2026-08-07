@@ -28,7 +28,7 @@ export function isPushConfigured(): boolean {
   if (pub && priv) {
     try {
       webpush.setVapidDetails(
-        process.env.VAPID_SUBJECT || "mailto:notifications@magictech.local",
+        process.env.VAPID_SUBJECT || "mailto:notifications@espark.local",
         pub,
         priv,
       );

@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       values (${body.username}, ${hash}, ${role}, ${displayName}, ${phone}, ${email}, ${departmentCode},
               coalesce(
                 (select tenant_id from users where id = ${admin.id}),
-                (select id from tenants where slug = 'magictech')
+                (select id from tenants where slug = 'espark')
               ),
               true)
       on conflict (username) do nothing

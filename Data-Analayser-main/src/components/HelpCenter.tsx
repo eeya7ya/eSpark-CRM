@@ -44,7 +44,7 @@ const ICONS: Record<string, LucideIcon> = {
 
 // tone key → the chip colour for the doc's icon.
 const TONES: Record<string, string> = {
-  red: "bg-magic-red/10 text-magic-red",
+  red: "bg-espark-primary/10 text-espark-primary",
   accent: "bg-indigo-100 text-indigo-600",
   indigo: "bg-indigo-100 text-indigo-600",
   cyan: "bg-cyan-100 text-cyan-600",
@@ -52,7 +52,7 @@ const TONES: Record<string, string> = {
   emerald: "bg-emerald-100 text-emerald-600",
   violet: "bg-violet-100 text-violet-600",
   amber: "bg-amber-100 text-amber-600",
-  ink: "bg-magic-ink/10 text-magic-ink",
+  ink: "bg-espark-ink/10 text-espark-ink",
 };
 
 /** Flatten a doc's text so the search box can match section content too. */
@@ -129,7 +129,7 @@ export default function HelpCenter({
       <div
         aria-hidden={!open}
         onClick={onClose}
-        className={`fixed inset-0 z-50 bg-magic-ink/40 transition-opacity duration-200 ${
+        className={`fixed inset-0 z-50 bg-espark-scrim/40 transition-opacity duration-200 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -138,21 +138,21 @@ export default function HelpCenter({
         role="dialog"
         aria-label="Help center"
         aria-hidden={!open}
-        className={`fixed inset-y-0 right-0 z-50 flex w-96 max-w-[92vw] flex-col border-l border-magic-border/60 bg-white shadow-2xl transition-transform duration-200 ease-out will-change-transform ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-96 max-w-[92vw] flex-col border-l border-espark-border/60 bg-espark-surface shadow-2xl transition-transform duration-200 ease-out will-change-transform ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 border-b border-magic-border/60 px-4 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-espark-border/60 px-4 py-4">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-magic-red/15 to-magic-accent/15 text-magic-red">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-espark-primary/15 to-espark-accent/15 text-espark-primary">
               <HelpCircle className="h-5 w-5" strokeWidth={2.25} />
             </span>
             <div className="min-w-0">
-              <p className="text-sm font-bold leading-tight text-magic-ink">
+              <p className="text-sm font-bold leading-tight text-espark-ink">
                 Help center
               </p>
-              <p className="truncate text-[11px] text-magic-ink/50">
+              <p className="truncate text-[11px] text-espark-ink/50">
                 Guides for your role
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function HelpCenter({
           <button
             onClick={onClose}
             aria-label="Close help"
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-magic-ink/60 hover:bg-magic-soft hover:text-magic-ink transition-colors"
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-espark-ink/60 hover:bg-espark-soft hover:text-espark-ink transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -168,19 +168,19 @@ export default function HelpCenter({
 
         {/* Search */}
         <div className="px-4 py-3">
-          <div className="flex items-center gap-2 rounded-xl border border-magic-border bg-magic-soft/60 px-3 py-2 focus-within:border-magic-red/40 focus-within:bg-white">
-            <Search className="h-4 w-4 shrink-0 text-magic-ink/40" />
+          <div className="flex items-center gap-2 rounded-xl border border-espark-border bg-espark-soft/60 px-3 py-2 focus-within:border-espark-primary/40 focus-within:bg-espark-surface">
+            <Search className="h-4 w-4 shrink-0 text-espark-ink/40" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search help…"
-              className="w-full bg-transparent text-sm text-magic-ink placeholder:text-magic-ink/40 focus:outline-none"
+              className="w-full bg-transparent text-sm text-espark-ink placeholder:text-espark-ink/40 focus:outline-none"
             />
             {query && (
               <button
                 onClick={() => setQuery("")}
                 aria-label="Clear search"
-                className="text-magic-ink/40 hover:text-magic-ink"
+                className="text-espark-ink/40 hover:text-espark-ink"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -191,7 +191,7 @@ export default function HelpCenter({
         {/* Docs */}
         <div className="flex-1 space-y-2 overflow-y-auto px-4 pb-6">
           {filtered.length === 0 && (
-            <p className="mt-6 text-center text-sm text-magic-ink/50">
+            <p className="mt-6 text-center text-sm text-espark-ink/50">
               No help topics match “{query}”.
             </p>
           )}
@@ -202,12 +202,12 @@ export default function HelpCenter({
             return (
               <div
                 key={doc.id}
-                className="overflow-hidden rounded-2xl border border-magic-border bg-white shadow-mt-soft"
+                className="overflow-hidden rounded-2xl border border-espark-border bg-espark-surface shadow-es-soft"
               >
                 <button
                   onClick={() => setExpanded(isOpen ? null : doc.id)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-magic-soft/50"
+                  className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors hover:bg-espark-soft/50"
                 >
                   <span
                     className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${tone}`}
@@ -215,28 +215,28 @@ export default function HelpCenter({
                     <Icon className="h-[18px] w-[18px]" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold text-magic-ink">
+                    <span className="block text-sm font-bold text-espark-ink">
                       {doc.title}
                     </span>
-                    <span className="block truncate text-[11px] text-magic-ink/50">
+                    <span className="block truncate text-[11px] text-espark-ink/50">
                       {doc.intro}
                     </span>
                   </span>
                   <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-magic-ink/40 transition-transform ${
+                    className={`h-4 w-4 shrink-0 text-espark-ink/40 transition-transform ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
                 {isOpen && (
-                  <div className="space-y-4 border-t border-magic-border/60 px-4 py-4">
+                  <div className="space-y-4 border-t border-espark-border/60 px-4 py-4">
                     {doc.sections.map((s, i) => (
                       <div key={i}>
-                        <h5 className="text-[13px] font-bold text-magic-ink">
+                        <h5 className="text-[13px] font-bold text-espark-ink">
                           {s.heading}
                         </h5>
-                        <p className="mt-1 text-[13px] leading-relaxed text-magic-ink/70">
+                        <p className="mt-1 text-[13px] leading-relaxed text-espark-ink/70">
                           {s.body}
                         </p>
                         {s.steps && s.steps.length > 0 && (
@@ -244,9 +244,9 @@ export default function HelpCenter({
                             {s.steps.map((step, j) => (
                               <li
                                 key={j}
-                                className="flex gap-2 text-[13px] leading-relaxed text-magic-ink/70"
+                                className="flex gap-2 text-[13px] leading-relaxed text-espark-ink/70"
                               >
-                                <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-magic-red/10 text-[10px] font-bold text-magic-red">
+                                <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-espark-primary/10 text-[10px] font-bold text-espark-primary">
                                   {j + 1}
                                 </span>
                                 <span className="min-w-0">{step}</span>
@@ -264,10 +264,10 @@ export default function HelpCenter({
         </div>
 
         {/* Footer hint */}
-        <div className="border-t border-magic-border/60 bg-magic-soft/40 px-4 py-3">
-          <p className="inline-flex flex-wrap items-center gap-1 text-[11px] leading-relaxed text-magic-ink/50">
+        <div className="border-t border-espark-border/60 bg-espark-soft/40 px-4 py-3">
+          <p className="inline-flex flex-wrap items-center gap-1 text-[11px] leading-relaxed text-espark-ink/50">
             Look for the
-            <HelpCircle className="h-3.5 w-3.5 text-magic-ink/70" />
+            <HelpCircle className="h-3.5 w-3.5 text-espark-ink/70" />
             markers around the app for a quick explanation of any area.
           </p>
         </div>

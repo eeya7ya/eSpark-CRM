@@ -21,23 +21,23 @@ export default async function ProjectPosTabSection({
   `) as ProjectPoRow[];
 
   return (
-    <section className="rounded-2xl border border-magic-border bg-white p-5">
+    <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <div>
-          <h2 className="text-lg font-semibold text-magic-ink">
+          <h2 className="text-lg font-semibold text-espark-ink">
             Purchase Orders
-            <span className="ml-2 text-xs font-normal text-magic-ink/60">
+            <span className="ml-2 text-xs font-normal text-espark-ink/60">
               ({rows.length})
             </span>
           </h2>
-          <p className="text-xs text-magic-ink/60">
+          <p className="text-xs text-espark-ink/60">
             POs filed under this project. Convert a quotation to a PO from
             the quotation viewer.
           </p>
         </div>
         <Link
           href={`/purchase-orders?project=${projectId}`}
-          className="rounded-lg border border-magic-red text-magic-red px-3 py-1.5 text-xs font-semibold hover:bg-magic-red hover:text-white transition-colors"
+          className="rounded-lg border border-espark-primary text-espark-primary px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary hover:text-white transition-colors"
         >
           Manage in legacy view →
         </Link>

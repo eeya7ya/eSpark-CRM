@@ -128,18 +128,18 @@ export function EditFolderDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl space-y-3"
+        className="w-full max-w-md rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-magic-ink">Edit client</h3>
+          <h3 className="font-semibold text-espark-ink">Edit client</h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
           >
             ×
           </button>
@@ -151,7 +151,7 @@ export function EditFolderDialog({
           onChange={(e) => setName(e.target.value)}
           disabled={busy}
           autoFocus
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <input
           type="email"
@@ -159,7 +159,7 @@ export function EditFolderDialog({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <input
           type="tel"
@@ -167,7 +167,7 @@ export function EditFolderDialog({
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
         <input
           type="text"
@@ -175,11 +175,11 @@ export function EditFolderDialog({
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           disabled={busy}
-          className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+          className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
         />
 
-        <div className="pt-2 border-t border-magic-border/60 space-y-2">
-          <p className="text-xs font-semibold text-magic-ink/70">Type</p>
+        <div className="pt-2 border-t border-espark-border/60 space-y-2">
+          <p className="text-xs font-semibold text-espark-ink/70">Type</p>
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -187,8 +187,8 @@ export function EditFolderDialog({
               disabled={busy}
               className={`flex-1 rounded border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 kind === "individual"
-                  ? "border-magic-red bg-magic-red/5 text-magic-red"
-                  : "border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                  ? "border-espark-primary bg-espark-primary/5 text-espark-primary"
+                  : "border-espark-border text-espark-ink/70 hover:bg-espark-soft"
               }`}
             >
               Individual
@@ -199,8 +199,8 @@ export function EditFolderDialog({
               disabled={busy}
               className={`flex-1 rounded border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 kind === "company"
-                  ? "border-magic-red bg-magic-red/5 text-magic-red"
-                  : "border-magic-border text-magic-ink/70 hover:bg-magic-soft"
+                  ? "border-espark-primary bg-espark-primary/5 text-espark-primary"
+                  : "border-espark-border text-espark-ink/70 hover:bg-espark-soft"
               }`}
             >
               Company
@@ -213,7 +213,7 @@ export function EditFolderDialog({
                 setCompanyId(next ? Number(next) : null)
               }
               disabled={busy || companiesLoading}
-              className="w-full rounded border border-magic-border bg-white px-3 py-2 text-sm"
+              className="w-full rounded border border-espark-border bg-espark-surface px-3 py-2 text-sm"
             >
               <option value="" disabled>
                 {companiesLoading ? "Loading…" : "Pick a company"}
@@ -243,14 +243,14 @@ export function EditFolderDialog({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50 transition-colors"
+            className="rounded border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => void submit()}
             disabled={busy || !name.trim()}
-            className="rounded bg-magic-red text-white px-3 py-1.5 text-xs font-semibold hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+            className="rounded bg-espark-primary text-white px-3 py-1.5 text-xs font-semibold hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
           >
             {busy ? "Saving…" : "Save"}
           </button>
@@ -267,7 +267,7 @@ export function EditFolderButton({ folder }: { folder: EditableFolder }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft transition-colors"
+        className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft transition-colors"
       >
         Edit
       </button>

@@ -69,7 +69,7 @@ export default function AdminTabs({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 border-b border-magic-border overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-espark-border overflow-x-auto">
         <TabButton active={tab === "users"} onClick={() => setTab("users")}>
           Users &amp; Roles
         </TabButton>
@@ -107,7 +107,7 @@ export default function AdminTabs({
 
       {tab === "users" && (
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Users &amp; Roles
           </h2>
           <UsersAndRolesPanel readOnly={readOnly} />
@@ -116,7 +116,7 @@ export default function AdminTabs({
 
       {tab === "news" && (
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Dashboard announcements
           </h2>
           <NewsAdminPanel />
@@ -125,7 +125,7 @@ export default function AdminTabs({
 
       {tab === "email" && (
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Email — server &amp; user mailboxes
           </h2>
           <EmailAdminPanel />
@@ -134,7 +134,7 @@ export default function AdminTabs({
 
       {tab === "settings" && (
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Global presets
           </h2>
           <AdminSettings initialSettings={initialSettings} />
@@ -143,7 +143,7 @@ export default function AdminTabs({
 
       {tab === "branding" && (
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Branding — logos &amp; company profiles
           </h2>
           <BrandingAdmin initialSettings={initialSettings} readOnly={readOnly} />
@@ -161,7 +161,7 @@ export default function AdminTabs({
 
       {tab === "syslog" && (
         <section>
-          <h2 className="text-lg font-semibold text-magic-ink mb-3">
+          <h2 className="text-lg font-semibold text-espark-ink mb-3">
             Syslog — click activity
           </h2>
           <SyslogPanel readOnly={readOnly} />
@@ -178,8 +178,8 @@ function BackupsSection() {
   return (
     <section className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold text-magic-ink">Backups</h2>
-        <p className="mt-1 max-w-3xl text-sm text-magic-ink/60">
+        <h2 className="text-lg font-semibold text-espark-ink">Backups</h2>
+        <p className="mt-1 max-w-3xl text-sm text-espark-ink/60">
           Everything the app holds, covered both ways. <strong>Back up</strong>{" "}
           the database, the R2 files, or one complete archive — then{" "}
           <strong>restore</strong> any of them, so you can recover whether you
@@ -187,7 +187,7 @@ function BackupsSection() {
         </p>
       </div>
 
-      <div className="inline-flex rounded-xl border border-magic-border bg-magic-soft p-1">
+      <div className="inline-flex rounded-xl border border-espark-border bg-espark-soft p-1">
         <SubTabButton
           active={view === "backup"}
           onClick={() => setView("backup")}
@@ -255,8 +255,8 @@ function SubTabButton({
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors ${
         active
-          ? "bg-white text-magic-ink shadow-sm"
-          : "text-magic-ink/55 hover:text-magic-ink"
+          ? "bg-espark-surface text-espark-ink shadow-sm"
+          : "text-espark-ink/55 hover:text-espark-ink"
       }`}
     >
       {children}
@@ -366,7 +366,7 @@ function DatabaseBackupPanel() {
       const blob = await res.blob();
       const filename =
         filenameFromResponse(res) ||
-        `magictech-database-${new Date().toISOString().replace(/[:.]/g, "-")}.zip`;
+        `espark-database-${new Date().toISOString().replace(/[:.]/g, "-")}.zip`;
       triggerDownload(blob, filename);
       const mb = (blob.size / (1024 * 1024)).toFixed(2);
       setMsg({
@@ -436,7 +436,7 @@ function R2FilesBackupPanel() {
       zip.file(
         "README.txt",
         [
-          "MagicTech — R2 Files Backup",
+          "eSpark — R2 Files Backup",
           "===========================",
           `Generated: ${data.generatedAt}`,
           "",
@@ -472,7 +472,7 @@ function R2FilesBackupPanel() {
         compressionOptions: { level: 6 },
       });
       const stamp = data.generatedAt.replace(/[:.]/g, "-");
-      const filename = `magictech-r2-files-${stamp}.zip`;
+      const filename = `espark-r2-files-${stamp}.zip`;
       triggerDownload(blob, filename);
 
       const mb = (blob.size / (1024 * 1024)).toFixed(2);
@@ -657,7 +657,7 @@ function CompleteAppBackupPanel() {
       zip.file(
         "README.txt",
         [
-          "MagicTech — Complete App Backup",
+          "eSpark — Complete App Backup",
           "===============================",
           `Generated: ${data.generatedAt}`,
           "",
@@ -690,7 +690,7 @@ function CompleteAppBackupPanel() {
         compressionOptions: { level: 6 },
       });
       const stamp = data.generatedAt.replace(/[:.]/g, "-");
-      const filename = `magictech-complete-backup-${stamp}.zip`;
+      const filename = `espark-complete-backup-${stamp}.zip`;
       triggerDownload(blob, filename);
 
       const mb = (blob.size / (1024 * 1024)).toFixed(2);
@@ -1239,16 +1239,16 @@ function OffsiteBackupPanel() {
           {busy ? "Mirroring off-site…" : "Back up database off-site now"}
         </ActionButton>
       ) : (
-        <div className="rounded-lg border border-magic-border bg-magic-soft px-3 py-2.5 text-xs text-magic-ink/70">
-          <p className="font-semibold text-magic-ink/80">Not configured</p>
+        <div className="rounded-lg border border-espark-border bg-espark-soft px-3 py-2.5 text-xs text-espark-ink/70">
+          <p className="font-semibold text-espark-ink/80">Not configured</p>
           <p className="mt-1">
             Set these environment variables to enable off-site mirroring (the
             nightly backup will use them too):
           </p>
-          <ul className="mt-1.5 grid gap-0.5 font-mono text-[11px] text-magic-ink/70">
+          <ul className="mt-1.5 grid gap-0.5 font-mono text-[11px] text-espark-ink/70">
             <li>
               CLOUDFLARE_R2_OFFSITE_BUCKET{" "}
-              <span className="font-sans text-magic-ink/45">(required)</span>
+              <span className="font-sans text-espark-ink/45">(required)</span>
             </li>
             <li>CLOUDFLARE_R2_OFFSITE_ACCOUNT_ID</li>
             <li>CLOUDFLARE_R2_OFFSITE_ACCESS_KEY_ID</li>
@@ -1288,11 +1288,11 @@ const ACCENTS: Record<
     button: "bg-cyan-600 hover:bg-cyan-700",
   },
   red: {
-    bar: "from-magic-red to-rose-600",
-    icon: "bg-magic-red/10 text-magic-red ring-magic-red/15",
-    check: "text-magic-red",
-    badge: "bg-magic-red/10 text-magic-red",
-    button: "bg-magic-red hover:bg-magic-red/90",
+    bar: "from-espark-primary to-rose-600",
+    icon: "bg-espark-primary/10 text-espark-primary ring-espark-primary/15",
+    check: "text-espark-primary",
+    badge: "bg-espark-primary/10 text-espark-primary",
+    button: "bg-espark-primary hover:bg-espark-primary/90",
   },
 };
 
@@ -1316,7 +1316,7 @@ function BackupCard({
 }) {
   const a = ACCENTS[accent];
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-magic-border bg-white shadow-mt-soft">
+    <div className="relative overflow-hidden rounded-2xl border border-espark-border bg-espark-surface shadow-es-soft">
       <div className={`h-1.5 w-full bg-gradient-to-r ${a.bar}`} />
       <div className="p-5 sm:p-6">
         <div className="flex items-start gap-4">
@@ -1327,7 +1327,7 @@ function BackupCard({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-semibold text-magic-ink">{title}</h3>
+              <h3 className="text-base font-semibold text-espark-ink">{title}</h3>
               {badge && (
                 <span
                   className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${a.badge}`}
@@ -1336,13 +1336,13 @@ function BackupCard({
                 </span>
               )}
             </div>
-            <p className="mt-1 text-sm text-magic-ink/60">{description}</p>
+            <p className="mt-1 text-sm text-espark-ink/60">{description}</p>
 
             <ul className="mt-3 grid gap-1.5">
               {included.map((line) => (
                 <li
                   key={line}
-                  className="flex items-start gap-2 text-xs text-magic-ink/70"
+                  className="flex items-start gap-2 text-xs text-espark-ink/70"
                 >
                   <Check className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${a.check}`} />
                   <span>{line}</span>
@@ -1438,7 +1438,7 @@ function UploadButton({
 function ProgressMessage({ progress }: { progress: string | null }) {
   if (!progress) return null;
   return (
-    <div className="mt-2 flex items-center gap-2 rounded-lg border border-magic-border bg-magic-soft px-3 py-2 text-sm text-magic-ink/70">
+    <div className="mt-2 flex items-center gap-2 rounded-lg border border-espark-border bg-espark-soft px-3 py-2 text-sm text-espark-ink/70">
       <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
       <span>{progress}</span>
     </div>
@@ -1697,8 +1697,8 @@ function TabButton({
       onClick={onClick}
       className={`-mb-px flex-shrink-0 whitespace-nowrap px-4 py-2 text-sm font-semibold border-b-2 transition-colors ${
         active
-          ? "border-magic-red text-magic-red"
-          : "border-transparent text-magic-ink/60 hover:text-magic-ink"
+          ? "border-espark-primary text-espark-primary"
+          : "border-transparent text-espark-ink/60 hover:text-espark-ink"
       }`}
     >
       {children}

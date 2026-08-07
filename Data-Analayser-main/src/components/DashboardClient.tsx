@@ -112,7 +112,7 @@ export default function DashboardClient({
   const outcomeData = [
     { name: "Won", value: outcomes.won, color: "#22c55e" },
     { name: "Lost", value: outcomes.lost, color: "#f59e0b" },
-    { name: "Held", value: outcomes.held, color: "#E2231A" },
+    { name: "Held", value: outcomes.held, color: "#4C626A" },
   ].filter((d) => d.value > 0);
   const approvalTotal =
     approvals.approved + approvals.pending + approvals.rejected;
@@ -120,10 +120,10 @@ export default function DashboardClient({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
           Welcome back, {greetingName}.
         </h1>
-        <p className="mt-0.5 text-sm text-magic-ink/60">
+        <p className="mt-0.5 text-sm text-espark-ink/60">
           Your activity at a glance. Open the menu (top-left) to jump into any module.
         </p>
       </div>
@@ -144,7 +144,7 @@ export default function DashboardClient({
           under a misleading label — legacy dead data with no action behind it.
           The pipeline board is the source of truth for open deals now. */}
       <div className="mb-2 flex items-center gap-1.5">
-        <h2 className="text-sm font-bold uppercase tracking-wide text-magic-ink/55">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-espark-ink/55">
           At a glance
         </h2>
         <HelpTip id="dashboard.kpis" />
@@ -174,15 +174,15 @@ export default function DashboardClient({
           tone="red"
           helpId="dashboard.trend"
           right={
-            <div className="inline-flex items-center gap-0.5 rounded-lg border border-magic-border bg-magic-soft/40 p-0.5">
+            <div className="inline-flex items-center gap-0.5 rounded-lg border border-espark-border bg-espark-soft/40 p-0.5">
               {(["daily", "weekly", "monthly"] as Granularity[]).map((g) => (
                 <button
                   key={g}
                   onClick={() => setGranularity(g)}
                   className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
                     granularity === g
-                      ? "bg-magic-red text-white shadow-sm"
-                      : "text-magic-ink/60 hover:text-magic-ink"
+                      ? "bg-espark-primary text-white shadow-sm"
+                      : "text-espark-ink/60 hover:text-espark-ink"
                   }`}
                 >
                   {GRANULARITY_META[g].label}
@@ -196,8 +196,8 @@ export default function DashboardClient({
               <AreaChart data={trend} margin={{ top: 8, right: 12, left: -16, bottom: 0 }}>
                 <defs>
                   <linearGradient id="qGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#E2231A" stopOpacity={0.35} />
-                    <stop offset="100%" stopColor="#E2231A" stopOpacity={0.02} />
+                    <stop offset="0%" stopColor="#4C626A" stopOpacity={0.35} />
+                    <stop offset="100%" stopColor="#4C626A" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E4E7F1" vertical={false} />
@@ -214,7 +214,7 @@ export default function DashboardClient({
                   type="natural"
                   dataKey="count"
                   name={chartNoun}
-                  stroke="#E2231A"
+                  stroke="#4C626A"
                   strokeWidth={2.5}
                   fill="url(#qGrad)"
                   // A natural cubic spline flows smoothly through the points
@@ -263,10 +263,10 @@ export default function DashboardClient({
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold tracking-tight text-magic-ink">
+                <span className="text-2xl font-bold tracking-tight text-espark-ink">
                   {winRate === null ? "—" : `${winRate}%`}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wide text-magic-ink/45">
+                <span className="text-[10px] font-semibold uppercase tracking-wide text-espark-ink/45">
                   Win rate
                 </span>
               </div>
@@ -338,12 +338,12 @@ export default function DashboardClient({
 }
 
 const TONES: Record<string, { ring: string; icon: string; text: string }> = {
-  red: { ring: "from-magic-red/15 to-white", icon: "bg-magic-red/10 text-magic-red", text: "text-magic-red" },
-  indigo: { ring: "from-indigo-100 to-white", icon: "bg-indigo-100 text-indigo-600", text: "text-indigo-600" },
-  cyan: { ring: "from-cyan-100 to-white", icon: "bg-cyan-100 text-cyan-600", text: "text-cyan-600" },
-  violet: { ring: "from-violet-100 to-white", icon: "bg-violet-100 text-violet-600", text: "text-violet-600" },
-  amber: { ring: "from-amber-100 to-white", icon: "bg-amber-100 text-amber-600", text: "text-amber-600" },
-  emerald: { ring: "from-emerald-100 to-white", icon: "bg-emerald-100 text-emerald-600", text: "text-emerald-600" },
+  red: { ring: "from-espark-primary/15 to-espark-surface", icon: "bg-espark-primary/10 text-espark-primary", text: "text-espark-primary" },
+  indigo: { ring: "from-indigo-100 to-espark-surface", icon: "bg-indigo-100 text-indigo-600", text: "text-indigo-600" },
+  cyan: { ring: "from-cyan-100 to-espark-surface", icon: "bg-cyan-100 text-cyan-600", text: "text-cyan-600" },
+  violet: { ring: "from-violet-100 to-espark-surface", icon: "bg-violet-100 text-violet-600", text: "text-violet-600" },
+  amber: { ring: "from-amber-100 to-espark-surface", icon: "bg-amber-100 text-amber-600", text: "text-amber-600" },
+  emerald: { ring: "from-emerald-100 to-espark-surface", icon: "bg-emerald-100 text-emerald-600", text: "text-emerald-600" },
 };
 
 const NAV_TONES: Record<
@@ -351,9 +351,9 @@ const NAV_TONES: Record<
   { chip: string; wash: string; arrow: string }
 > = {
   red: {
-    chip: "bg-magic-red/10 text-magic-red",
-    wash: "from-magic-red/[0.07] to-transparent",
-    arrow: "group-hover:text-magic-red",
+    chip: "bg-espark-primary/10 text-espark-primary",
+    wash: "from-espark-primary/[0.07] to-transparent",
+    arrow: "group-hover:text-espark-primary",
   },
   cyan: {
     chip: "bg-cyan-100 text-cyan-600",
@@ -415,7 +415,7 @@ function ChartCard({
   const t = NAV_TONES[tone];
   return (
     <div
-      className={`rounded-2xl border border-magic-border bg-white/80 p-4 shadow-mt-soft backdrop-blur-sm ${className}`}
+      className={`rounded-2xl border border-espark-border bg-espark-surface/80 p-4 shadow-es-soft backdrop-blur-sm ${className}`}
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2.5">
@@ -425,12 +425,12 @@ function ChartCard({
             <Icon className="h-[18px] w-[18px]" />
           </span>
           <div className="min-w-0">
-            <h3 className="flex items-center gap-1.5 text-sm font-bold text-magic-ink">
+            <h3 className="flex items-center gap-1.5 text-sm font-bold text-espark-ink">
               <span className="truncate">{title}</span>
               {helpId && <HelpTip id={helpId} />}
             </h3>
             {subtitle && (
-              <p className="truncate text-xs text-magic-ink/50">{subtitle}</p>
+              <p className="truncate text-xs text-espark-ink/50">{subtitle}</p>
             )}
           </div>
         </div>
@@ -457,12 +457,12 @@ function FunnelBar({
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-xs">
-        <span className="font-semibold text-magic-ink/70">{label}</span>
-        <span className="tabular-nums text-magic-ink/50">
+        <span className="font-semibold text-espark-ink/70">{label}</span>
+        <span className="tabular-nums text-espark-ink/50">
           {value} · {pct}%
         </span>
       </div>
-      <div className="h-2.5 w-full overflow-hidden rounded-full bg-magic-soft">
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-espark-soft">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${Math.max(pct, value > 0 ? 4 : 0)}%`, backgroundColor: color }}
@@ -511,7 +511,7 @@ function QuickAccessDial() {
       <div
         onClick={() => setOpen(false)}
         aria-hidden
-        className={`fixed inset-0 z-40 bg-magic-ink/20 backdrop-blur-[1px] transition-opacity duration-200 ${
+        className={`fixed inset-0 z-40 bg-espark-scrim/20 backdrop-blur-[1px] transition-opacity duration-200 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -542,10 +542,10 @@ function QuickAccessDial() {
               }}
             >
               <span
-                className={`relative flex h-12 w-12 items-center justify-center rounded-full ring-2 ring-white shadow-mt-lift transition-transform hover:scale-110 ${t.chip}`}
+                className={`relative flex h-12 w-12 items-center justify-center rounded-full ring-2 ring-white shadow-es-lift transition-transform hover:scale-110 ${t.chip}`}
               >
                 <Icon className="h-5 w-5" />
-                <span className="absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-full bg-magic-ink px-2 py-0.5 text-[10px] font-semibold text-white shadow">
+                <span className="absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-full bg-espark-ink px-2 py-0.5 text-[10px] font-semibold text-espark-on-ink shadow">
                   {it.label}
                 </span>
               </span>
@@ -558,7 +558,7 @@ function QuickAccessDial() {
           onClick={() => setOpen((o) => !o)}
           aria-label="Quick access"
           aria-expanded={open}
-          className="relative flex h-14 w-14 items-center justify-center rounded-full bg-magic-red text-white shadow-mt-lift transition-transform duration-200 hover:scale-105"
+          className="relative flex h-14 w-14 items-center justify-center rounded-full bg-espark-primary text-white shadow-es-lift transition-transform duration-200 hover:scale-105"
         >
           <span
             className={`transition-transform duration-300 ${
@@ -590,17 +590,17 @@ function Kpi({
   const t = TONES[tone];
   return (
     <div
-      className={`rounded-2xl border border-magic-border bg-gradient-to-br ${t.ring} p-4 shadow-mt-soft transition-shadow hover:shadow-mt-lift`}
+      className={`rounded-2xl border border-espark-border bg-gradient-to-br ${t.ring} p-4 shadow-es-soft transition-shadow hover:shadow-es-lift`}
     >
       <div className="flex items-center justify-between">
         <span className={`inline-flex h-9 w-9 items-center justify-center rounded-xl ${t.icon}`}>
           <Icon className="h-[18px] w-[18px]" />
         </span>
       </div>
-      <p className="mt-3 text-3xl font-bold tracking-tight text-magic-ink">
+      <p className="mt-3 text-3xl font-bold tracking-tight text-espark-ink">
         {display ?? value}
       </p>
-      <p className="mt-0.5 text-xs font-medium text-magic-ink/55">{label}</p>
+      <p className="mt-0.5 text-xs font-medium text-espark-ink/55">{label}</p>
     </div>
   );
 }
@@ -608,7 +608,7 @@ function Kpi({
 const OUTCOME_TONES: Record<string, string> = {
   emerald: "bg-emerald-50 text-emerald-700 ring-emerald-200",
   amber: "bg-amber-50 text-amber-700 ring-amber-200",
-  red: "bg-magic-red/5 text-magic-red ring-magic-red/20",
+  red: "bg-espark-primary/5 text-espark-primary ring-espark-primary/20",
 };
 
 function OutcomeStat({
@@ -633,7 +633,7 @@ function OutcomeStat({
 function EmptyChart({ label = "No data yet." }: { label?: string }) {
   return (
     <div className="flex h-52 items-center justify-center text-center">
-      <p className="text-xs text-magic-ink/40">{label}</p>
+      <p className="text-xs text-espark-ink/40">{label}</p>
     </div>
   );
 }

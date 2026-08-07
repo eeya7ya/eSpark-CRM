@@ -48,7 +48,7 @@ export default async function ProjectQuotationViewerSection({
       <div className="no-print mb-3">
         <BackButton fallbackHref="/crm" fallbackLabel="Back" />
       </div>
-      <section className="rounded-2xl border border-magic-border bg-white p-5">
+      <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
         <QuotationViewer quotationId={quotationId} appSettings={appSettings} />
       </section>
     </div>

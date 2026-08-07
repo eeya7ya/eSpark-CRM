@@ -31,14 +31,14 @@ export default async function LeadsPage() {
   const canCreate = await canCreateLead(user); // any CRM role / admin
 
   return (
-    <div className="min-h-screen bg-magic-soft/30">
+    <div className="min-h-screen bg-espark-soft/30">
       <TopBar user={user} />
       <main className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6">
         <header className="mb-5">
-          <h1 className="text-2xl font-bold text-magic-ink">
+          <h1 className="text-2xl font-bold text-espark-ink">
             {isPresales ? "Lead queue" : "My leads"}
           </h1>
-          <p className="mt-1 text-sm text-magic-ink/60">
+          <p className="mt-1 text-sm text-espark-ink/60">
             {isPresales
               ? "The shared presales queue. Claim a lead to start working it — everyone can see who's on each one. From the lead you pick or create the company, the client, then the project."
               : "Requests for quotation you opened. Track which presales person picked each one up and how it's progressing."}

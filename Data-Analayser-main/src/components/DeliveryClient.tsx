@@ -110,7 +110,7 @@ export default function DeliveryClient() {
   }
 
   if (loading) {
-    return <p className="text-sm text-magic-ink/50">Loading the queue…</p>;
+    return <p className="text-sm text-espark-ink/50">Loading the queue…</p>;
   }
 
   const cancelled = requests.filter((r) => r.status === "cancelled");
@@ -129,15 +129,15 @@ export default function DeliveryClient() {
           return (
             <div key={col.key} className="space-y-3">
               <div className="flex items-baseline justify-between">
-                <h3 className="text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+                <h3 className="text-sm font-bold uppercase tracking-wide text-espark-ink/70">
                   {col.label}
                 </h3>
-                <span className="text-[11px] text-magic-ink/40">
+                <span className="text-[11px] text-espark-ink/40">
                   {items.length}
                 </span>
               </div>
               {items.length === 0 ? (
-                <p className="rounded-xl border border-dashed border-magic-border/70 px-3 py-6 text-center text-xs text-magic-ink/40">
+                <p className="rounded-xl border border-dashed border-espark-border/70 px-3 py-6 text-center text-xs text-espark-ink/40">
                   Empty
                 </p>
               ) : (
@@ -148,21 +148,21 @@ export default function DeliveryClient() {
                   return (
                     <div
                       key={r.id}
-                      className={`rounded-xl border-l-4 ${col.tone} border border-magic-border bg-white p-3 shadow-sm`}
+                      className={`rounded-xl border-l-4 ${col.tone} border border-espark-border bg-espark-surface p-3 shadow-sm`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-sm font-semibold text-magic-ink">
+                        <span className="text-sm font-semibold text-espark-ink">
                           {title}
                         </span>
                         <span
                           className={`text-[10px] font-semibold uppercase ${
-                            PRIORITY_TONE[r.priority] ?? "text-magic-ink/40"
+                            PRIORITY_TONE[r.priority] ?? "text-espark-ink/40"
                           }`}
                         >
                           {r.priority}
                         </span>
                       </div>
-                      <div className="mt-1 space-y-0.5 text-[11px] text-magic-ink/55">
+                      <div className="mt-1 space-y-0.5 text-[11px] text-espark-ink/55">
                         {r.destination && <div>📍 {r.destination}</div>}
                         {r.project_name && <div>Project: {r.project_name}</div>}
                         {r.quotation_ref && <div>Quote: {r.quotation_ref}</div>}
@@ -175,7 +175,7 @@ export default function DeliveryClient() {
                           Driver: {r.driver_name || "unassigned"}
                         </div>
                         {r.notes && (
-                          <div className="italic text-magic-ink/45">{r.notes}</div>
+                          <div className="italic text-espark-ink/45">{r.notes}</div>
                         )}
                       </div>
 
@@ -186,7 +186,7 @@ export default function DeliveryClient() {
                               type="button"
                               disabled={busyId === r.id}
                               onClick={() => void patch(r.id, { status: next.to })}
-                              className="rounded-md bg-magic-red px-2 py-1 text-[11px] font-semibold text-white hover:bg-magic-red/90 disabled:opacity-50"
+                              className="rounded-md bg-espark-primary px-2 py-1 text-[11px] font-semibold text-white hover:bg-espark-primary/90 disabled:opacity-50"
                             >
                               {next.label}
                             </button>
@@ -199,7 +199,7 @@ export default function DeliveryClient() {
                                 onClick={() =>
                                   void patch(r.id, { assigned_driver_id: meId })
                                 }
-                                className="rounded-md border border-magic-border px-2 py-1 text-[11px] font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+                                className="rounded-md border border-espark-border px-2 py-1 text-[11px] font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
                               >
                                 Take
                               </button>
@@ -211,7 +211,7 @@ export default function DeliveryClient() {
                               onClick={() =>
                                 void patch(r.id, { status: "cancelled" })
                               }
-                              className="rounded-md border border-magic-border px-2 py-1 text-[11px] font-semibold text-magic-ink/50 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                              className="rounded-md border border-espark-border px-2 py-1 text-[11px] font-semibold text-espark-ink/50 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
                             >
                               Cancel
                             </button>
@@ -228,11 +228,11 @@ export default function DeliveryClient() {
       </div>
 
       {cancelled.length > 0 && (
-        <details className="rounded-xl border border-magic-border bg-white p-3">
-          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-magic-ink/50">
+        <details className="rounded-xl border border-espark-border bg-espark-surface p-3">
+          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-espark-ink/50">
             Cancelled ({cancelled.length})
           </summary>
-          <ul className="mt-2 space-y-1 text-[11px] text-magic-ink/45">
+          <ul className="mt-2 space-y-1 text-[11px] text-espark-ink/45">
             {cancelled.map((r) => (
               <li key={r.id}>
                 {r.client_name || r.project_name || r.destination || "Delivery"} ·

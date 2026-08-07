@@ -311,9 +311,9 @@ export function ConvertToQuotationDialog({
       />
 
       {/* Panel */}
-      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-gray-200 bg-white shadow-2xl">
+      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-gray-200 bg-espark-surface shadow-2xl">
         <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-          <h2 className="text-base font-semibold text-magic-ink">
+          <h2 className="text-base font-semibold text-espark-ink">
             Convert to Quotation
           </h2>
           <button
@@ -393,7 +393,7 @@ export function ConvertToQuotationDialog({
                         next ? Number(next) : null,
                       )
                     }
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                   >
                     <option value="">Select a client…</option>
                     {folders.map((f) => (
@@ -429,7 +429,7 @@ export function ConvertToQuotationDialog({
                             );
                           }
                         }}
-                        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                        className="w-full rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                       >
                         {projects.map((p) => (
                           <option key={p.id} value={p.id}>
@@ -444,7 +444,7 @@ export function ConvertToQuotationDialog({
                           value={newProjectForExisting}
                           onChange={(e) => setNewProjectForExisting(e.target.value)}
                           placeholder="New project name"
-                          className="mt-2 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                          className="mt-2 w-full rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                         />
                       )}
                     </>
@@ -467,7 +467,7 @@ export function ConvertToQuotationDialog({
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="e.g. Acme Integrations LLC"
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                   />
                 </div>
               )}
@@ -480,7 +480,7 @@ export function ConvertToQuotationDialog({
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   placeholder={kind === "company" ? "e.g. Acme — Riyadh branch" : "e.g. Mohammed Al-..."}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                  className="w-full rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                 />
               </div>
               <div>
@@ -493,7 +493,7 @@ export function ConvertToQuotationDialog({
                   value={newProjectName}
                   onChange={(e) => setNewProjectName(e.target.value)}
                   placeholder="Defaults to “Default Project”"
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                  className="w-full rounded-lg border border-gray-200 bg-espark-surface px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                 />
               </div>
             </div>
@@ -517,7 +517,7 @@ export function ConvertToQuotationDialog({
           <button
             onClick={handleConfirm}
             disabled={busy || (mode === "existing" && selectedFolderId == null)}
-            className="flex items-center gap-1.5 rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-magic-red/90 disabled:opacity-60"
+            className="flex items-center gap-1.5 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-espark-primary/90 disabled:opacity-60"
           >
             {busy ? (
               <Spinner size={12} />
@@ -551,7 +551,7 @@ function ModeButton({
         "flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors",
         active
           ? "border-cyan-300 bg-cyan-50 text-cyan-700"
-          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50",
+          : "border-gray-200 bg-espark-surface text-gray-600 hover:border-gray-300 hover:bg-gray-50",
       )}
     >
       {icon}

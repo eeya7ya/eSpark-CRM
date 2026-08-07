@@ -264,7 +264,7 @@ export default function ProjectDistribution({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 p-6 text-sm text-magic-ink/60">
+      <div className="flex items-center gap-2 p-6 text-sm text-espark-ink/60">
         <Spinner size={16} /> Loading distribution…
       </div>
     );
@@ -284,11 +284,11 @@ export default function ProjectDistribution({
       {/* ── The distribution "designer" form ── */}
       <form
         onSubmit={submit}
-        className="rounded-2xl border border-magic-border bg-magic-soft/30 p-4 sm:p-5"
+        className="rounded-2xl border border-espark-border bg-espark-soft/30 p-4 sm:p-5"
       >
         <div className="mb-4 flex items-center gap-2">
-          <ClipboardList className="h-4 w-4 text-magic-red" />
-          <h3 className="text-sm font-bold uppercase tracking-wide text-magic-ink/70">
+          <ClipboardList className="h-4 w-4 text-espark-primary" />
+          <h3 className="text-sm font-bold uppercase tracking-wide text-espark-ink/70">
             New distribution
           </h3>
         </div>
@@ -345,7 +345,7 @@ export default function ProjectDistribution({
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Pick / view on Google Maps"
-                className="inline-flex flex-shrink-0 items-center justify-center rounded-lg border border-magic-border bg-white px-2.5 text-magic-ink/60 transition-colors hover:border-magic-red/50 hover:text-magic-red"
+                className="inline-flex flex-shrink-0 items-center justify-center rounded-lg border border-espark-border bg-espark-surface px-2.5 text-espark-ink/60 transition-colors hover:border-espark-primary/50 hover:text-espark-primary"
               >
                 <MapPin className="h-4 w-4" />
               </a>
@@ -355,7 +355,7 @@ export default function ProjectDistribution({
 
         {/* Free, keyless Google Maps preview of the typed location. */}
         {form.location.trim() && (
-          <div className="mt-3 overflow-hidden rounded-xl border border-magic-border">
+          <div className="mt-3 overflow-hidden rounded-xl border border-espark-border">
             <iframe
               title="Site location"
               className="h-48 w-full"
@@ -368,7 +368,7 @@ export default function ProjectDistribution({
           </div>
         )}
 
-        <div className="my-4 h-px bg-magic-border" />
+        <div className="my-4 h-px bg-espark-border" />
 
         {/* Assignment + scope. */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -394,7 +394,7 @@ export default function ProjectDistribution({
             </Select>
           </Field>
           <Field label="Assigned as">
-            <div className={`${inputCls} bg-magic-soft/40 text-magic-ink/70`}>
+            <div className={`${inputCls} bg-espark-soft/40 text-espark-ink/70`}>
               {form.user_id
                 ? ROLES.find(([v]) => v === form.role)?.[1] ?? "Technician"
                 : "—"}
@@ -478,7 +478,7 @@ export default function ProjectDistribution({
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-magic-red px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-magic-red/90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl bg-espark-primary px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-espark-primary/90 disabled:opacity-60"
           >
             {saving ? (
               <Spinner size={14} className="text-white" />
@@ -493,13 +493,13 @@ export default function ProjectDistribution({
       {/* ── Current distributions ── */}
       <div>
         <div className="mb-2 flex items-center gap-2">
-          <UserPlus className="h-4 w-4 text-magic-ink/50" />
-          <h3 className="text-sm font-bold uppercase tracking-wide text-magic-ink/60">
+          <UserPlus className="h-4 w-4 text-espark-ink/50" />
+          <h3 className="text-sm font-bold uppercase tracking-wide text-espark-ink/60">
             Distributed to ({distributions.length})
           </h3>
         </div>
         {distributions.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-magic-border p-5 text-center text-sm text-magic-ink/50">
+          <p className="rounded-xl border border-dashed border-espark-border p-5 text-center text-sm text-espark-ink/50">
             Not distributed yet. Assign a technician or engineer above to start
             execution.
           </p>
@@ -508,22 +508,22 @@ export default function ProjectDistribution({
             {distributions.map((d) => (
               <li
                 key={d.id}
-                className="rounded-xl border border-magic-border bg-white p-3.5"
+                className="rounded-xl border border-espark-border bg-espark-surface p-3.5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-magic-ink">
+                    <p className="text-sm font-semibold text-espark-ink">
                       {d.username}{" "}
-                      <span className="font-normal text-magic-ink/50">
+                      <span className="font-normal text-espark-ink/50">
                         · {ROLES.find(([v]) => v === d.role)?.[1] || d.role}
                       </span>
                     </p>
                     {d.scope_of_work && (
-                      <p className="mt-0.5 text-xs text-magic-ink/70">
+                      <p className="mt-0.5 text-xs text-espark-ink/70">
                         {d.scope_of_work}
                       </p>
                     )}
-                    <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-magic-ink/45">
+                    <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-espark-ink/45">
                       {d.location && (
                         <a
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -531,7 +531,7 @@ export default function ProjectDistribution({
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 hover:text-magic-red"
+                          className="inline-flex items-center gap-1 hover:text-espark-primary"
                         >
                           <MapPin className="h-3 w-3" /> {d.location}
                         </a>
@@ -552,7 +552,7 @@ export default function ProjectDistribution({
                     <Select
                       value={d.status || "assigned"}
                       onChange={(next) => void changeStatus(d, next)}
-                      className="rounded-lg border border-magic-border bg-white px-2 py-1 text-xs font-semibold"
+                      className="rounded-lg border border-espark-border bg-espark-surface px-2 py-1 text-xs font-semibold"
                     >
                       {STATUSES.map(([v, l]) => (
                         <option key={v} value={v}>
@@ -564,7 +564,7 @@ export default function ProjectDistribution({
                       type="button"
                       onClick={() => void remove(d)}
                       title="Remove from project"
-                      className="rounded-lg border border-magic-border p-1.5 text-magic-ink/50 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+                      className="rounded-lg border border-espark-border p-1.5 text-espark-ink/50 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -580,7 +580,7 @@ export default function ProjectDistribution({
 }
 
 const inputCls =
-  "block w-full rounded-lg border border-magic-border bg-white px-2.5 py-1.5 text-sm text-magic-ink focus:border-magic-red/50 focus:outline-none focus:ring-2 focus:ring-magic-red/20";
+  "block w-full rounded-lg border border-espark-border bg-espark-surface px-2.5 py-1.5 text-sm text-espark-ink focus:border-espark-primary/50 focus:outline-none focus:ring-2 focus:ring-espark-primary/20";
 
 function Field({
   label,
@@ -591,7 +591,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-magic-ink/50">
+      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-espark-ink/50">
         {label}
       </span>
       {children}

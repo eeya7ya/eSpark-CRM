@@ -1,8 +1,8 @@
 {
-  "name": "magictech-quotation-designer",
+  "name": "espark-quotation-designer",
   "version": "1.4.4",
   "private": true,
-  "description": "MagicTech AI Quotation Designer — Next.js 15 + Vercel 2026 + Postgres + Groq",
+  "description": "eSpark AI Quotation Designer — Next.js 15 + Vercel 2026 + Postgres + Groq",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -107,7 +107,7 @@ export default function InstallationRatesAdmin() {
   }
 
   if (loading && rates.length === 0) {
-    return <p className="text-sm text-magic-ink/50">Loading rate book…</p>;
+    return <p className="text-sm text-espark-ink/50">Loading rate book…</p>;
   }
 
   return (
@@ -122,25 +122,25 @@ export default function InstallationRatesAdmin() {
           .filter((r) => r.category === cat.key)
           .sort((a, b) => a.sort - b.sort || a.id - b.id);
         return (
-          <div key={cat.key} className="rounded-2xl border border-magic-border bg-white p-5">
+          <div key={cat.key} className="rounded-2xl border border-espark-border bg-espark-surface p-5">
             <div className="mb-1 flex items-center justify-between gap-3">
-              <h3 className="font-semibold text-magic-ink">{cat.label}</h3>
+              <h3 className="font-semibold text-espark-ink">{cat.label}</h3>
               <button
                 onClick={() => add(cat.key, cat.defaultUnit)}
-                className="inline-flex items-center gap-1 rounded-lg border border-magic-border px-2.5 py-1 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+                className="inline-flex items-center gap-1 rounded-lg border border-espark-border px-2.5 py-1 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
               >
                 <Plus className="h-3.5 w-3.5" /> Add
               </button>
             </div>
-            <p className="mb-3 text-xs text-magic-ink/50">{cat.hint}</p>
+            <p className="mb-3 text-xs text-espark-ink/50">{cat.hint}</p>
 
             {rows.length === 0 ? (
-              <p className="py-2 text-sm italic text-magic-ink/40">No items yet.</p>
+              <p className="py-2 text-sm italic text-espark-ink/40">No items yet.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[480px] text-sm">
                   <thead>
-                    <tr className="text-left text-[11px] uppercase tracking-wide text-magic-ink/40">
+                    <tr className="text-left text-[11px] uppercase tracking-wide text-espark-ink/40">
                       <th className="pb-1 font-semibold">Name</th>
                       <th className="pb-1 font-semibold">Unit</th>
                       <th className="pb-1 text-right font-semibold">Cost (JOD)</th>
@@ -150,7 +150,7 @@ export default function InstallationRatesAdmin() {
                   </thead>
                   <tbody>
                     {rows.map((r) => (
-                      <tr key={r.id} className="border-t border-magic-border/50">
+                      <tr key={r.id} className="border-t border-espark-border/50">
                         <td className="py-1.5 pr-2">
                           <input
                             defaultValue={r.name}
@@ -158,14 +158,14 @@ export default function InstallationRatesAdmin() {
                               const v = e.target.value.trim();
                               if (v && v !== r.name) patch(r.id, { name: v });
                             }}
-                            className="w-full min-w-[140px] rounded border border-transparent px-1.5 py-1 hover:border-magic-border focus:border-magic-red focus:outline-none"
+                            className="w-full min-w-[140px] rounded border border-transparent px-1.5 py-1 hover:border-espark-border focus:border-espark-primary focus:outline-none"
                           />
                         </td>
                         <td className="py-1.5 pr-2">
                           <Select
                             value={r.unit}
                             onChange={(next) => patch(r.id, { unit: next })}
-                            className="rounded border border-magic-border px-1.5 py-1 text-xs"
+                            className="rounded border border-espark-border px-1.5 py-1 text-xs"
                           >
                             {UNITS.map((u) => (
                               <option key={u} value={u}>
@@ -186,7 +186,7 @@ export default function InstallationRatesAdmin() {
                                 patch(r.id, { unit_cost: v });
                               }
                             }}
-                            className="w-24 rounded border border-transparent px-1.5 py-1 text-right hover:border-magic-border focus:border-magic-red focus:outline-none"
+                            className="w-24 rounded border border-transparent px-1.5 py-1 text-right hover:border-espark-border focus:border-espark-primary focus:outline-none"
                           />
                         </td>
                         <td className="py-1.5 text-center">
@@ -194,14 +194,14 @@ export default function InstallationRatesAdmin() {
                             type="checkbox"
                             checked={r.active}
                             onChange={(e) => patch(r.id, { active: e.target.checked })}
-                            className="h-4 w-4 rounded border-magic-border text-magic-red focus:ring-magic-red"
+                            className="h-4 w-4 rounded border-espark-border text-espark-primary focus:ring-espark-primary"
                           />
                         </td>
                         <td className="py-1.5 text-right">
                           <button
                             onClick={() => remove(r.id)}
                             aria-label="Delete"
-                            className="rounded p-1 text-magic-ink/30 hover:text-rose-600"
+                            className="rounded p-1 text-espark-ink/30 hover:text-rose-600"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>

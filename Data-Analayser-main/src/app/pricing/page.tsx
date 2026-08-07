@@ -28,7 +28,7 @@ export default async function PricingHome() {
     redirect("/");
   }
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <PricingAuthProvider>
         <PricingDashboardClient />

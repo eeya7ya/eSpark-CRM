@@ -51,19 +51,19 @@ export default function ProjectPosList({ rows }: { rows: ProjectPoRow[] }) {
         placeholder="Search PO #, supplier, quotation ref, status…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm"
+        className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm"
       />
 
       {visible.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           {query
             ? `No matches for "${query}".`
             : "No purchase orders filed under this project yet."}
         </p>
       ) : (
-        <div className="rounded-lg border border-magic-border overflow-hidden">
+        <div className="rounded-lg border border-espark-border overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-magic-soft/40 text-xs uppercase text-magic-ink/60">
+            <thead className="bg-espark-soft/40 text-xs uppercase text-espark-ink/60">
               <tr>
                 <th className="text-left px-3 py-2">PO #</th>
                 <th className="text-left px-3 py-2">Supplier</th>
@@ -73,23 +73,23 @@ export default function ProjectPosList({ rows }: { rows: ProjectPoRow[] }) {
                 <th className="text-left px-3 py-2">Issued / due</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-magic-border/60">
+            <tbody className="divide-y divide-espark-border/60">
               {visible.map((r) => (
                 <tr key={r.id}>
                   <td className="px-3 py-1.5 font-mono text-xs">
                     <Link
                       href={`/purchase-orders?id=${r.id}`}
-                      className="text-magic-red hover:underline"
+                      className="text-espark-primary hover:underline"
                     >
                       {r.po_number}
                     </Link>
                   </td>
                   <td className="px-3 py-1.5">{r.supplier || "—"}</td>
-                  <td className="px-3 py-1.5 font-mono text-xs text-magic-ink/60">
+                  <td className="px-3 py-1.5 font-mono text-xs text-espark-ink/60">
                     {r.quotation_ref ? (
                       <Link
                         href={`/quotation?id=${r.quotation_id}`}
-                        className="hover:text-magic-red"
+                        className="hover:text-espark-primary"
                       >
                         {r.quotation_ref}
                       </Link>
@@ -100,10 +100,10 @@ export default function ProjectPosList({ rows }: { rows: ProjectPoRow[] }) {
                   <td className="px-3 py-1.5 text-right">
                     {r.amount} {r.currency}
                   </td>
-                  <td className="px-3 py-1.5 text-xs uppercase text-magic-ink/60">
+                  <td className="px-3 py-1.5 text-xs uppercase text-espark-ink/60">
                     {r.status}
                   </td>
-                  <td className="px-3 py-1.5 text-xs text-magic-ink/60">
+                  <td className="px-3 py-1.5 text-xs text-espark-ink/60">
                     {r.issued_at
                       ? new Date(r.issued_at).toLocaleDateString()
                       : "—"}

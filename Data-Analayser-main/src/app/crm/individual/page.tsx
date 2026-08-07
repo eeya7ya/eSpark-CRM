@@ -93,16 +93,16 @@ export default async function IndividualListPage({
   `) as ClientFolderRow[];
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="max-w-5xl mx-auto px-6 py-8 lg:px-10 space-y-5">
         <div>
-          <div className="text-xs text-magic-ink/50">
-            <Link href="/" className="hover:text-magic-red">
+          <div className="text-xs text-espark-ink/50">
+            <Link href="/" className="hover:text-espark-primary">
               Dashboard
             </Link>{" "}
             <span>→</span>{" "}
-            <Link href="/crm" className="hover:text-magic-red">
+            <Link href="/crm" className="hover:text-espark-primary">
               CRM
             </Link>
             {toolLabel && (
@@ -111,17 +111,17 @@ export default async function IndividualListPage({
                 <span>→</span>{" "}
                 <Link
                   href={`/crm?tool=${sp.tool}`}
-                  className="hover:text-magic-red"
+                  className="hover:text-espark-primary"
                 >
                   {toolLabel}
                 </Link>
               </>
             )}
           </div>
-          <h1 className="text-2xl font-bold text-magic-ink mt-1">
+          <h1 className="text-2xl font-bold text-espark-ink mt-1">
             Individual clients
           </h1>
-          <p className="text-sm text-magic-ink/60 mt-0.5">
+          <p className="text-sm text-espark-ink/60 mt-0.5">
             Personal / residential clients. Each row is a single client with
             its own projects, quotations, POs, and files.
           </p>

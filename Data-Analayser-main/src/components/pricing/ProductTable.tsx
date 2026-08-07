@@ -533,7 +533,7 @@ export function ProductTable({ rows, constants, onChange, targetCurrency }: Prop
               if (e.target === e.currentTarget) setPastePrompt(null);
             }}
           >
-            <div className="w-96 max-w-full rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+            <div className="w-96 max-w-full rounded-xl border border-gray-200 bg-espark-surface p-4 shadow-xl">
               <p className="text-sm font-semibold text-gray-800">
                 Paste {pastePromptLabel}
               </p>
@@ -637,14 +637,14 @@ export function ProductTable({ rows, constants, onChange, targetCurrency }: Prop
             "rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors",
             showDescriptions
               ? "border-sky-300 bg-sky-50 text-sky-700"
-              : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50",
+              : "border-gray-200 bg-espark-surface text-gray-600 hover:bg-gray-50",
           )}
           title="Show a per-line internal description. It never prints, but fills the item description when you convert this sheet to a quotation."
         >
           {showDescriptions ? "Hide descriptions" : "Show descriptions"}
         </button>
       </div>
-      <div className="table-container max-w-full overflow-x-auto rounded-xl border border-gray-200 bg-white">
+      <div className="table-container max-w-full overflow-x-auto rounded-xl border border-gray-200 bg-espark-surface">
       <table className="w-full border-collapse text-xs">
         <thead>
           <tr className="border-b border-gray-200">
@@ -794,11 +794,11 @@ export function ProductTable({ rows, constants, onChange, targetCurrency }: Prop
               )}
             >
               {/* Row number */}
-              <td className="sticky left-0 z-10 bg-white px-3 py-2.5 text-center font-medium text-gray-400">
+              <td className="sticky left-0 z-10 bg-espark-surface px-3 py-2.5 text-center font-medium text-gray-400">
                 {row.position}
               </td>
               {/* Item Model */}
-              <td className="sticky left-10 z-10 bg-white px-2 py-1.5">
+              <td className="sticky left-10 z-10 bg-espark-surface px-2 py-1.5">
                 <input
                   type="text"
                   placeholder="Item model…"
@@ -832,7 +832,7 @@ export function ProductTable({ rows, constants, onChange, targetCurrency }: Prop
                       }
                     }}
                     rows={2}
-                    className="no-print w-full min-w-[180px] resize-y rounded border border-dashed border-sky-300 bg-sky-50/40 px-1.5 py-1 text-left text-[11px] text-gray-700 placeholder-gray-400 focus:border-sky-400 focus:bg-white focus:outline-none"
+                    className="no-print w-full min-w-[180px] resize-y rounded border border-dashed border-sky-300 bg-sky-50/40 px-1.5 py-1 text-left text-[11px] text-gray-700 placeholder-gray-400 focus:border-sky-400 focus:bg-espark-surface focus:outline-none"
                   />
                 </td>
               )}
@@ -946,7 +946,7 @@ export function ProductTable({ rows, constants, onChange, targetCurrency }: Prop
                                 updateRow(i, overrideField, parseFloat(e.target.value) || 0)
                               }
                               className={cn(
-                                "w-24 rounded border bg-white px-1.5 py-0.5 text-center font-mono text-xs focus:outline-none",
+                                "w-24 rounded border bg-espark-surface px-1.5 py-0.5 text-center font-mono text-xs focus:outline-none",
                                 isShipping
                                   ? "border-blue-300 text-blue-700 focus:border-blue-400"
                                   : "border-purple-300 text-purple-700 focus:border-purple-400"
@@ -1185,7 +1185,7 @@ function RowRateOverrides({
       <div
         ref={popoverRef}
         style={{ top: pos.top, left: pos.left, width: 288 }}
-        className="fixed z-[1000] rounded-xl border border-gray-200 bg-white p-3 shadow-xl"
+        className="fixed z-[1000] rounded-xl border border-gray-200 bg-espark-surface p-3 shadow-xl"
       >
           <div className="mb-2 flex items-center justify-between">
             <div>
@@ -1227,7 +1227,7 @@ function RowRateOverrides({
                       value={displayPct(row[f.key], f.global)}
                       onChange={(e) => handleChange(f.key, e.target.value)}
                       className={cn(
-                        "w-24 rounded-md border bg-white py-1 pl-2 pr-5 text-right font-mono text-xs",
+                        "w-24 rounded-md border bg-espark-surface py-1 pl-2 pr-5 text-right font-mono text-xs",
                         "focus:outline-none",
                         isOverridden
                           ? cn("border-amber-300 text-amber-700", f.ringColor)

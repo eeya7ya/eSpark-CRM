@@ -190,7 +190,7 @@ export function ConstantsPanel({
   const selectedCurrency = CURRENCIES.find((c) => c.code === targetCurrency);
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4">
+    <div className="rounded-xl border border-gray-200 bg-espark-surface p-4">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500">
           Global Constants

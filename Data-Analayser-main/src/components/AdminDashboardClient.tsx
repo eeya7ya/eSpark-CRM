@@ -48,10 +48,10 @@ export default function AdminDashboardClient({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+        <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
           Welcome back, {greetingName}.
         </h1>
-        <p className="mt-0.5 text-sm text-magic-ink/60">
+        <p className="mt-0.5 text-sm text-espark-ink/60">
           Administration overview — people, roles and departments at a glance.
         </p>
       </div>
@@ -129,14 +129,14 @@ export default function AdminDashboardClient({
 
           <Panel title="Departments" subtitle="Detailed counts">
             {departments.length === 0 ? (
-              <p className="py-6 text-center text-xs text-magic-ink/40">
+              <p className="py-6 text-center text-xs text-espark-ink/40">
                 No users yet.
               </p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-magic-border text-left text-xs text-magic-ink/50">
+                    <tr className="border-b border-espark-border text-left text-xs text-espark-ink/50">
                       <th className="px-3 py-2 font-semibold">Department</th>
                       <th className="px-3 py-2 text-right font-semibold">Users</th>
                       <th className="px-3 py-2 text-right font-semibold">
@@ -148,15 +148,15 @@ export default function AdminDashboardClient({
                     {departments.map((d) => (
                       <tr
                         key={d.code}
-                        className="border-b border-magic-border/60 last:border-0"
+                        className="border-b border-espark-border/60 last:border-0"
                       >
-                        <td className="px-3 py-2 font-mono font-semibold text-magic-ink">
+                        <td className="px-3 py-2 font-mono font-semibold text-espark-ink">
                           {d.code}
                         </td>
-                        <td className="px-3 py-2 text-right text-magic-ink/80">
+                        <td className="px-3 py-2 text-right text-espark-ink/80">
                           {d.users}
                         </td>
-                        <td className="px-3 py-2 text-right text-magic-ink/80">
+                        <td className="px-3 py-2 text-right text-espark-ink/80">
                           {d.quotations}
                         </td>
                       </tr>
@@ -180,10 +180,10 @@ export default function AdminDashboardClient({
 }
 
 const TONES: Record<string, { ring: string; icon: string }> = {
-  red: { ring: "from-magic-red/15 to-white", icon: "bg-magic-red/10 text-magic-red" },
-  indigo: { ring: "from-indigo-100 to-white", icon: "bg-indigo-100 text-indigo-600" },
-  cyan: { ring: "from-cyan-100 to-white", icon: "bg-cyan-100 text-cyan-600" },
-  violet: { ring: "from-violet-100 to-white", icon: "bg-violet-100 text-violet-600" },
+  red: { ring: "from-espark-primary/15 to-espark-surface", icon: "bg-espark-primary/10 text-espark-primary" },
+  indigo: { ring: "from-indigo-100 to-espark-surface", icon: "bg-indigo-100 text-indigo-600" },
+  cyan: { ring: "from-cyan-100 to-espark-surface", icon: "bg-cyan-100 text-cyan-600" },
+  violet: { ring: "from-violet-100 to-espark-surface", icon: "bg-violet-100 text-violet-600" },
 };
 
 function Kpi({
@@ -200,7 +200,7 @@ function Kpi({
   const t = TONES[tone];
   return (
     <div
-      className={`rounded-2xl border border-magic-border bg-gradient-to-br ${t.ring} p-4 shadow-mt-soft transition-shadow hover:shadow-mt-lift`}
+      className={`rounded-2xl border border-espark-border bg-gradient-to-br ${t.ring} p-4 shadow-es-soft transition-shadow hover:shadow-es-lift`}
     >
       <div className="flex items-center justify-between">
         <span
@@ -209,10 +209,10 @@ function Kpi({
           <Icon className="h-[18px] w-[18px]" />
         </span>
       </div>
-      <p className="mt-3 text-3xl font-bold tracking-tight text-magic-ink">
+      <p className="mt-3 text-3xl font-bold tracking-tight text-espark-ink">
         {value}
       </p>
-      <p className="mt-0.5 text-xs font-medium text-magic-ink/55">{label}</p>
+      <p className="mt-0.5 text-xs font-medium text-espark-ink/55">{label}</p>
     </div>
   );
 }
@@ -227,10 +227,10 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-magic-border bg-white/80 p-4 shadow-mt-soft backdrop-blur-sm">
+    <div className="rounded-2xl border border-espark-border bg-espark-surface/80 p-4 shadow-es-soft backdrop-blur-sm">
       <div className="mb-3">
-        <h3 className="text-sm font-bold text-magic-ink">{title}</h3>
-        {subtitle && <p className="text-xs text-magic-ink/50">{subtitle}</p>}
+        <h3 className="text-sm font-bold text-espark-ink">{title}</h3>
+        {subtitle && <p className="text-xs text-espark-ink/50">{subtitle}</p>}
       </div>
       {children}
     </div>
@@ -240,7 +240,7 @@ function Panel({
 function EmptyChart() {
   return (
     <div className="flex h-72 items-center justify-center text-center">
-      <p className="text-xs text-magic-ink/40">No data yet.</p>
+      <p className="text-xs text-espark-ink/40">No data yet.</p>
     </div>
   );
 }

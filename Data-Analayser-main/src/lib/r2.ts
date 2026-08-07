@@ -9,7 +9,7 @@
  *   CLOUDFLARE_ACCOUNT_ID            — already used by db-d1.ts
  *   CLOUDFLARE_R2_ACCESS_KEY_ID      — from dashboard → R2 → Manage API tokens
  *   CLOUDFLARE_R2_SECRET_ACCESS_KEY  — paired secret
- *   CLOUDFLARE_R2_BUCKET             — defaults to "magictech-files"
+ *   CLOUDFLARE_R2_BUCKET             — defaults to "espark-files"
  */
 
 import { createHash, createHmac } from "node:crypto";
@@ -28,7 +28,7 @@ function readR2Config(): R2Config {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
   const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
-  const bucket = process.env.CLOUDFLARE_R2_BUCKET || "magictech-files";
+  const bucket = process.env.CLOUDFLARE_R2_BUCKET || "espark-files";
   if (!accountId || !accessKeyId || !secretAccessKey) {
     throw new Error(
       "R2 is not configured. Set CLOUDFLARE_ACCOUNT_ID, " +

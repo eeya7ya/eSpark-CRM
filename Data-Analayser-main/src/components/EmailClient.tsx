@@ -89,8 +89,8 @@ export default function EmailClient() {
 
   if (notConfigured) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-10 text-center">
-        <p className="text-sm text-magic-ink/70">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-10 text-center">
+        <p className="text-sm text-espark-ink/70">
           No mailbox is assigned to your account yet. Ask an admin to set one up
           in <b>Admin → Email</b>.
         </p>
@@ -103,14 +103,14 @@ export default function EmailClient() {
       <div className="mb-3 flex items-center gap-2">
         <button
           onClick={() => compose()}
-          className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+          className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
         >
           Compose
         </button>
         <button
           onClick={() => void loadInbox()}
           disabled={loading}
-          className="rounded-lg border border-magic-border px-4 py-2 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+          className="rounded-lg border border-espark-border px-4 py-2 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
         >
           {loading ? "Loading…" : "Refresh"}
         </button>
@@ -124,17 +124,17 @@ export default function EmailClient() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,22rem)_1fr]">
         {/* Inbox list */}
-        <div className="rounded-2xl border border-magic-border bg-white overflow-hidden">
-          <div className="border-b border-magic-border px-4 py-2 text-xs font-semibold uppercase tracking-wide text-magic-ink/60">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
+          <div className="border-b border-espark-border px-4 py-2 text-xs font-semibold uppercase tracking-wide text-espark-ink/60">
             Inbox
           </div>
-          <ul className="max-h-[70vh] divide-y divide-magic-border/60 overflow-y-auto">
+          <ul className="max-h-[70vh] divide-y divide-espark-border/60 overflow-y-auto">
             {loading && messages.length === 0 ? (
-              <li className="px-4 py-6 text-center text-sm text-magic-ink/40 animate-pulse">
+              <li className="px-4 py-6 text-center text-sm text-espark-ink/40 animate-pulse">
                 Loading inbox…
               </li>
             ) : messages.length === 0 ? (
-              <li className="px-4 py-6 text-center text-sm text-magic-ink/40">
+              <li className="px-4 py-6 text-center text-sm text-espark-ink/40">
                 Inbox is empty.
               </li>
             ) : (
@@ -142,27 +142,27 @@ export default function EmailClient() {
                 <li key={m.uid}>
                   <button
                     onClick={() => void openMessage(m.uid)}
-                    className={`block w-full px-4 py-2.5 text-left transition-colors hover:bg-magic-soft/40 ${
-                      selected?.uid === m.uid ? "bg-magic-soft/60" : ""
+                    className={`block w-full px-4 py-2.5 text-left transition-colors hover:bg-espark-soft/40 ${
+                      selected?.uid === m.uid ? "bg-espark-soft/60" : ""
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span
                         className={`truncate text-sm ${
                           m.seen
-                            ? "text-magic-ink/70"
-                            : "font-semibold text-magic-ink"
+                            ? "text-espark-ink/70"
+                            : "font-semibold text-espark-ink"
                         }`}
                       >
                         {m.from || "(unknown sender)"}
                       </span>
-                      <span className="shrink-0 text-[10px] text-magic-ink/40">
+                      <span className="shrink-0 text-[10px] text-espark-ink/40">
                         {fmtDate(m.date).split(",")[0]}
                       </span>
                     </div>
                     <div
                       className={`truncate text-xs ${
-                        m.seen ? "text-magic-ink/50" : "text-magic-ink/80"
+                        m.seen ? "text-espark-ink/50" : "text-espark-ink/80"
                       }`}
                     >
                       {m.subject}
@@ -175,22 +175,22 @@ export default function EmailClient() {
         </div>
 
         {/* Reader */}
-        <div className="rounded-2xl border border-magic-border bg-white overflow-hidden">
+        <div className="rounded-2xl border border-espark-border bg-espark-surface overflow-hidden">
           {loadingMsg ? (
-            <div className="p-10 text-center text-sm text-magic-ink/40 animate-pulse">
+            <div className="p-10 text-center text-sm text-espark-ink/40 animate-pulse">
               Loading message…
             </div>
           ) : !selected ? (
-            <div className="p-10 text-center text-sm text-magic-ink/40">
+            <div className="p-10 text-center text-sm text-espark-ink/40">
               Select a message to read it.
             </div>
           ) : (
             <div className="flex h-full flex-col">
-              <div className="border-b border-magic-border px-5 py-3">
-                <div className="text-base font-bold text-magic-ink">
+              <div className="border-b border-espark-border px-5 py-3">
+                <div className="text-base font-bold text-espark-ink">
                   {selected.subject}
                 </div>
-                <div className="mt-1 text-xs text-magic-ink/60">
+                <div className="mt-1 text-xs text-espark-ink/60">
                   <div>
                     <b>From:</b> {selected.from}
                   </div>
@@ -210,7 +210,7 @@ export default function EmailClient() {
                         : `Re: ${selected.subject}`,
                     )
                   }
-                  className="mt-2 rounded-md border border-magic-red px-3 py-1 text-xs font-semibold text-magic-red hover:bg-magic-red hover:text-white"
+                  className="mt-2 rounded-md border border-espark-primary px-3 py-1 text-xs font-semibold text-espark-primary hover:bg-espark-primary hover:text-white"
                 >
                   Reply
                 </button>
@@ -226,7 +226,7 @@ export default function EmailClient() {
                     className="h-[60vh] w-full border-0"
                   />
                 ) : (
-                  <pre className="whitespace-pre-wrap break-words font-sans text-sm text-magic-ink/90">
+                  <pre className="whitespace-pre-wrap break-words font-sans text-sm text-espark-ink/90">
                     {selected.text || "(no content)"}
                   </pre>
                 )}
@@ -287,37 +287,37 @@ function Composer({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-magic-ink/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espark-scrim/40 px-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl rounded-2xl bg-white p-5 shadow-2xl space-y-3"
+        className="w-full max-w-2xl rounded-2xl bg-espark-surface p-5 shadow-2xl space-y-3"
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-magic-ink">New message</h3>
+          <h3 className="font-semibold text-espark-ink">New message</h3>
           <button
             onClick={onClose}
-            className="text-magic-ink/50 hover:text-magic-ink"
+            className="text-espark-ink/50 hover:text-espark-ink"
           >
             ×
           </button>
         </div>
         <input
-          className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none"
+          className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none"
           value={to}
           onChange={(e) => setTo(e.target.value)}
           placeholder="To (comma-separate multiple)"
         />
         <input
-          className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none"
+          className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           placeholder="Subject"
         />
         <textarea
           rows={10}
-          className="w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none"
+          className="w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Write your message…"
@@ -334,14 +334,14 @@ function Composer({
           <button
             onClick={onClose}
             disabled={busy}
-            className="rounded border border-magic-border px-3 py-1.5 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+            className="rounded border border-espark-border px-3 py-1.5 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={() => void send()}
             disabled={busy || !to.trim()}
-            className="rounded bg-magic-red px-4 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+            className="rounded bg-espark-primary px-4 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
           >
             {busy ? "Sending…" : "Send"}
           </button>

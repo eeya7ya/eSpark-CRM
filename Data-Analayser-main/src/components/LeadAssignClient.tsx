@@ -243,7 +243,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
   }
   if (!lead) {
     return (
-      <div className="rounded-2xl border border-magic-border bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 shadow-sm">
         <PageLoader label="Loading lead…" />
       </div>
     );
@@ -270,14 +270,14 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
-          <p className="text-sm text-magic-ink/70">Where would you like to go?</p>
+        <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
+          <p className="text-sm text-espark-ink/70">Where would you like to go?</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {done.folder_id && (
               <button
                 type="button"
                 onClick={() => router.push(`/folder/${done.folder_id}`)}
-                className="rounded-lg bg-magic-red px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90"
+                className="rounded-lg bg-espark-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90"
               >
                 Open client workspace →
               </button>
@@ -285,14 +285,14 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
             <button
               type="button"
               onClick={() => router.push("/leads")}
-              className="rounded-lg border border-magic-border px-3 py-2 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft"
+              className="rounded-lg border border-espark-border px-3 py-2 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft"
             >
               Back to leads list
             </button>
             <button
               type="button"
               onClick={() => router.push(`/leads/${leadId}`)}
-              className="rounded-lg border border-magic-border px-3 py-2 text-sm font-semibold text-magic-ink/70 hover:bg-magic-soft"
+              className="rounded-lg border border-espark-border px-3 py-2 text-sm font-semibold text-espark-ink/70 hover:bg-espark-soft"
             >
               Open this lead
             </button>
@@ -303,7 +303,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
   }
 
   const fieldCls =
-    "w-full rounded-lg border border-magic-border bg-white px-3 py-2 text-sm focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red";
+    "w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary";
 
   const alreadyAssigned =
     lead.assigned_to_id !== null && lead.status === "in_progress";
@@ -320,24 +320,24 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
         </div>
       )}
 
-      <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="font-mono text-xs font-semibold text-magic-red">
+          <span className="font-mono text-xs font-semibold text-espark-primary">
             {lead.ref}
           </span>
-          <span className="text-magic-ink/40">·</span>
-          <h2 className="text-lg font-bold text-magic-ink">{lead.title}</h2>
-          <span className="ml-auto inline-flex items-center rounded-full border border-magic-border bg-magic-soft/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-magic-ink/70">
+          <span className="text-espark-ink/40">·</span>
+          <h2 className="text-lg font-bold text-espark-ink">{lead.title}</h2>
+          <span className="ml-auto inline-flex items-center rounded-full border border-espark-border bg-espark-soft/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-espark-ink/70">
             {lead.priority}
           </span>
         </div>
         {lead.description && (
-          <p className="mt-2 whitespace-pre-wrap text-sm text-magic-ink/75">
+          <p className="mt-2 whitespace-pre-wrap text-sm text-espark-ink/75">
             {lead.description}
           </p>
         )}
         {(lead.company_name || lead.folder_name) && (
-          <p className="mt-2 text-[11px] text-magic-ink/45">
+          <p className="mt-2 text-[11px] text-espark-ink/45">
             Sales hint:{" "}
             {[lead.company_name, lead.folder_name].filter(Boolean).join(" · ")}
           </p>
@@ -357,16 +357,16 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
             contactName || lead.contact_phone || lead.contact_email;
           if (!hasSales && !hasContact) return null;
           return (
-            <div className="mt-3 space-y-1.5 rounded-lg border border-magic-border/60 bg-magic-soft/30 px-3 py-2 text-xs">
+            <div className="mt-3 space-y-1.5 rounded-lg border border-espark-border/60 bg-espark-soft/30 px-3 py-2 text-xs">
               {hasSales && (
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
-                  <span className="font-semibold text-magic-ink/70">
+                  <span className="font-semibold text-espark-ink/70">
                     Raised by{salesName ? ` ${salesName}` : ""}
                   </span>
                   {lead.created_by_phone && (
                     <a
                       href={`tel:${lead.created_by_phone}`}
-                      className="text-magic-red hover:underline"
+                      className="text-espark-primary hover:underline"
                     >
                       {lead.created_by_phone}
                     </a>
@@ -374,7 +374,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
                   {lead.created_by_email && (
                     <a
                       href={`mailto:${lead.created_by_email}`}
-                      className="text-magic-red hover:underline"
+                      className="text-espark-primary hover:underline"
                     >
                       {lead.created_by_email}
                     </a>
@@ -383,13 +383,13 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
               )}
               {hasContact && (
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
-                  <span className="font-semibold text-magic-ink/70">
+                  <span className="font-semibold text-espark-ink/70">
                     Client contact{contactName ? ` · ${contactName}` : ""}
                   </span>
                   {lead.contact_phone && (
                     <a
                       href={`tel:${lead.contact_phone}`}
-                      className="text-magic-red hover:underline"
+                      className="text-espark-primary hover:underline"
                     >
                       {lead.contact_phone}
                     </a>
@@ -397,7 +397,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
                   {lead.contact_email && (
                     <a
                       href={`mailto:${lead.contact_email}`}
-                      className="text-magic-red hover:underline"
+                      className="text-espark-primary hover:underline"
                     >
                       {lead.contact_email}
                     </a>
@@ -409,7 +409,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
         })()}
       </div>
 
-      <div className="rounded-2xl border border-magic-border bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-espark-border bg-espark-surface p-5 shadow-sm">
         <Segmented
           value={kind}
           onChange={(v) => setKind(v as "individual" | "company")}
@@ -586,7 +586,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
             type="button"
             onClick={() => router.push("/leads")}
             disabled={busy}
-            className="rounded-lg border border-magic-border bg-white px-3 py-2 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft disabled:opacity-50"
+            className="rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft disabled:opacity-50"
           >
             Back to list
           </button>
@@ -594,7 +594,7 @@ export default function LeadAssignClient({ leadId }: { leadId: number }) {
             type="button"
             onClick={() => void submit()}
             disabled={busy}
-            className="rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90 disabled:opacity-50"
+            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90 disabled:opacity-50"
           >
             {busy ? "Filing…" : "Claim & file lead"}
           </button>
@@ -615,11 +615,11 @@ function Section({
 }) {
   return (
     <section>
-      <h4 className="text-xs font-bold uppercase tracking-wide text-magic-ink/70">
+      <h4 className="text-xs font-bold uppercase tracking-wide text-espark-ink/70">
         {title}
       </h4>
       {subtitle && (
-        <p className="mt-0.5 text-[11px] text-magic-ink/55">{subtitle}</p>
+        <p className="mt-0.5 text-[11px] text-espark-ink/55">{subtitle}</p>
       )}
       <div className="mt-2">{children}</div>
     </section>
@@ -636,7 +636,7 @@ function Segmented({
   options: Array<{ value: string; label: string }>;
 }) {
   return (
-    <div className="inline-flex w-full items-center gap-0.5 rounded-lg border border-magic-border bg-white p-0.5">
+    <div className="inline-flex w-full items-center gap-0.5 rounded-lg border border-espark-border bg-espark-surface p-0.5">
       {options.map((o) => (
         <button
           key={o.value}
@@ -644,8 +644,8 @@ function Segmented({
           onClick={() => onChange(o.value)}
           className={`flex-1 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
             value === o.value
-              ? "bg-magic-red text-white shadow-sm"
-              : "text-magic-ink/60 hover:text-magic-ink"
+              ? "bg-espark-primary text-white shadow-sm"
+              : "text-espark-ink/60 hover:text-espark-ink"
           }`}
         >
           {o.label}

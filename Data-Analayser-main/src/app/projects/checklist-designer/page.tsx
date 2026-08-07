@@ -23,19 +23,19 @@ export default async function ChecklistDesignerPage() {
     (await hasModuleRole(user.id, "projects", "manager"));
 
   return (
-    <div className="min-h-screen bg-magic-soft/40">
+    <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-5">
-          <Link href="/crm" className="text-xs text-magic-ink/50 hover:text-magic-red">
+          <Link href="/crm" className="text-xs text-espark-ink/50 hover:text-espark-primary">
             ← CRM
           </Link>
         </div>
         {allowed ? (
           <ChecklistDesignerClient />
         ) : (
-          <div className="rounded-2xl border border-magic-border bg-white p-8 text-center">
-            <p className="text-sm text-magic-ink/60">
+          <div className="rounded-2xl border border-espark-border bg-espark-surface p-8 text-center">
+            <p className="text-sm text-espark-ink/60">
               The Checklist Designer is available to project managers. Ask an
               admin for the projects manager role.
             </p>

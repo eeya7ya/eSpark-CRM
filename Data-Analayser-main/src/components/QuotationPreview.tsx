@@ -136,15 +136,15 @@ interface Props {
   editable?: boolean;
   /**
    * Explicit logo URL override. When omitted the logo is resolved via the
-   * selected `brandVariantId` (or the default Magic Tech variant when no
+   * selected `brandVariantId` (or the default eSpark variant when no
    * variant is selected yet).
    */
   logoUrl?: string;
   /**
    * Id of the brand variant whose logo/cover/about artwork drives this
-   * quotation. When unknown or invalid, falls back to the default Magic
-   * Tech bundle so legacy quotations without a stored variant still
-   * render the exact same sheets they always did.
+   * quotation. When unknown or invalid, falls back to the default eSpark
+   * bundle so a quotation without a stored variant still renders a
+   * complete set of sheets.
    */
   brandVariantId?: string;
   /**
@@ -225,7 +225,7 @@ function money(n: number): string {
 function renderPriceCell(n: number): React.ReactNode {
   const v = Number(n) || 0;
   if (v > 0) return money(v);
-  return <span className="italic text-magic-ink/70">Free</span>;
+  return <span className="italic text-espark-ink/70">Free</span>;
 }
 
 // ─── Excel-aware clipboard readers ──────────────────────────────────────────
@@ -1239,7 +1239,7 @@ export default function QuotationPreview({
       {/* Undo feedback toast — shown briefly after Ctrl/Cmd+Z restores a
           row (or fails to, when the stack is empty). Hidden in print. */}
       {editable && undoFlash && (
-        <div className="no-print fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-magic-ink/90 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur">
+        <div className="no-print fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-espark-scrim/90 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur">
           ↶ {undoFlash}
         </div>
       )}
@@ -1248,10 +1248,10 @@ export default function QuotationPreview({
           restore without reading the docs. */}
       {editable && undoHintCount > 0 && (
         <div
-          className="no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full border border-magic-border/60 bg-white/85 px-3 py-1.5 text-[11px] font-medium text-magic-ink/70 shadow-mt-soft backdrop-blur"
+          className="no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full border border-espark-border/60 bg-espark-surface/85 px-3 py-1.5 text-[11px] font-medium text-espark-ink/70 shadow-es-soft backdrop-blur"
           title="Press Ctrl/Cmd+Z to restore the most recently deleted row"
         >
-          <span className="rounded-md bg-magic-red/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-magic-red">
+          <span className="rounded-md bg-espark-primary/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-espark-primary">
             ⌘Z
           </span>
           Undo delete ({undoHintCount})
@@ -1280,7 +1280,7 @@ export default function QuotationPreview({
           footerText={resolvedFooterText}
           isLast={!editable}
         >
-          <p className="py-6 text-center text-magic-ink/50 text-xs">
+          <p className="py-6 text-center text-espark-ink/50 text-xs">
             No items yet. Add products from the Catalogue, use the AI Designer,
             or start from scratch with the buttons below.
           </p>
@@ -1288,27 +1288,27 @@ export default function QuotationPreview({
             <div className="no-print flex flex-wrap items-center justify-center gap-2">
               <button
                 onClick={addNewTable}
-                className="rounded-md bg-magic-red text-white px-3 py-1.5 text-[11px] font-semibold hover:bg-red-700"
+                className="rounded-md bg-espark-primary text-white px-3 py-1.5 text-[11px] font-semibold hover:bg-red-700"
                 title="Create a new table (system page) and start it with a blank row you can fill in by hand"
               >
                 + Add a new table
               </button>
               <button
                 onClick={addExtraColumn}
-                className="rounded-md border border-magic-border px-3 py-1.5 text-[11px] hover:bg-magic-soft"
+                className="rounded-md border border-espark-border px-3 py-1.5 text-[11px] hover:bg-espark-soft"
                 title="Add a manual column that will show up in every table"
               >
                 + Add manual column
               </button>
               <button
                 onClick={() => unmergeAllRows(null)}
-                className="rounded-md border border-magic-border px-3 py-1.5 text-[11px] hover:bg-magic-soft"
+                className="rounded-md border border-espark-border px-3 py-1.5 text-[11px] hover:bg-espark-soft"
                 title="Undo every cell merge across every page"
               >
                 ↺ Unmerge all cells
               </button>
               {extraColumns.length > 0 && (
-                <span className="text-[10px] text-magic-ink/50">
+                <span className="text-[10px] text-espark-ink/50">
                   {extraColumns.length} manual column
                   {extraColumns.length === 1 ? "" : "s"} queued:{" "}
                   {extraColumns.map((c) => c.label).join(", ")}
@@ -1367,20 +1367,20 @@ export default function QuotationPreview({
             <div className="no-print mt-2 flex flex-wrap items-center gap-2">
               <button
                 onClick={() => addRowToSystem(group.system)}
-                className="rounded-md border border-magic-border px-3 py-1 text-[11px] hover:bg-magic-soft"
+                className="rounded-md border border-espark-border px-3 py-1 text-[11px] hover:bg-espark-soft"
               >
                 + Add row to {group.system}
               </button>
               <button
                 onClick={() => addSectionRowToSystem(group.system)}
-                className="rounded-md border border-magic-border px-3 py-1 text-[11px] hover:bg-magic-soft"
+                className="rounded-md border border-espark-border px-3 py-1 text-[11px] hover:bg-espark-soft"
                 title="Insert a full-width section divider (e.g. 'Outdoor Cameras') at the bottom of this page. The divider has no number or price."
               >
                 + Section divider
               </button>
               <button
                 onClick={addNewTable}
-                className="rounded-md border border-magic-border px-3 py-1 text-[11px] hover:bg-magic-soft"
+                className="rounded-md border border-espark-border px-3 py-1 text-[11px] hover:bg-espark-soft"
                 title="Create another table (system page) seeded with a blank row"
               >
                 + Add a new table
@@ -1388,7 +1388,7 @@ export default function QuotationPreview({
               <button
                 onClick={undoLastMerge}
                 disabled={mergeUndoCount === 0}
-                className="rounded-md border border-magic-border px-3 py-1 text-[11px] hover:bg-magic-soft disabled:opacity-40 disabled:cursor-not-allowed"
+                className="rounded-md border border-espark-border px-3 py-1 text-[11px] hover:bg-espark-soft disabled:opacity-40 disabled:cursor-not-allowed"
                 title={
                   mergeUndoCount > 0
                     ? `Undo only the most recent cell merge (${mergeUndoCount} step${mergeUndoCount === 1 ? "" : "s"} available)`
@@ -1403,7 +1403,7 @@ export default function QuotationPreview({
               {pageIdx === 0 && (
                 <button
                   onClick={addExtraColumn}
-                  className="rounded-md border border-magic-border px-3 py-1 text-[11px] hover:bg-magic-soft"
+                  className="rounded-md border border-espark-border px-3 py-1 text-[11px] hover:bg-espark-soft"
                   title="Add a manual column that shows up in every table"
                 >
                   + Add manual column
@@ -1552,7 +1552,7 @@ function QuotationPage({
 }) {
   // Default to /logo.png in /public. Drop the real PNG at
   // public/logo.png and it will appear automatically. If the file
-  // is missing we fall back to the Magic Tech text block.
+  // is missing we fall back to the eSpark text block.
   const resolvedLogo = logoUrl || "/logo.png";
   // Some variants (e.g. BEAT) ship their asset as a `.jpeg` while the
   // registry used to reference `.png` — and vice versa. Rather than
@@ -1585,7 +1585,7 @@ function QuotationPage({
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={logoSrc}
-            alt="Magic Tech"
+            alt="eSpark"
             className="h-14 w-auto object-contain"
             onError={() => {
               const alt = swapLogoExt(logoSrc);
@@ -1598,18 +1598,18 @@ function QuotationPage({
           />
         ) : (
           <div>
-            <div className="text-xs text-magic-ink/60">سحر التقنية</div>
+            <div className="text-xs text-espark-ink/60">إي سبارك</div>
             <div className="flex items-center gap-1">
-              <span className="text-2xl font-black text-magic-red">Magic</span>
-              <span className="text-2xl font-black text-magic-ink">Tech</span>
+              <span className="text-2xl font-black text-espark-primary">e</span>
+              <span className="text-2xl font-black text-espark-ink">Spark</span>
             </div>
           </div>
         )}
       </div>
       <div className="text-right">
         <div className="text-3xl font-black">
-          <span className="text-magic-ink">Sales </span>
-          <span className="text-magic-red">Quotation</span>
+          <span className="text-espark-ink">Sales </span>
+          <span className="text-espark-primary">Quotation</span>
         </div>
       </div>
     </div>
@@ -1652,7 +1652,7 @@ function QuotationPage({
                   onChange={(next) => onClientIdentityChange?.(next)}
                   aria-label="Client identity"
                   title="Choose whether the client name or the company name appears here — its email and phone fill in automatically."
-                  className="w-full min-w-0 rounded-none border-0 border-b border-dotted border-magic-border bg-transparent px-0 py-0 text-inherit shadow-none focus:border-magic-red focus:ring-0"
+                  className="w-full min-w-0 rounded-none border-0 border-b border-dotted border-espark-border bg-transparent px-0 py-0 text-inherit shadow-none focus:border-espark-primary focus:ring-0"
                 >
                   {clientOptions.map((o) => (
                     <option key={o.key} value={o.key}>
@@ -1794,7 +1794,7 @@ function HeaderField({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className={`w-full bg-transparent outline-none border-b border-dotted border-magic-border focus:border-magic-red ${
+      className={`w-full bg-transparent outline-none border-b border-dotted border-espark-border focus:border-espark-primary ${
         bold ? "font-bold" : ""
       }`}
     />
@@ -2116,7 +2116,7 @@ function SystemTable({
             type="button"
             onClick={() => onUnmergeCell(globalIndex, col)}
             title="Unmerge this cell from the rows below"
-            className="no-print absolute top-0 right-0 w-4 h-4 text-[9px] leading-none rounded-bl bg-magic-red text-white"
+            className="no-print absolute top-0 right-0 w-4 h-4 text-[9px] leading-none rounded-bl bg-espark-primary text-white"
           >
             ⇩
           </button>
@@ -2132,8 +2132,8 @@ function SystemTable({
             }
             className={`no-print absolute top-0 right-0 w-4 h-4 text-[9px] leading-none rounded-bl ${
               isMergedUp
-                ? "bg-magic-red text-white"
-                : "bg-white/80 text-magic-ink/50 hover:bg-magic-soft"
+                ? "bg-espark-primary text-white"
+                : "bg-espark-surface/80 text-espark-ink/50 hover:bg-espark-soft"
             }`}
           >
             ⇧
@@ -2150,8 +2150,8 @@ function SystemTable({
             }
             className={`no-print absolute top-0 left-0 w-4 h-4 text-[9px] leading-none rounded-br ${
               isMergedLeft
-                ? "bg-magic-red text-white"
-                : "bg-white/80 text-magic-ink/50 hover:bg-magic-soft"
+                ? "bg-espark-primary text-white"
+                : "bg-espark-surface/80 text-espark-ink/50 hover:bg-espark-soft"
             }`}
           >
             ←
@@ -2173,7 +2173,7 @@ function SystemTable({
       <button
         type="button"
         onClick={() => onPasteColumn(group.system, colKey)}
-        className="no-print ml-1 inline-flex items-center justify-center w-5 h-5 rounded border border-magic-border bg-white text-magic-ink/70 hover:bg-magic-soft hover:text-magic-red text-[11px] leading-none align-middle"
+        className="no-print ml-1 inline-flex items-center justify-center w-5 h-5 rounded border border-espark-border bg-espark-surface text-espark-ink/70 hover:bg-espark-soft hover:text-espark-primary text-[11px] leading-none align-middle"
         title={`Paste an Excel column into ${columnLabel} — one click fills every cell down this column`}
         aria-label={`Paste clipboard column into ${columnLabel}`}
       >
@@ -2221,7 +2221,7 @@ function SystemTable({
               {editable ? (
                 <div className="flex items-center justify-center gap-1">
                   <input
-                    className="w-full bg-transparent text-center uppercase font-bold text-magic-red"
+                    className="w-full bg-transparent text-center uppercase font-bold text-espark-primary"
                     value={col.label}
                     onChange={(e) => onRenameExtraColumn(col.id, e.target.value)}
                     aria-label="Rename manual column"
@@ -2246,7 +2246,7 @@ function SystemTable({
       <tbody>
         {group.rows.length === 0 && (
           <tr>
-            <td colSpan={colCount} className="py-3 text-magic-ink/50">
+            <td colSpan={colCount} className="py-3 text-espark-ink/50">
               No items in this system.
             </td>
           </tr>
@@ -2319,7 +2319,7 @@ function SystemTable({
                 onDragEnd={onHandleDragEnd}
                 title="Drag to reorder this row within the same page"
                 aria-label="Drag to reorder row"
-                className="no-print inline-flex h-5 w-4 cursor-grab items-center justify-center select-none text-magic-ink/40 hover:text-magic-red active:cursor-grabbing"
+                className="no-print inline-flex h-5 w-4 cursor-grab items-center justify-center select-none text-espark-ink/40 hover:text-espark-primary active:cursor-grabbing"
               >
                 ≡
               </span>
@@ -2349,14 +2349,14 @@ function SystemTable({
               >
                 <td
                   colSpan={colCount}
-                  className="bg-magic-soft text-magic-red font-bold uppercase tracking-wide text-[12px] py-2 px-3 text-left"
+                  className="bg-espark-soft text-espark-primary font-bold uppercase tracking-wide text-[12px] py-2 px-3 text-left"
                 >
                   {editable ? (
                     <div className="flex items-center gap-2">
                       {dragHandle(globalIndex)}
                       <span aria-hidden className="opacity-60">§</span>
                       <input
-                        className="flex-1 bg-transparent font-bold uppercase tracking-wide text-magic-red placeholder:text-magic-red/40"
+                        className="flex-1 bg-transparent font-bold uppercase tracking-wide text-espark-primary placeholder:text-espark-primary/40"
                         value={item.section_label || ""}
                         placeholder="Section title (e.g. Outdoor Cameras)"
                         aria-label="Section title"
@@ -2369,7 +2369,7 @@ function SystemTable({
                           type="button"
                           onClick={() => onMoveSection(globalIndex, -1)}
                           title="Move section up"
-                          className="w-5 h-5 text-[10px] leading-none rounded border border-magic-border bg-white text-magic-ink/60 hover:bg-magic-soft"
+                          className="w-5 h-5 text-[10px] leading-none rounded border border-espark-border bg-espark-surface text-espark-ink/60 hover:bg-espark-soft"
                         >
                           ▲
                         </button>
@@ -2377,7 +2377,7 @@ function SystemTable({
                           type="button"
                           onClick={() => onMoveSection(globalIndex, 1)}
                           title="Move section down"
-                          className="w-5 h-5 text-[10px] leading-none rounded border border-magic-border bg-white text-magic-ink/60 hover:bg-magic-soft"
+                          className="w-5 h-5 text-[10px] leading-none rounded border border-espark-border bg-espark-surface text-espark-ink/60 hover:bg-espark-soft"
                         >
                           ▼
                         </button>
@@ -2385,7 +2385,7 @@ function SystemTable({
                           type="button"
                           onClick={() => onRemove(globalIndex)}
                           title="Remove this section row"
-                          className="w-5 h-5 text-[11px] leading-none rounded text-red-500 hover:bg-magic-soft"
+                          className="w-5 h-5 text-[11px] leading-none rounded text-red-500 hover:bg-espark-soft"
                         >
                           ×
                         </button>
@@ -2420,7 +2420,7 @@ function SystemTable({
               {editable ? (
                 <div className="flex items-center justify-center gap-1">
                   {dragHandle(globalIndex)}
-                  <span className="text-[11px] font-semibold text-magic-ink">
+                  <span className="text-[11px] font-semibold text-espark-ink">
                     {item.no}
                   </span>
                 </div>
@@ -2552,7 +2552,7 @@ function SystemTable({
             {!boqMode && (
             <td className="font-semibold">
               {item.optional ? (
-                <span className="italic text-magic-ink/60">Optional</span>
+                <span className="italic text-espark-ink/60">Optional</span>
               ) : (() => {
                 const rowTotal =
                   (Number(item.quantity) || 0) *
@@ -2588,7 +2588,7 @@ function SystemTable({
                           cur === globalIndex ? null : globalIndex,
                         )
                       }
-                      className="cursor-pointer select-none inline-flex items-center justify-center w-auto px-1.5 h-4 text-[10px] leading-none rounded bg-white/80 text-magic-ink/60 border border-magic-border hover:bg-magic-soft"
+                      className="cursor-pointer select-none inline-flex items-center justify-center w-auto px-1.5 h-4 text-[10px] leading-none rounded bg-espark-surface/80 text-espark-ink/60 border border-espark-border hover:bg-espark-soft"
                       title="Row actions"
                       aria-label="Row actions"
                       aria-haspopup="menu"
@@ -2597,9 +2597,9 @@ function SystemTable({
                       ⋯
                     </button>
                     {openRowMenu === globalIndex && (
-                      <div className="absolute right-0 z-30 mt-1 w-44 rounded-md border border-magic-border bg-white py-1 text-left shadow-lg">
+                      <div className="absolute right-0 z-30 mt-1 w-44 rounded-md border border-espark-border bg-espark-surface py-1 text-left shadow-lg">
                         <div className="px-2 pb-1">
-                          <div className="mb-0.5 text-[9px] uppercase tracking-wide text-magic-ink/40">
+                          <div className="mb-0.5 text-[9px] uppercase tracking-wide text-espark-ink/40">
                             Move to page
                           </div>
                           <Select
@@ -2616,7 +2616,7 @@ function SystemTable({
                                 onUpdate(globalIndex, { system: v });
                               }
                             }}
-                            className="w-full min-w-0 rounded border border-magic-border bg-white px-1 py-0.5 text-[10px] shadow-none"
+                            className="w-full min-w-0 rounded border border-espark-border bg-espark-surface px-1 py-0.5 text-[10px] shadow-none"
                             title="Move this row to another page"
                           >
                             <option value="">Move to…</option>
@@ -2630,7 +2630,7 @@ function SystemTable({
                             <option value="__new__">+ New page…</option>
                           </Select>
                         </div>
-                        <div className="my-1 border-t border-magic-border/60" />
+                        <div className="my-1 border-t border-espark-border/60" />
                         <button
                           type="button"
                           onClick={() => {
@@ -2638,7 +2638,7 @@ function SystemTable({
                             setOpenRowMenu(null);
                           }}
                           title="Show unit price but exclude this row from the total"
-                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-magic-soft"
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-espark-soft"
                         >
                           {item.optional ? "✓ Optional" : "Mark as optional"}
                         </button>
@@ -2649,7 +2649,7 @@ function SystemTable({
                             setOpenRowMenu(null);
                           }}
                           title="Highlight this row in green"
-                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-magic-soft"
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-espark-soft"
                         >
                           {item.marked ? "✓ Highlighted" : "Highlight row"}
                         </button>
@@ -2659,7 +2659,7 @@ function SystemTable({
                             onDuplicate(globalIndex);
                             setOpenRowMenu(null);
                           }}
-                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-magic-soft"
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-espark-soft"
                         >
                           Duplicate row
                         </button>
@@ -2669,7 +2669,7 @@ function SystemTable({
                             onCopy(globalIndex);
                             setOpenRowMenu(null);
                           }}
-                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-magic-soft"
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-espark-soft"
                         >
                           Copy row
                         </button>
@@ -2679,7 +2679,7 @@ function SystemTable({
                             onPaste(globalIndex);
                             setOpenRowMenu(null);
                           }}
-                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-magic-soft"
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-espark-soft"
                         >
                           Paste row after
                         </button>
@@ -2691,11 +2691,11 @@ function SystemTable({
                             setOpenRowMenu(null);
                           }}
                           title="Attach an internal note that never prints"
-                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-magic-soft"
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-espark-soft"
                         >
                           {item.note ? "Edit note…" : "Add note…"}
                         </button>
-                        <div className="my-1 border-t border-magic-border/60" />
+                        <div className="my-1 border-t border-espark-border/60" />
                         <button
                           type="button"
                           onClick={() => {
@@ -2758,20 +2758,20 @@ function SystemTable({
           className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           onClick={() => setNoteEditIndex(null)}
         />
-        <div className="relative z-10 w-full max-w-lg rounded-2xl border border-magic-border bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-magic-border px-5 py-3">
-            <h3 className="text-sm font-bold text-magic-ink">Internal note</h3>
+        <div className="relative z-10 w-full max-w-lg rounded-2xl border border-espark-border bg-espark-surface shadow-2xl">
+          <div className="flex items-center justify-between border-b border-espark-border px-5 py-3">
+            <h3 className="text-sm font-bold text-espark-ink">Internal note</h3>
             <button
               type="button"
               onClick={() => setNoteEditIndex(null)}
-              className="rounded-md p-1 text-magic-ink/50 hover:bg-magic-soft"
+              className="rounded-md p-1 text-espark-ink/50 hover:bg-espark-soft"
               aria-label="Close"
             >
               ✕
             </button>
           </div>
           <div className="px-5 py-4">
-            <p className="mb-2 text-[11px] text-magic-ink/50">
+            <p className="mb-2 text-[11px] text-espark-ink/50">
               For your team only — this never appears on the printed sheet, PDF
               or Excel export. Write freely: blank lines and bullet points
               (start a line with • or -) are kept.
@@ -2782,14 +2782,14 @@ function SystemTable({
               onChange={(e) => setNoteDraft(e.target.value)}
               rows={8}
               placeholder={"e.g.\n• Confirm cable route with the client\n• Price assumes existing conduit\n\nNotes, reminders, anything."}
-              className="w-full resize-y rounded-lg border border-magic-border px-3 py-2 text-sm leading-relaxed text-magic-ink focus:border-magic-red/40 focus:outline-none"
+              className="w-full resize-y rounded-lg border border-espark-border px-3 py-2 text-sm leading-relaxed text-espark-ink focus:border-espark-primary/40 focus:outline-none"
             />
           </div>
-          <div className="flex items-center justify-end gap-2 border-t border-magic-border px-5 py-3">
+          <div className="flex items-center justify-end gap-2 border-t border-espark-border px-5 py-3">
             <button
               type="button"
               onClick={() => setNoteEditIndex(null)}
-              className="rounded-lg border border-magic-border px-3 py-1.5 text-xs font-semibold text-magic-ink/70 hover:bg-magic-soft"
+              className="rounded-lg border border-espark-border px-3 py-1.5 text-xs font-semibold text-espark-ink/70 hover:bg-espark-soft"
             >
               Cancel
             </button>
@@ -2799,7 +2799,7 @@ function SystemTable({
                 onUpdate(noteEditIndex, { note: noteDraft.trim() });
                 setNoteEditIndex(null);
               }}
-              className="rounded-lg bg-magic-red px-4 py-1.5 text-xs font-semibold text-white hover:bg-magic-red/90"
+              className="rounded-lg bg-espark-primary px-4 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/90"
             >
               Save note
             </button>
@@ -2905,20 +2905,20 @@ function PictureCell({
           className="max-h-12 max-w-full object-contain"
         />
       ) : (
-        <div className="text-[9px] text-magic-ink/40">no picture</div>
+        <div className="text-[9px] text-espark-ink/40">no picture</div>
       )}
       {editable && (
         <div className="no-print flex items-center gap-1">
           <button
             onClick={() => fileRef.current?.click()}
-            className="text-[9px] text-magic-red underline"
+            className="text-[9px] text-espark-primary underline"
           >
             {src ? "Replace" : "Upload"}
           </button>
           {src && (
             <button
               onClick={() => onUpdate({ picture_url: "" })}
-              className="text-[9px] text-magic-ink/50"
+              className="text-[9px] text-espark-ink/50"
             >
               clear
             </button>
@@ -2947,8 +2947,8 @@ function defaultScopeIntro(systems: string[]): string {
   if (list.length === 0) {
     return (
       "We sincerely appreciate the opportunity to collaborate with you on " +
-      "this project and thank you for your continued trust in Magic " +
-      "Technology. The following investment reflects the fully engineered " +
+      "this project and thank you for your continued trust in eSpark. " +
+      "The following investment reflects the fully engineered " +
       "scope of works outlined in this proposal."
     );
   }
@@ -2958,7 +2958,7 @@ function defaultScopeIntro(systems: string[]): string {
       : list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
   return (
     `We sincerely appreciate the opportunity to partner with you on this ` +
-    `project and thank you for your continued trust in Magic Technology. ` +
+    `project and thank you for your continued trust in eSparknology. ` +
     `As detailed in the preceding pages, the proposed scope of works has ` +
     `been carefully engineered to deliver a fully integrated solution ` +
     `covering ${bulletList}. Every component has been selected to ensure ` +
@@ -2983,7 +2983,7 @@ function ScopeIntro({
   const text = value && value.trim() ? value : fallback;
   return (
     <div className="mb-3 text-[10.5px] leading-relaxed">
-      <div className="border-b border-magic-ink/40 inline-block font-bold italic mb-2">
+      <div className="border-b border-espark-ink/40 inline-block font-bold italic mb-2">
         Project Scope Summary
       </div>
       {editable ? (
@@ -2991,7 +2991,7 @@ function ScopeIntro({
           rows={5}
           value={text}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-transparent border border-dotted border-magic-border rounded p-2 outline-none focus:border-magic-red text-justify"
+          className="w-full bg-transparent border border-dotted border-espark-border rounded p-2 outline-none focus:border-espark-primary text-justify"
           placeholder={fallback}
         />
       ) : (
@@ -3035,7 +3035,7 @@ function TermsBlock({
 
   return (
     <div className="mt-4 text-[10.5px]">
-      <div className="border-b border-magic-ink/40 inline-block font-bold italic mb-2">
+      <div className="border-b border-espark-ink/40 inline-block font-bold italic mb-2">
         Terms and conditions
       </div>
       <ul className="mt-2 space-y-1">
@@ -3047,7 +3047,7 @@ function TermsBlock({
                 <input
                   value={t}
                   onChange={(e) => update(i, e.target.value)}
-                  className="flex-1 bg-transparent border-b border-dotted border-magic-border outline-none"
+                  className="flex-1 bg-transparent border-b border-dotted border-espark-border outline-none"
                 />
                 <button
                   onClick={() => remove(i)}
@@ -3066,7 +3066,7 @@ function TermsBlock({
       {editable && (
         <button
           onClick={add}
-          className="no-print mt-2 rounded-md border border-magic-border px-2 py-0.5 text-[10px] hover:bg-magic-soft"
+          className="no-print mt-2 rounded-md border border-espark-border px-2 py-0.5 text-[10px] hover:bg-espark-soft"
         >
           + Add term
         </button>
@@ -3078,7 +3078,7 @@ function TermsBlock({
        * a quotation with no notes prints exactly as before. */}
       {(editable || notes.trim().length > 0) && (
         <div className="mt-3">
-          <div className="border-b border-magic-ink/40 inline-block font-bold italic mb-1">
+          <div className="border-b border-espark-ink/40 inline-block font-bold italic mb-1">
             Notes
           </div>
           {editable ? (
@@ -3086,7 +3086,7 @@ function TermsBlock({
               value={notes}
               onChange={(e) => setNotes?.(e.target.value)}
               placeholder="Optional notes (left blank, this section is hidden on the printed quotation)…"
-              className="mt-1 w-full min-h-[3em] resize-y rounded-md border border-dotted border-magic-border bg-transparent px-2 py-1 outline-none focus:border-magic-red"
+              className="mt-1 w-full min-h-[3em] resize-y rounded-md border border-dotted border-espark-border bg-transparent px-2 py-1 outline-none focus:border-espark-primary"
             />
           ) : (
             <p className="mt-1 whitespace-pre-wrap">{notes}</p>
@@ -3142,7 +3142,7 @@ function RowNoJump({
 
   return (
     <div
-      className="inline-flex items-center justify-center gap-1 rounded-md bg-magic-soft/50 px-1.5 py-0.5"
+      className="inline-flex items-center justify-center gap-1 rounded-md bg-espark-soft/50 px-1.5 py-0.5"
       title={`Type a number ${min}–${max} and press Enter to move this row to that position within its system.`}
     >
       <input
@@ -3162,7 +3162,7 @@ function RowNoJump({
           }
         }}
         onBlur={commit}
-        className="no-print w-10 rounded-sm border border-magic-border/60 bg-white px-1 text-center text-[10.5px] font-semibold text-magic-ink focus:border-magic-red focus:outline-none focus:ring-1 focus:ring-magic-red/40"
+        className="no-print w-10 rounded-sm border border-espark-border/60 bg-espark-surface px-1 text-center text-[10.5px] font-semibold text-espark-ink focus:border-espark-primary focus:outline-none focus:ring-1 focus:ring-espark-primary/40"
         aria-label={`Row number (${min}–${max}) — type a new value to jump`}
       />
       {/* Printed/PDF view should still show the plain number, so keep a

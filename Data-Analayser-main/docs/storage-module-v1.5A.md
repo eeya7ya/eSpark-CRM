@@ -1,6 +1,6 @@
 # Storage Management Module — V1.5A Requirements & Implementation Spec
 
-This is the V1.5A spec for the Storage module of the **MagicTech** platform
+This is the V1.5A spec for the Storage module of the **eSpark** platform
 (this repo: Next.js 15 App Router + React 19 on Vercel, **Supabase Postgres**
 via `postgres.js` through the Supavisor transaction pooler, JWT/PBKDF2 auth,
 module-based RBAC). It supersedes the original generic requirements doc and the
@@ -683,4 +683,4 @@ new module lives where the **"Stock Management" placeholder** already waits in
 - [ ] Feature 10 — Offline Mode + Sync (PWA IndexedDB outbox + idempotent `event_uid`)
 - [ ] Legacy removal — drop `storage_locations` / `storage_stock` / `storage_requests` after migration
 
-**V1.5A spec — mapped to the MagicTech platform.**
+**V1.5A spec — mapped to the eSpark platform.**

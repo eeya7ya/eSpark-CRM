@@ -1,4 +1,4 @@
-/* MagicTech PWA service worker.
+/* eSpark PWA service worker.
  *
  * Responsibilities:
  *   1. Make the app installable (a registered SW with a fetch handler is
@@ -16,8 +16,8 @@ const OFFLINE_HTML =
   '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
   "<title>Offline</title>" +
   '<body style="font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#F3F5FB;color:#111827">' +
-  '<div style="text-align:center;padding:2rem"><h1 style="color:#E2231A;margin:0 0 .5rem">You’re offline</h1>' +
-  "<p>MagicTech needs a connection to load this page. Reconnect and try again.</p></div></body>";
+  '<div style="text-align:center;padding:2rem"><h1 style="color:#4C626A;margin:0 0 .5rem">You’re offline</h1>' +
+  "<p>eSpark needs a connection to load this page. Reconnect and try again.</p></div></body>";
 
 self.addEventListener("install", (event) => {
   // Activate the new SW immediately rather than waiting for old tabs.
@@ -48,9 +48,9 @@ self.addEventListener("push", (event) => {
   try {
     data = event.data ? event.data.json() : {};
   } catch {
-    data = { title: "MagicTech", body: event.data ? event.data.text() : "" };
+    data = { title: "eSpark", body: event.data ? event.data.text() : "" };
   }
-  const title = data.title || "MagicTech";
+  const title = data.title || "eSpark";
   const options = {
     body: data.body || "",
     icon: "/icons/icon-192.png",

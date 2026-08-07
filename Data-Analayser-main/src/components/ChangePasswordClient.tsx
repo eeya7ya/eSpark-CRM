@@ -67,7 +67,7 @@ export default function ChangePasswordClient({
     <main className="flex min-h-screen items-center justify-center bg-[#131418] px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-6 flex items-center gap-3">
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#ED1C24]/15 text-[#ff6b63]">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#5B7884]/15 text-[#93a3a4]">
             <ShieldCheck className="h-6 w-6" />
           </span>
           <div>
@@ -80,7 +80,7 @@ export default function ChangePasswordClient({
 
         <form
           onSubmit={onSubmit}
-          className="rounded-2xl border border-white/10 bg-white p-6 shadow-2xl"
+          className="rounded-2xl border border-white/10 bg-espark-surface p-6 shadow-2xl"
         >
           <p className="mb-5 text-[13.5px] leading-relaxed text-slate-600">
             {forced
@@ -119,7 +119,7 @@ export default function ChangePasswordClient({
               type="checkbox"
               checked={show}
               onChange={(e) => setShow(e.target.checked)}
-              className="h-4 w-4 accent-[#ED1C24]"
+              className="h-4 w-4 accent-[#5B7884]"
             />
             Show passwords
           </label>
@@ -133,7 +133,7 @@ export default function ChangePasswordClient({
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ED1C24] py-3.5 text-[15px] font-bold text-white shadow-lg shadow-[#ED1C24]/30 transition hover:bg-[#c4151c] disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#5B7884] py-3.5 text-[15px] font-bold text-white shadow-lg shadow-[#5B7884]/30 transition hover:bg-[#4c626a] disabled:opacity-60"
           >
             {loading ? (
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -192,7 +192,7 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete}
           required
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-3.5 text-[15px] text-slate-900 transition focus:border-[#ED1C24]/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ED1C24]/15"
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-3.5 text-[15px] text-slate-900 transition focus:border-[#5B7884]/50 focus:bg-espark-surface focus:outline-none focus:ring-2 focus:ring-[#5B7884]/15"
         />
       </div>
       {hint && <p className="mt-1 text-[11.5px] text-slate-400">{hint}</p>}

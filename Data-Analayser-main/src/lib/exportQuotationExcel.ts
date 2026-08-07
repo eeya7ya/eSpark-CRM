@@ -36,7 +36,7 @@ export interface QuotationExcelInput {
  * Build a brand-matched .xlsx from a quotation and return it as a Blob.
  *
  * Uses ExcelJS (dynamically imported so it stays out of the main bundle) to
- * embed the MagicTech logo and mirror the PDF styling — header fills, gold
+ * embed the eSpark logo and mirror the PDF styling — header fills, gold
  * subtotals, a highlighted grand total, borders, per-system tables, terms,
  * and a frozen logo/info band. Currency is JOD throughout.
  *
@@ -85,7 +85,7 @@ export async function buildQuotationWorkbookBlob(
   // Brand palette (ARGB) — pulled from the PDF's CSS variables.
   const C = {
     header: "FFE3DDD7",
-    red: "FFE2231A",
+    red: "FF4C626A",
     ink: "FF2B2F30",
     gold: "FFE3D4A8",
     grand: "FFFFF8BF",

@@ -32,7 +32,7 @@ export default async function TechnicalProposalPage({
   }
 
   return (
-    <div className="min-h-screen bg-magic-soft/40 print-root">
+    <div className="min-h-screen bg-espark-soft/40 print-root">
       <div className="no-print">
         <TopBar user={user} />
       </div>

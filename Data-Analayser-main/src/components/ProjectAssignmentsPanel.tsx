@@ -141,20 +141,20 @@ export default function ProjectAssignmentsPanel({
   }
 
   return (
-    <section className="rounded-2xl border border-magic-border bg-white p-5">
+    <section className="rounded-2xl border border-espark-border bg-espark-surface p-5">
       <div className="flex items-end justify-between mb-3">
         <div>
-          <h2 className="text-lg font-semibold text-magic-ink">Team roster</h2>
-          <p className="text-xs text-magic-ink/60 mt-0.5">
+          <h2 className="text-lg font-semibold text-espark-ink">Team roster</h2>
+          <p className="text-xs text-espark-ink/60 mt-0.5">
             Active assignments. Unassign is soft — the audit row stays put.
           </p>
         </div>
       </div>
 
       {loading ? (
-        <p className="text-sm text-magic-ink/60">Loading roster…</p>
+        <p className="text-sm text-espark-ink/60">Loading roster…</p>
       ) : items.length === 0 ? (
-        <p className="text-sm text-magic-ink/50 italic">
+        <p className="text-sm text-espark-ink/50 italic">
           No one assigned yet.
         </p>
       ) : (
@@ -162,18 +162,18 @@ export default function ProjectAssignmentsPanel({
           {items.map((a) => (
             <li
               key={a.id}
-              className="rounded-lg border border-magic-border/60 px-3 py-2 flex items-center justify-between gap-3"
+              className="rounded-lg border border-espark-border/60 px-3 py-2 flex items-center justify-between gap-3"
             >
               <div className="min-w-0">
                 <div className="text-sm">
-                  <span className="font-semibold text-magic-ink">
+                  <span className="font-semibold text-espark-ink">
                     @{a.username}
                   </span>
                   <span className="ml-2 inline-flex items-center rounded-full border border-indigo-300 bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
                     {a.role}
                   </span>
                 </div>
-                <div className="text-xs text-magic-ink/60 mt-0.5">
+                <div className="text-xs text-espark-ink/60 mt-0.5">
                   {a.location && <>📍 {a.location} · </>}
                   {a.start_date && <>start {a.start_date} · </>}
                   {a.end_date && <>⏱ est. completion {a.end_date} · </>}
@@ -186,7 +186,7 @@ export default function ProjectAssignmentsPanel({
                 <button
                   onClick={() => void unassign(a.id)}
                   disabled={busy}
-                  className="px-2 py-1 text-xs font-medium rounded border border-magic-border text-magic-ink/70 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50 transition-colors"
+                  className="px-2 py-1 text-xs font-medium rounded border border-espark-border text-espark-ink/70 hover:bg-amber-50 hover:text-amber-800 hover:border-amber-300 disabled:opacity-50 transition-colors"
                 >
                   Unassign
                 </button>
@@ -270,8 +270,8 @@ function AssignForm({
   );
 
   return (
-    <div className="mt-4 rounded-lg border border-dashed border-magic-border bg-magic-soft/30 p-3">
-      <h3 className="text-sm font-semibold text-magic-ink mb-2">
+    <div className="mt-4 rounded-lg border border-dashed border-espark-border bg-espark-soft/30 p-3">
+      <h3 className="text-sm font-semibold text-espark-ink mb-2">
         Assign someone
       </h3>
       <div className="grid gap-2 md:grid-cols-3">
@@ -281,7 +281,7 @@ function AssignForm({
             setUserId(next === "" ? "" : Number(next))
           }
           disabled={disabled || users.length === 0}
-          className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+          className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
         >
           {users.length === 0 ? (
             <option value="">No users available</option>
@@ -300,7 +300,7 @@ function AssignForm({
           value={role}
           onChange={(next) => setRole(next as Assignment["role"])}
           disabled={disabled}
-          className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+          className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
         >
           {ROLES.map((r) => (
             <option key={r} value={r}>
@@ -314,26 +314,26 @@ function AssignForm({
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           disabled={disabled}
-          className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+          className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
         />
-        <label className="flex flex-col gap-0.5 text-[10px] font-medium uppercase tracking-wide text-magic-ink/50">
+        <label className="flex flex-col gap-0.5 text-[10px] font-medium uppercase tracking-wide text-espark-ink/50">
           Start date
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             disabled={disabled}
-            className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm font-normal normal-case text-magic-ink"
+            className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm font-normal normal-case text-espark-ink"
           />
         </label>
-        <label className="flex flex-col gap-0.5 text-[10px] font-medium uppercase tracking-wide text-magic-ink/50">
+        <label className="flex flex-col gap-0.5 text-[10px] font-medium uppercase tracking-wide text-espark-ink/50">
           Est. completion (optional)
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             disabled={disabled}
-            className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm font-normal normal-case text-magic-ink"
+            className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm font-normal normal-case text-espark-ink"
           />
         </label>
         <input
@@ -342,19 +342,19 @@ function AssignForm({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           disabled={disabled}
-          className="rounded border border-magic-border bg-white px-2 py-1.5 text-sm"
+          className="rounded border border-espark-border bg-espark-surface px-2 py-1.5 text-sm"
         />
       </div>
       <div className="mt-2 flex items-center justify-end gap-2">
         {already && (
-          <span className="text-xs text-magic-ink/50">
+          <span className="text-xs text-espark-ink/50">
             Already assigned — Save will update the info window.
           </span>
         )}
         <button
           onClick={() => void submit()}
           disabled={disabled || userId === ""}
-          className="px-3 py-1.5 text-xs font-semibold rounded bg-magic-red text-white hover:bg-magic-red/90 disabled:opacity-50 transition-colors"
+          className="px-3 py-1.5 text-xs font-semibold rounded bg-espark-primary text-white hover:bg-espark-primary/90 disabled:opacity-50 transition-colors"
         >
           {already ? "Save" : "Assign"}
         </button>

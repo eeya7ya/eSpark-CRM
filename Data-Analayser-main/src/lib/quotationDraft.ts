@@ -96,7 +96,7 @@ export interface QuotationDraft {
   folderId: number | null;
   /**
    * Id of the brand variant whose logo / cover / about-us artwork drives
-   * this quotation's printed output. Defaults to the original Magic Tech
+   * this quotation's printed output. Defaults to the original eSpark
    * bundle so drafts saved before variants existed keep rendering their
    * exact pre-variant look.
    */

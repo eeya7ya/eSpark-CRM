@@ -14,7 +14,7 @@ import Spinner from "@/components/Spinner";
 /**
  * My Notes — a per-user notebook. A sidebar lists the user's notes; the
  * editor pane autosaves the selected note (debounced) and can export it to
- * a branded PDF (MagicTech logo + "My Notes" header) generated client-side
+ * a branded PDF (eSpark logo + "My Notes" header) generated client-side
  * with jsPDF. All data is private to the signed-in user.
  */
 
@@ -164,14 +164,14 @@ export default function NotesClient({ authorName }: { authorName: string }) {
   return (
     <div className="flex flex-1 flex-col">
       <div className="mb-4 flex items-center gap-3">
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-magic-red/10 text-magic-red">
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-espark-primary/10 text-espark-primary">
           <NotebookPen className="h-5 w-5" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-magic-ink">
+          <h1 className="text-2xl font-bold tracking-tight text-espark-ink">
             My Notes
           </h1>
-          <p className="text-sm text-magic-ink/55">
+          <p className="text-sm text-espark-ink/55">
             Your private notebook. Autosaves as you type · export to PDF.
           </p>
         </div>
@@ -179,14 +179,14 @@ export default function NotesClient({ authorName }: { authorName: string }) {
 
       <div className="grid flex-1 grid-cols-1 gap-4 lg:grid-cols-[18rem_1fr]">
         {/* Sidebar */}
-        <aside className="flex flex-col rounded-2xl border border-magic-border bg-white/80 shadow-mt-soft">
-          <div className="flex items-center justify-between border-b border-magic-border/60 px-3 py-2.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-magic-ink/50">
+        <aside className="flex flex-col rounded-2xl border border-espark-border bg-espark-surface/80 shadow-es-soft">
+          <div className="flex items-center justify-between border-b border-espark-border/60 px-3 py-2.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-espark-ink/50">
               {notes.length} note{notes.length === 1 ? "" : "s"}
             </span>
             <button
               onClick={() => void createNote()}
-              className="inline-flex items-center gap-1 rounded-lg bg-magic-red px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-magic-red/90"
+              className="inline-flex items-center gap-1 rounded-lg bg-espark-primary px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-espark-primary/90"
             >
               <Plus className="h-3.5 w-3.5" />
               New
@@ -194,11 +194,11 @@ export default function NotesClient({ authorName }: { authorName: string }) {
           </div>
           <div className="max-h-[60vh] flex-1 overflow-y-auto p-2 lg:max-h-none">
             {loading ? (
-              <p className="px-2 py-6 text-center text-xs text-magic-ink/40">
+              <p className="px-2 py-6 text-center text-xs text-espark-ink/40">
                 Loading…
               </p>
             ) : notes.length === 0 ? (
-              <p className="px-2 py-6 text-center text-xs text-magic-ink/40">
+              <p className="px-2 py-6 text-center text-xs text-espark-ink/40">
                 No notes yet. Hit “New” to start one.
               </p>
             ) : (
@@ -211,18 +211,18 @@ export default function NotesClient({ authorName }: { authorName: string }) {
                         onClick={() => selectNote(n)}
                         className={`w-full rounded-xl px-3 py-2 text-left transition-colors ${
                           active
-                            ? "bg-magic-red/8 ring-1 ring-magic-red/30"
-                            : "hover:bg-magic-soft"
+                            ? "bg-espark-primary/8 ring-1 ring-espark-primary/30"
+                            : "hover:bg-espark-soft"
                         }`}
                       >
                         <p
                           className={`truncate text-sm font-semibold ${
-                            active ? "text-magic-red" : "text-magic-ink"
+                            active ? "text-espark-primary" : "text-espark-ink"
                           }`}
                         >
                           {n.title || "Untitled note"}
                         </p>
-                        <p className="mt-0.5 truncate text-[11px] text-magic-ink/45">
+                        <p className="mt-0.5 truncate text-[11px] text-espark-ink/45">
                           {n.body.trim()
                             ? n.body.replace(/\s+/g, " ").slice(0, 48)
                             : "Empty"}
@@ -237,11 +237,11 @@ export default function NotesClient({ authorName }: { authorName: string }) {
         </aside>
 
         {/* Editor */}
-        <section className="flex flex-1 flex-col rounded-2xl border border-magic-border bg-white/80 shadow-mt-soft">
+        <section className="flex flex-1 flex-col rounded-2xl border border-espark-border bg-espark-surface/80 shadow-es-soft">
           {selected ? (
             <>
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-magic-border/60 px-4 py-3">
-                <div className="flex items-center gap-2 text-xs text-magic-ink/45">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-espark-border/60 px-4 py-3">
+                <div className="flex items-center gap-2 text-xs text-espark-ink/45">
                   {saveState === "saving" ? (
                     <>
                       <Spinner size={12} /> Saving…
@@ -260,14 +260,14 @@ export default function NotesClient({ authorName }: { authorName: string }) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => void downloadPdf()}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-magic-border bg-white px-3 py-1.5 text-sm font-semibold text-magic-ink/80 shadow-sm hover:bg-magic-soft"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-sm font-semibold text-espark-ink/80 shadow-sm hover:bg-espark-soft"
                   >
                     <Download className="h-4 w-4" />
                     PDF
                   </button>
                   <button
                     onClick={() => void deleteNote(selected.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-magic-border bg-white px-3 py-1.5 text-sm font-semibold text-magic-red shadow-sm hover:bg-magic-red/5"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-sm font-semibold text-espark-primary shadow-sm hover:bg-espark-primary/5"
                   >
                     <Trash2 className="h-4 w-4" />
                     Delete
@@ -279,28 +279,28 @@ export default function NotesClient({ authorName }: { authorName: string }) {
                   value={title}
                   onChange={(e) => onTitleChange(e.target.value)}
                   placeholder="Note title"
-                  className="w-full border-0 bg-transparent text-xl font-bold text-magic-ink placeholder:text-magic-ink/30 focus:outline-none focus:ring-0"
+                  className="w-full border-0 bg-transparent text-xl font-bold text-espark-ink placeholder:text-espark-ink/30 focus:outline-none focus:ring-0"
                 />
                 <textarea
                   value={body}
                   onChange={(e) => onBodyChange(e.target.value)}
                   placeholder="Start writing…"
-                  className="mt-2 min-h-[40vh] w-full flex-1 resize-none border-0 bg-transparent text-sm leading-relaxed text-magic-ink/85 placeholder:text-magic-ink/30 focus:outline-none focus:ring-0"
+                  className="mt-2 min-h-[40vh] w-full flex-1 resize-none border-0 bg-transparent text-sm leading-relaxed text-espark-ink/85 placeholder:text-espark-ink/30 focus:outline-none focus:ring-0"
                 />
               </div>
             </>
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center p-10 text-center">
-              <NotebookPen className="h-10 w-10 text-magic-ink/20" />
-              <p className="mt-3 text-sm font-semibold text-magic-ink/60">
+              <NotebookPen className="h-10 w-10 text-espark-ink/20" />
+              <p className="mt-3 text-sm font-semibold text-espark-ink/60">
                 No note selected
               </p>
-              <p className="mt-1 text-xs text-magic-ink/40">
+              <p className="mt-1 text-xs text-espark-ink/40">
                 Pick a note on the left, or create a new one.
               </p>
               <button
                 onClick={() => void createNote()}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-magic-red px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-magic-red/90"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-espark-primary/90"
               >
                 <Plus className="h-4 w-4" />
                 New note
@@ -344,7 +344,7 @@ async function loadLogo(): Promise<{
 }
 
 /**
- * Render a single note to a clean A4 PDF: MagicTech logo top-left, "My
+ * Render a single note to a clean A4 PDF: eSpark logo top-left, "My
  * Notes" header, then the note title, date, author and wrapped body with
  * automatic page breaks.
  */
@@ -368,7 +368,7 @@ async function exportNoteToPdf(
     doc.addImage(logo.dataUrl, "PNG", margin, margin, logoW, logoH);
     headerBottom = margin + logoH;
   }
-  doc.setTextColor(226, 35, 26); // magic red
+  doc.setTextColor(76, 98, 106); // eSpark primary
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
   doc.text("My Notes", pageW - margin, margin + 8, { align: "right" });
