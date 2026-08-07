@@ -222,12 +222,23 @@ export default function LoginClient({
         </div>
       </aside>
 
-      {/* ghost 7T mark sliding under the cut */}
+      {/* Brand mark as a full-height watermark straddling the 12° cut.
+          It is drawn TWICE at identical coordinates — this copy on the dark
+          panel, a second one inside the auth panel below — because a single
+          tint cannot read on both backgrounds at watermark opacity. Each copy
+          is clipped to its own side (the auth panel's clip-path does the
+          second one for free), so together they read as one continuous mark
+          that changes colour where it crosses the seam. */}
       <BrandGlyph className={s.ghost} tone="current" title="" />
 
       {/* ══ auth side — cut at the wordmark's 12° ══ */}
       <div className={s.authEdge} aria-hidden="true" />
       <main className={s.auth}>
+        {/* The light-side half of the watermark. It lives inside `.auth` so
+            that panel's own clip-path trims it to the seam, and shares the
+            dark copy's coordinates — both anchor to the viewport's right
+            edge and to its vertical centre, so the two halves line up. */}
+        <BrandGlyph className={s.ghostLight} tone="current" title="" />
         <form className={s.card} onSubmit={onSubmit} noValidate>
           <div>
             <span className={s.chip}>{t.chip}</span>

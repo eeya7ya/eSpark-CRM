@@ -42,8 +42,9 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "eSpark — Data Analytics & Quotation Platform",
-  description: "Data analytics and quotation platform powered by AI.",
+  title: "eSpark CRM",
+  description:
+    "Quotation design, material pricing and lead management for engineering and contracting teams.",
   applicationName: "eSpark",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
