@@ -210,18 +210,21 @@
 }
 .ghost {
   position: fixed;
-  /* Brand blue lifted off the near-black panel. */
-  color: var(--brand);
-  opacity: 0.16;
+  /* WHITE on the dark panel. The brand blue used before was a mid-tone
+     against near-black, so at watermark opacity it had almost no contrast
+     and the mark simply vanished on this side. Each half is now tinted
+     opposite to the ground it sits on, which is what makes the crossing
+     visible at all. */
+  color: #fff;
+  opacity: 0.055;
 }
 .ghostLight {
   /* Absolute, not fixed: `.auth` is the containing block, and its clip-path
      then trims this half exactly along the 12° seam. */
   position: absolute;
-  /* Ink rather than brand blue — the same blue that reads as a highlight on
-     near-black disappears into warm paper at watermark opacity. */
-  color: var(--ink);
-  opacity: 0.05;
+  /* DARK on the paper panel — the same inversion, the other way round. */
+  color: var(--night);
+  opacity: 0.055;
 }
 
 /* ══ auth panel (white, 12° cut) ═════════════════════════ */

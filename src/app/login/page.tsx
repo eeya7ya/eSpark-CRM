@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 // toggle. Geist is self-hosted from `src/fonts`; Cairo is inlined at build
 // time, so neither makes a runtime Google Fonts request.
 const geistSans = localFont({
-  src: [{ path: "../../fonts/GeistVF.woff2", style: "normal" }],
+  src: [{ path: "../../fonts/GeistVF.woff2", style: "normal", weight: "100 900" }],
   variable: "--font-geist-sans",
   display: "swap",
 });

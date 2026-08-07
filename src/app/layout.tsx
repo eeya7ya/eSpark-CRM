@@ -14,7 +14,7 @@ import { getRequestBranding, paletteCss } from "@/lib/workspaceBranding";
  * so the CRM renders correctly on an air-gapped or offline-first install.
  */
 const geistSans = localFont({
-  src: [{ path: "../fonts/GeistVF.woff2", style: "normal" }],
+  src: [{ path: "../fonts/GeistVF.woff2", style: "normal", weight: "100 900" }],
   variable: "--font-geist-sans",
   display: "swap",
   fallback: [
@@ -27,7 +27,7 @@ const geistSans = localFont({
 });
 
 const geistMono = localFont({
-  src: [{ path: "../fonts/GeistMonoVF.woff2", style: "normal" }],
+  src: [{ path: "../fonts/GeistMonoVF.woff2", style: "normal", weight: "100 900" }],
   variable: "--font-geist-mono",
   display: "swap",
   fallback: ["ui-monospace", "SFMono-Regular", "monospace"],
