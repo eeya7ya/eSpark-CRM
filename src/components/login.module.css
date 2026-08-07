@@ -96,32 +96,11 @@
 }
 
 .brandMain {
-  margin-top: auto;
+  /* Auto on BOTH sides centres the block in the space left between the top
+     bar and the panel floor. `margin-top: auto` alone pushed it to the
+     bottom, which is what left the middle of the panel empty. */
+  margin-block: auto;
   max-width: 560px;
-}
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font: 600 11px/1 var(--sans);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--night-text);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-  padding: 8px 14px;
-}
-.root[data-lang="ar"] .eyebrow {
-  letter-spacing: 0.06em;
-  font-size: 12px;
-}
-.eyebrow::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--brand);
-  box-shadow: 0 0 8px var(--brand);
 }
 .h1 {
   font-size: clamp(30px, 3.1vw, 46px);
@@ -195,20 +174,27 @@
   font-size: 12px;
 }
 
-/* giant ghost mark sliding under the cut */
+/* Brand mark as a full watermark behind the panel.
+   It was previously 120vh tall and pushed past the diagonal, so it was
+   clipped on three sides at once and read as an accidental crop rather than
+   a deliberate mark. Now it is sized and placed to sit WHOLE inside the dark
+   panel: 64vh centred vertically spans 18vh–82vh, and at every one of those
+   heights the 12° cut is further right than the mark's own edge, so no part
+   of it disappears under the white.
+   BrandGlyph paints discs as well as paths, so it is tinted via `color`
+   (it renders with currentColor) rather than by filling <path> only. */
 .ghost {
   position: fixed;
-  bottom: -12vh;
-  height: 120vh;
+  top: 50%;
+  inset-inline-end: calc(var(--panelW) + var(--slant) * 0.9);
+  height: min(64vh, 500px);
   width: auto;
-  opacity: 0.055;
-  inset-inline-end: calc(var(--panelW) - 10vw);
-  pointer-events: none;
-}
-/* BrandGlyph paints discs as well as paths, so tint the whole mark via
-   `color` (it renders with currentColor) rather than filling <path> only. */
-.ghost {
+  transform: translateY(-50%);
+  /* Slightly stronger than before to hold the same presence at the smaller
+     size, but still well under the text that crosses it. */
+  opacity: 0.07;
   color: var(--brand);
+  pointer-events: none;
 }
 
 /* ══ auth panel (white, 12° cut) ═════════════════════════ */
@@ -248,15 +234,6 @@
 .card {
   width: min(380px, 88%);
   padding: 32px 0;
-}
-.crest {
-  width: 34px;
-  height: auto;
-  display: block;
-  margin-bottom: 22px;
-}
-.crest {
-  color: var(--brand);
 }
 .chip {
   display: inline-block;
@@ -611,7 +588,10 @@
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 26px));
   }
   .brandMain {
-    margin-top: 30px;
+    /* The desktop rule centres the block with `margin-block: auto`. Stacked
+       on mobile there is no leftover space to centre in, so pin it back to
+       normal flow — an auto bottom margin here would push the panel open. */
+    margin-block: 30px 0;
   }
   .h1 {
     font-size: 30px;
