@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requirePlatformAdmin } from "@/lib/platformAuth";
+import { MODULES } from "@/lib/modules";
 import {
   auditPlatformAction,
   ensureControlSchema,
@@ -43,6 +44,8 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
       name?: string;
       status?: string;
       branding?: Record<string, unknown>;
+      /** Licensed modules; null clears the restriction. */
+      modules?: string[] | null;
     };
     const q = getControlSql();
     const changed: Record<string, unknown> = {};
@@ -64,6 +67,30 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
          where slug = ${slug}
       `;
       changed.status = body.status;
+    }
+
+    if (body.modules !== undefined) {
+      // null clears the restriction (licensed for everything). An array is
+      // filtered against the known module list so a typo cannot silently
+      // license nothing, and `admin` is implicit — a workspace must always be
+      // able to manage its own users.
+      const next =
+        body.modules === null
+          ? null
+          : Array.isArray(body.modules)
+            ? MODULES.filter(
+                (m) => m !== "admin" && (body.modules as string[]).includes(m),
+              )
+            : undefined;
+      if (next !== undefined) {
+        await q`
+          update workspaces
+             set modules = ${next === null ? null : JSON.stringify(next)},
+                 updated_at = now()
+           where slug = ${slug}
+        `;
+        changed.modules = next ?? "all";
+      }
     }
 
     if (body.branding && typeof body.branding === "object") {
@@ -90,6 +117,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
         status: updated.status,
         r2_prefix: updated.r2Prefix,
         branding: updated.branding,
+        modules: updated.modules,
         provision_error: updated.provisionError,
       },
     });

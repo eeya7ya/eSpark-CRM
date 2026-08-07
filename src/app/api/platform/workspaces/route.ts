@@ -27,6 +27,7 @@ function present(ws: Awaited<ReturnType<typeof listWorkspaces>>[number]) {
     status: ws.status,
     r2_prefix: ws.r2Prefix,
     branding: ws.branding,
+    modules: ws.modules,
     provision_error: ws.provisionError,
   };
 }

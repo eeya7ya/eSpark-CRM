@@ -40,6 +40,8 @@ export interface WorkspaceBinding {
   name: string;
   databaseUrl: string;
   r2Prefix: string;
+  /** Licensed modules, or null for no restriction. See controlDb.Workspace. */
+  modules: string[] | null;
 }
 
 const storage = new AsyncLocalStorage<WorkspaceBinding>();
@@ -57,6 +59,7 @@ export function toBinding(ws: Workspace | WorkspaceBinding): WorkspaceBinding {
     name: ws.name,
     databaseUrl: ws.databaseUrl,
     r2Prefix: ws.r2Prefix,
+    modules: ws.modules,
   };
 }
 

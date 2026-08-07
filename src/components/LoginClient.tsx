@@ -11,14 +11,11 @@ const T = {
   en: {
     langBtn: "عربي",
     h1: "<em>Quotation</em> Designer,<br>Material Pricing<br>&amp; Lead Management",
-    sub: "Design quotations, price materials and manage your leads — from the first RFQ to the delivered job, in one connected workspace.",
-    f1: "RFQ → Quotation in minutes",
-    f2: "Live material pricing & margins",
-    f3: "Lead & pipeline management",
-    f4: "Role-based & fully audited",
-    s1: "Quotes issued",
-    s2: "Active RFQs",
-    s3: "Projects live",
+    sub: "Price the materials, issue the quotation, follow the job to delivery.",
+    f1: "RFQ to quotation in minutes",
+    f2: "Live pricing & margins",
+    f3: "Lead & pipeline tracking",
+    f4: "Role-based & audited",
     chip: "Sign in",
     welcome: "Welcome back",
     sub2: "Enter your credentials to continue.",
@@ -26,7 +23,6 @@ const T = {
     wsP: "your-company",
     wsHint: "The workspace code your administrator gave you.",
     userL: "Username",
-    userP: "your.username",
     passL: "Password",
     rem: "Remember me",
     forgot: "Forgot password?",
@@ -41,14 +37,11 @@ const T = {
   ar: {
     langBtn: "EN",
     h1: "مصمّم <em>عروض الأسعار</em>،<br>تسعير المواد<br>وإدارة العملاء المحتملين",
-    sub: "صمّم عروض الأسعار، سعّر المواد وتابع عملاءك المحتملين — من أول طلب عرض سعر حتى تسليم المشروع، في مساحة عمل واحدة متّصلة.",
+    sub: "سعّر المواد، أصدر عرض السعر، وتابع المشروع حتى التسليم.",
     f1: "من الطلب إلى عرض السعر في دقائق",
-    f2: "تسعير مباشر للمواد والهوامش",
-    f3: "إدارة العملاء المحتملين والمبيعات",
-    f4: "صلاحيات مدارة وتدقيق كامل",
-    s1: "عرض سعر صادر",
-    s2: "طلبات نشطة",
-    s3: "مشروعًا قائمًا",
+    f2: "تسعير مباشر وهوامش",
+    f3: "متابعة العملاء والمبيعات",
+    f4: "صلاحيات مدارة وتدقيق",
     chip: "تسجيل الدخول",
     welcome: "أهلاً بعودتك",
     sub2: "أدخل بياناتك للمتابعة.",
@@ -56,7 +49,6 @@ const T = {
     wsP: "اسم-شركتك",
     wsHint: "رمز مساحة العمل الذي زوّدك به المشرف.",
     userL: "اسم المستخدم",
-    userP: "اسم.المستخدم",
     passL: "كلمة المرور",
     rem: "تذكرني",
     forgot: "نسيت كلمة المرور؟",
@@ -204,21 +196,6 @@ export default function LoginClient({
               <span>{t.f4}</span>
             </div>
           </div>
-
-          <div className={s.stats}>
-            <div className={s.stat}>
-              <b>1.2k+</b>
-              <span>{t.s1}</span>
-            </div>
-            <div className={s.stat}>
-              <b>32</b>
-              <span>{t.s2}</span>
-            </div>
-            <div className={s.stat}>
-              <b>24</b>
-              <span>{t.s3}</span>
-            </div>
-          </div>
         </div>
       </aside>
 
@@ -297,7 +274,6 @@ export default function LoginClient({
                 name="username"
                 type="text"
                 autoComplete="username"
-                placeholder={t.userP}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -317,7 +293,6 @@ export default function LoginClient({
                 name="password"
                 type={showPw ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
