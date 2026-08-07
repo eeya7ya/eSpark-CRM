@@ -10,7 +10,6 @@ import BrandGlyph from "@/components/brand/BrandGlyph";
 const T = {
   en: {
     langBtn: "عربي",
-    eyebrow: "eSpark Workspace",
     h1: "<em>Quotation</em> Designer,<br>Material Pricing<br>&amp; Lead Management",
     sub: "Design quotations, price materials and manage your leads — from the first RFQ to the delivered job, in one connected workspace.",
     f1: "RFQ → Quotation in minutes",
@@ -41,7 +40,6 @@ const T = {
   },
   ar: {
     langBtn: "EN",
-    eyebrow: "مساحة عمل eSpark",
     h1: "مصمّم <em>عروض الأسعار</em>،<br>تسعير المواد<br>وإدارة العملاء المحتملين",
     sub: "صمّم عروض الأسعار، سعّر المواد وتابع عملاءك المحتملين — من أول طلب عرض سعر حتى تسليم المشروع، في مساحة عمل واحدة متّصلة.",
     f1: "من الطلب إلى عرض السعر في دقائق",
@@ -169,7 +167,6 @@ export default function LoginClient({
         </div>
 
         <div className={s.brandMain}>
-          <span className={s.eyebrow}>{t.eyebrow}</span>
           <h1
             className={`${s.h1} ${s.disp}`}
             dangerouslySetInnerHTML={{ __html: t.h1 }}
@@ -232,7 +229,6 @@ export default function LoginClient({
       <div className={s.authEdge} aria-hidden="true" />
       <main className={s.auth}>
         <form className={s.card} onSubmit={onSubmit} noValidate>
-          <BrandGlyph className={s.crest} tone="current" title="" />
           <div>
             <span className={s.chip}>{t.chip}</span>
             <h2 className={`${s.h2} ${s.disp}`}>{t.welcome}</h2>
