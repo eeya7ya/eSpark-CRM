@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import { Cairo } from "next/font/google";
 import { getSessionUser } from "@/lib/auth";
+import { hasControlPlane } from "@/lib/controlDb";
 import LoginClient from "@/components/LoginClient";
 
 export const dynamic = "force-dynamic";
@@ -29,5 +31,19 @@ export default async function LoginPage() {
     // A must-change account has to set its own password before anything else.
     redirect(user.mustChangePassword ? "/change-password" : "/");
   }
-  return <LoginClient className={`${geistSans.variable} ${cairo.variable}`} />;
+  // The workspace field only appears where there is more than one workspace to
+  // choose between; a single-workspace deployment shows the form unchanged.
+  const multiWorkspace = hasControlPlane();
+  const jar = await cookies();
+  const remembered = multiWorkspace
+    ? jar.get("espark_ws")?.value || ""
+    : "";
+
+  return (
+    <LoginClient
+      className={`${geistSans.variable} ${cairo.variable}`}
+      showWorkspace={multiWorkspace}
+      defaultWorkspace={remembered}
+    />
+  );
 }

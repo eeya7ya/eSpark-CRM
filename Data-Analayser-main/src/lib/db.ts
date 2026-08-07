@@ -5,6 +5,8 @@ import { isD1Configured, d1Query } from "./db-d1";
 import { applyD1Schema } from "./d1-schema";
 import { D1_SCHEMA_SQL } from "./d1Schema.generated";
 import { ensureD1Fts } from "./fts";
+import { hasControlPlane } from "./controlDb";
+import { requireBoundWorkspace } from "./workspaceContext";
 
 /**
  * Postgres client for Vercel serverless runtimes.
@@ -34,8 +36,17 @@ import { ensureD1Fts } from "./fts";
 // Re-use the client across warm invocations of the same serverless instance.
 // `globalThis` so hot-reload in `next dev` doesn't leak sockets.
 const globalForDb = globalThis as unknown as {
-  __mtSql?: Sql;
+  __mtClients?: Map<string, Sql>;
 };
+
+/**
+ * How many distinct workspace clients one warm lambda keeps open. Each holds
+ * up to `max` sockets, so this caps the footprint of an instance that has
+ * served many workspaces. Evicted clients are dropped, never `.end()`ed — a
+ * concurrent request may still be mid-query on one, and postgres.js closes
+ * genuinely idle sockets on its own after `idle_timeout`.
+ */
+const MAX_POOLED_CLIENTS = 12;
 
 /** True when any Postgres connection string is configured. */
 function hasPostgresUrl(): boolean {
@@ -94,41 +105,74 @@ export function usingD1(): boolean {
 }
 
 /**
- * Returns a lazily-created, process-wide `postgres` tagged-template client.
- * Usage:
+ * A `postgres` client for one connection string, memoised across warm
+ * invocations so a hot lambda reuses its sockets between requests.
+ */
+function clientFor(url: string): Sql {
+  let cache = globalForDb.__mtClients;
+  if (!cache) {
+    cache = new Map<string, Sql>();
+    globalForDb.__mtClients = cache;
+  }
+  const existing = cache.get(url);
+  if (existing) {
+    // Refresh insertion order so the cap below evicts least-recently-used.
+    cache.delete(url);
+    cache.set(url, existing);
+    return existing;
+  }
+  if (cache.size >= MAX_POOLED_CLIENTS) {
+    const oldest = cache.keys().next().value;
+    if (oldest !== undefined) cache.delete(oldest);
+  }
+  const client = postgres(url, {
+    // The pooler requires TLS for every connection.
+    ssl: "require",
+    // Required for transaction-mode poolers (pgbouncer-in-transaction-mode)
+    // because prepared statements cannot span pooled connections.
+    prepare: false,
+    // Small pool per lambda — three sockets is the sweet spot for the CRM
+    // fan-out queries (dashboard summary, list+count pairs) where
+    // Promise.all only helps if there are multiple connections to dispatch
+    // across. Previously `max: 1` serialised those queries and was a major
+    // cause of the "dashboard times out" symptom. Three is still tiny
+    // enough that 100 concurrent warm lambdas stay well under the pooler's
+    // client budget (Neon's pooled endpoint, PgBouncer in transaction mode).
+    max: 3,
+    idle_timeout: 20,
+    connect_timeout: 10,
+    // Let transient network hiccups retry instead of failing the request.
+    max_lifetime: 60 * 30,
+    // Suppress NOTICE noise in production logs.
+    onnotice: () => {},
+  });
+  cache.set(url, client);
+  return client;
+}
+
+/**
+ * The tagged-template client for the CURRENT request's database.
+ *
  *   const q = sql();
  *   const rows = await q`select * from users where id = ${id}`;
+ *
+ * Multi-workspace deployments resolve to the bound workspace's database and
+ * throw `NO_WORKSPACE_BOUND` when nothing is bound — never falling back to a
+ * default, because a silent fallback is exactly how one client's data reaches
+ * another. Deployments with no control plane configured keep the previous
+ * single-database behaviour.
  */
 export function sql(): Sql {
   // D1 fallback: route every query through the dialect shim
-  // (src/lib/db-d1-sql.ts) instead of the Postgres client.
+  // (src/lib/db-d1-sql.ts) instead of the Postgres client. D1 is
+  // single-database only — the workspace model requires Postgres.
   if (usingD1()) {
     return getD1Sql() as unknown as Sql;
   }
-  if (!globalForDb.__mtSql) {
-    globalForDb.__mtSql = postgres(getUrl(), {
-      // The pooler requires TLS for every connection.
-      ssl: "require",
-      // Required for transaction-mode poolers (pgbouncer-in-transaction-mode)
-      // because prepared statements cannot span pooled connections.
-      prepare: false,
-      // Small pool per lambda — three sockets is the sweet spot for the CRM
-      // fan-out queries (dashboard summary, list+count pairs) where
-      // Promise.all only helps if there are multiple connections to dispatch
-      // across. Previously `max: 1` serialised those queries and was a major
-      // cause of the "dashboard times out" symptom. Three is still tiny
-      // enough that 100 concurrent warm lambdas stay well under the pooler's
-      // client budget (Neon's pooled endpoint, PgBouncer in transaction mode).
-      max: 3,
-      idle_timeout: 20,
-      connect_timeout: 10,
-      // Let transient network hiccups retry instead of failing the request.
-      max_lifetime: 60 * 30,
-      // Suppress NOTICE noise in production logs.
-      onnotice: () => {},
-    });
+  if (hasControlPlane()) {
+    return clientFor(requireBoundWorkspace().databaseUrl);
   }
-  return globalForDb.__mtSql;
+  return clientFor(getUrl());
 }
 
 /**

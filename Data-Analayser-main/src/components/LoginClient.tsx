@@ -23,6 +23,9 @@ const T = {
     chip: "Sign in",
     welcome: "Welcome back",
     sub2: "Enter your credentials to continue.",
+    wsL: "Workspace",
+    wsP: "your-company",
+    wsHint: "The workspace code your administrator gave you.",
     userL: "Username",
     userP: "your.username",
     passL: "Password",
@@ -38,7 +41,7 @@ const T = {
   },
   ar: {
     langBtn: "EN",
-    eyebrow: "مساحة عمل سحر التقنية",
+    eyebrow: "مساحة عمل eSpark",
     h1: "مصمّم <em>عروض الأسعار</em>،<br>تسعير المواد<br>وإدارة العملاء المحتملين",
     sub: "صمّم عروض الأسعار، سعّر المواد وتابع عملاءك المحتملين — من أول طلب عرض سعر حتى تسليم المشروع، في مساحة عمل واحدة متّصلة.",
     f1: "من الطلب إلى عرض السعر في دقائق",
@@ -51,6 +54,9 @@ const T = {
     chip: "تسجيل الدخول",
     welcome: "أهلاً بعودتك",
     sub2: "أدخل بياناتك للمتابعة.",
+    wsL: "مساحة العمل",
+    wsP: "اسم-شركتك",
+    wsHint: "رمز مساحة العمل الذي زوّدك به المشرف.",
     userL: "اسم المستخدم",
     userP: "اسم.المستخدم",
     passL: "كلمة المرور",
@@ -67,9 +73,31 @@ const T = {
 
 type Lang = keyof typeof T;
 
-export default function LoginClient({ className = "" }: { className?: string }) {
+/** Remembers the last workspace signed into, so returning staff never retype it. */
+const WS_COOKIE = "espark_ws";
+
+function rememberWorkspace(slug: string): void {
+  // Readable by the server component that prefills this form, so it is not
+  // httpOnly. It holds no secret — only which login form to show — and the
+  // session cookie remains httpOnly as before.
+  document.cookie = `${WS_COOKIE}=${encodeURIComponent(slug)}; path=/; max-age=${
+    60 * 60 * 24 * 365
+  }; samesite=lax`;
+}
+
+export default function LoginClient({
+  className = "",
+  showWorkspace = false,
+  defaultWorkspace = "",
+}: {
+  className?: string;
+  /** True when the deployment hosts multiple client workspaces. */
+  showWorkspace?: boolean;
+  defaultWorkspace?: string;
+}) {
   const router = useRouter();
   const [lang, setLang] = useState<Lang>("en");
+  const [workspace, setWorkspace] = useState(defaultWorkspace);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -89,10 +117,16 @@ export default function LoginClient({ className = "" }: { className?: string }) 
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username,
+          password,
+          workspace: workspace.trim().toLowerCase(),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Login failed");
+
+      if (data.workspace) rememberWorkspace(String(data.workspace));
 
       // A must-change account goes straight to the change-password screen
       // (middleware would bounce it there anyway; this just skips the hop).
@@ -213,6 +247,34 @@ export default function LoginClient({ className = "" }: { className?: string }) 
           {notice && (
             <div className={s.foot} style={{ marginTop: 0, marginBottom: 14, textAlign: "start" }}>
               {notice}
+            </div>
+          )}
+
+          {showWorkspace && (
+            <div className={s.fld}>
+              <label htmlFor="w">{t.wsL}</label>
+              <div className={s.in}>
+                <svg viewBox="0 0 24 24">
+                  <path d="M3 21h18" />
+                  <path d="M5 21V7l7-4 7 4v14" />
+                  <path d="M10 21v-6h4v6" />
+                </svg>
+                <input
+                  id="w"
+                  name="workspace"
+                  type="text"
+                  autoComplete="organization"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  placeholder={t.wsP}
+                  value={workspace}
+                  onChange={(e) => setWorkspace(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={s.foot} style={{ marginTop: 6, textAlign: "start" }}>
+                {t.wsHint}
+              </div>
             </div>
           )}
 

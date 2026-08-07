@@ -71,10 +71,46 @@ async function readSession(req: NextRequest): Promise<JWTPayload | null> {
   }
 }
 
+/**
+ * Enforce that a session is used on its own workspace's hostname.
+ *
+ * Inert until `WORKSPACE_DOMAIN` is set (e.g. `espark.dev`), because until
+ * workspaces get their own subdomains every deployment is served from one
+ * host — and on a `*.vercel.app` hostname a naive subdomain check would reject
+ * every request. Once wildcard domains are in place, setting the variable
+ * turns `acme.espark.dev` into a hard boundary: a session for another
+ * workspace is refused rather than silently served the wrong branding.
+ *
+ * Returns the workspace slug the host demands, or null if there is nothing to
+ * enforce.
+ */
+function hostWorkspace(req: NextRequest): string | null {
+  const domain = process.env.WORKSPACE_DOMAIN;
+  if (!domain) return null;
+  const host = (req.headers.get("host") || "").split(":")[0].toLowerCase();
+  if (!host.endsWith(`.${domain}`)) return null;
+  const sub = host.slice(0, -(domain.length + 1));
+  // Only a single leading label names a workspace; anything deeper is not one.
+  if (!sub || sub.includes(".")) return null;
+  return sub;
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
   const payload = await readSession(req);
+
+  // A session presented on a different workspace's hostname is discarded
+  // rather than honoured. The page gate and route handlers then treat the
+  // request as signed out, sending the user to that workspace's login.
+  const required = hostWorkspace(req);
+  if (payload && required && payload.ws !== required) {
+    const res = isApi
+      ? NextResponse.json({ error: "UNAUTHENTICATED" }, { status: 401 })
+      : NextResponse.redirect(new URL("/login", req.url));
+    res.cookies.delete(COOKIE);
+    return res;
+  }
 
   if (isApi) {
     if (!isMutation(req.method)) return NextResponse.next();

@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { sql, ensureSchema } from "./db";
+import { hasControlPlane, getWorkspaceBySlugCached } from "./controlDb";
+import { bindWorkspace, getBoundWorkspace } from "./workspaceContext";
 
 const COOKIE = "mt_session";
 const ALG = "HS256";
@@ -40,6 +42,14 @@ export interface SessionUser {
    * the moment the user sets their own password.
    */
   mustChangePassword: boolean;
+  /**
+   * Which workspace (client company) this session belongs to. Users live in
+   * their workspace's own database, so `id` and `username` are unique only
+   * within a workspace — two clients can each have an `admin`, and they are
+   * different people. Empty in single-workspace deployments, where there is
+   * nothing to disambiguate.
+   */
+  workspaceSlug: string;
 }
 
 /**
@@ -103,8 +113,16 @@ export async function verifyPassword(
   return b64(bits) === expected;
 }
 
-/** Bootstraps the default admin user on first call. Idempotent. */
+/**
+ * Bootstraps the default admin user on first call. Idempotent.
+ *
+ * Only for single-workspace deployments. Once a control plane exists, each
+ * workspace gets its own first admin seeded at provisioning time with a
+ * password the operator sets — planting a shared `admin`/`admin123` in every
+ * client's database instead would be a known credential on every one of them.
+ */
 export async function ensureDefaultAdmin(): Promise<void> {
+  if (hasControlPlane()) return;
   await ensureSchema();
   const user = process.env.DEFAULT_ADMIN_USER || "admin";
   const pass = process.env.DEFAULT_ADMIN_PASS || "admin123";
@@ -131,6 +149,9 @@ export async function createSessionCookie(user: SessionUser): Promise<void> {
     display_name: user.display_name,
     phone: user.phone,
     mustChange: user.mustChangePassword,
+    // The workspace this session may touch. Signed into the token, so the
+    // edge middleware can read it without a database round trip.
+    ws: user.workspaceSlug,
   })
     .setProtectedHeader({ alg: ALG })
     .setIssuedAt()
@@ -151,12 +172,35 @@ export async function clearSessionCookie(): Promise<void> {
   jar.delete(COOKIE);
 }
 
+/**
+ * Read and verify the session, and — in a multi-workspace deployment — bind
+ * the session's workspace so every subsequent `sql()` in this request reaches
+ * that workspace's database and no other.
+ *
+ * This is the single ambient binding point. It is called by route handlers
+ * (usually via `requireUser`) and directly by server components, which is why
+ * 119 route handlers needed no change.
+ */
 export async function getSessionUser(): Promise<SessionUser | null> {
   try {
     const jar = await cookies();
     const token = jar.get(COOKIE)?.value;
     if (!token) return null;
     const { payload } = await jwtVerify(token, secret(), { algorithms: [ALG] });
+    const workspaceSlug = String(payload.ws || "");
+
+    if (hasControlPlane()) {
+      // No `ws` claim means a session minted before workspaces existed. There
+      // is no safe workspace to assume, so it is treated as signed out — one
+      // forced re-login, rather than a guess that could open the wrong data.
+      if (!workspaceSlug) return null;
+      const ws = await getWorkspaceBySlugCached(workspaceSlug);
+      // A deleted or suspended workspace ends its sessions: suspension is how
+      // the platform cuts off a client, so it has to hold mid-session too.
+      if (!ws || ws.status !== "active") return null;
+      bindWorkspace(ws);
+    }
+
     return {
       id: Number(payload.sub),
       username: String(payload.username),
@@ -164,6 +208,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       display_name: String(payload.display_name || ""),
       phone: String(payload.phone || ""),
       mustChangePassword: payload.mustChange === true,
+      workspaceSlug,
     };
   } catch {
     return null;
@@ -173,6 +218,13 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 export async function requireUser(): Promise<SessionUser> {
   const user = await getSessionUser();
   if (!user) throw new Error("UNAUTHENTICATED");
+  // Defence in depth. `bindWorkspace` sets the binding on the current async
+  // context rather than wrapping a callback, so re-checking it here means a
+  // binding that somehow belonged to another request surfaces as a refused
+  // request instead of as a cross-workspace read.
+  if (hasControlPlane() && getBoundWorkspace()?.slug !== user.workspaceSlug) {
+    throw new Error("WORKSPACE_MISMATCH");
+  }
   return user;
 }
 
