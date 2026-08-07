@@ -44,6 +44,16 @@ export interface Workspace {
   r2Prefix: string;
   /** Pre-login branding: app name, login tagline, logo, colour palette. */
   branding: Record<string, unknown>;
+  /**
+   * Modules this workspace is licensed for, or null for "everything".
+   *
+   * This sits ABOVE the per-user module roles: a workspace admin can only
+   * grant access to a module their company has actually licensed, so a
+   * pricing-only customer has no route to the CRM however their own roles are
+   * configured. Null rather than a full list is the default so an existing
+   * deployment keeps every module without a migration.
+   */
+  modules: string[] | null;
   provisionError: string | null;
 }
 
@@ -139,11 +149,14 @@ export function ensureControlSchema(): Promise<void> {
           status           text not null default 'provisioning',
           r2_prefix        text not null default '',
           branding         text not null default '{}',
+          modules          text,
           provision_error  text,
           created_at       timestamptz not null default now(),
           updated_at       timestamptz not null default now()
         )
       `;
+      // Added after the first control databases were created.
+      await q`alter table workspaces add column if not exists modules text`;
       await q`
         create table if not exists platform_admins (
           id                   bigserial primary key,
@@ -185,6 +198,7 @@ type WorkspaceRow = {
   status: string;
   r2_prefix: string;
   branding: string | Record<string, unknown> | null;
+  modules: string | null;
   provision_error: string | null;
 };
 
@@ -211,6 +225,22 @@ function parseBranding(value: WorkspaceRow["branding"]): Record<string, unknown>
   return {};
 }
 
+/**
+ * Parse the licensed-module list. Anything unreadable is treated as "no
+ * restriction" rather than "no access" — a corrupt row should not lock a
+ * paying customer out of the product they bought.
+ */
+function parseModules(value: string | null): string[] | null {
+  if (!value || !value.trim()) return null;
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) return parsed.map(String);
+  } catch {
+    // fall through
+  }
+  return null;
+}
+
 function toWorkspace(row: WorkspaceRow): Workspace {
   return {
     id: Number(row.id),
@@ -220,6 +250,7 @@ function toWorkspace(row: WorkspaceRow): Workspace {
     status: row.status as WorkspaceStatus,
     r2Prefix: row.r2_prefix || "",
     branding: parseBranding(row.branding),
+    modules: parseModules(row.modules),
     provisionError: row.provision_error,
   };
 }
@@ -236,7 +267,7 @@ export async function getWorkspaceBySlug(
   const q = getControlSql();
   const rows = (await q`
     select id, slug, name, database_url_enc, status, r2_prefix, branding,
-           provision_error
+           modules, provision_error
     from workspaces
     where slug = ${slug}
     limit 1
@@ -282,7 +313,7 @@ export async function listWorkspaces(): Promise<Workspace[]> {
   const q = getControlSql();
   const rows = (await q`
     select id, slug, name, database_url_enc, status, r2_prefix, branding,
-           provision_error
+           modules, provision_error
     from workspaces
     order by created_at desc
   `) as WorkspaceRow[];

@@ -1,5 +1,6 @@
 import { sql } from "./db";
 import { canReadAll, type SessionUser } from "./auth";
+import { getBoundWorkspace } from "./workspaceContext";
 
 /**
  * V2.0 module RBAC.
@@ -85,6 +86,29 @@ export interface ModuleGrant {
   created_at: string;
 }
 
+/**
+ * Whether the CURRENT workspace has licensed `module`.
+ *
+ * This is the licence layer, and it sits above every per-user grant: a
+ * workspace admin can hand out roles all they like, but only within the
+ * modules their company actually pays for. A pricing-only customer has no
+ * route into the CRM regardless of how their own roles are configured.
+ *
+ * `admin` is never revocable — a workspace that cannot administer itself
+ * cannot manage its own users, which would leave it dependent on us for
+ * routine changes.
+ *
+ * Deployments with no control plane, and workspaces with no explicit list,
+ * license everything. That keeps this additive: nothing changes until a
+ * module list is actually set on a workspace.
+ */
+export function workspaceLicenses(module: Module): boolean {
+  if (module === "admin") return true;
+  const bound = getBoundWorkspace();
+  if (!bound || bound.modules === null) return true;
+  return bound.modules.includes(module);
+}
+
 /** Active (non-revoked) grants for one user. Cached per request via React cache where called. */
 export async function getUserModuleRoles(userId: number): Promise<ModuleGrant[]> {
   const q = sql();
@@ -95,11 +119,15 @@ export async function getUserModuleRoles(userId: number): Promise<ModuleGrant[]>
       and revoked_at is null
     order by module, role
   `) as ModuleGrant[];
-  return rows;
+  // Filtered here, the one place every consumer reads grants from, so an
+  // unlicensed module vanishes from the navigation too instead of being
+  // offered and then refused.
+  return rows.filter((r) => workspaceLicenses(r.module));
 }
 
 /** True when the user has ANY active role within `module`. */
 export async function hasModule(userId: number, module: Module): Promise<boolean> {
+  if (!workspaceLicenses(module)) return false;
   const q = sql();
   const rows = (await q`
     select 1 as ok
@@ -118,6 +146,7 @@ export async function hasModuleRole(
   module: Module,
   role: string,
 ): Promise<boolean> {
+  if (!workspaceLicenses(module)) return false;
   const q = sql();
   const rows = (await q`
     select 1 as ok
@@ -142,6 +171,9 @@ export async function requireModule(
   user: SessionUser,
   module: Module,
 ): Promise<void> {
+  // Before the admin short-circuit below: an unlicensed module is closed to
+  // everyone in the workspace, including its own administrators.
+  if (!workspaceLicenses(module)) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModule(user.id, module)) return;
   throw new Error("FORBIDDEN");
@@ -168,6 +200,11 @@ export async function requireModuleAllowLegacy(
   user: SessionUser,
   module: Module,
 ): Promise<void> {
+  // Ahead of BOTH escape hatches below — the admin short-circuit and the
+  // no-grants-at-all legacy bypass. Either would otherwise open a module the
+  // workspace has not licensed, and the legacy bypass in particular fires for
+  // exactly the users a freshly provisioned workspace starts with.
+  if (!workspaceLicenses(module)) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModule(user.id, module)) return;
 
@@ -221,6 +258,9 @@ export async function requireModuleAllowLegacy(
  * endpoint can be hit, not what data comes back.
  */
 export async function requireCrmOrProjectsRead(user: SessionUser): Promise<void> {
+  if (!workspaceLicenses("crm") && !workspaceLicenses("projects")) {
+    throw new Error("FORBIDDEN");
+  }
   if (canReadAll(user)) return;
   if (await hasModule(user.id, "crm")) return;
   if (await hasModule(user.id, "projects")) return;
@@ -266,6 +306,7 @@ export async function requireCrmOrProjectsRead(user: SessionUser): Promise<void>
  * edits another user's clients.
  */
 export async function requireCrmClientWrite(user: SessionUser): Promise<void> {
+  if (!workspaceLicenses("crm")) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModule(user.id, "crm")) return;
   if (await hasModuleRole(user.id, "projects", "manager")) return;
@@ -299,6 +340,7 @@ export async function requireModuleRole(
   module: Module,
   role: string,
 ): Promise<void> {
+  if (!workspaceLicenses(module)) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModuleRole(user.id, module, role)) return;
   throw new Error("FORBIDDEN");
@@ -422,6 +464,7 @@ export async function canSubmitForExecutive(user: SessionUser): Promise<boolean>
  *   - a crm presales_manager (auto — they run the pricing lifecycle).
  */
 export async function canAccessPricing(user: SessionUser): Promise<boolean> {
+  if (!workspaceLicenses("pricing")) return false;
   if (canReadAll(user)) return true;
   if (await hasModule(user.id, "pricing")) return true;
   if (await hasModuleRole(user.id, "crm", "presales_manager")) return true;

@@ -8,8 +8,26 @@ export interface WorkspaceSummary {
   name: string;
   status: string;
   r2Prefix: string;
+  /** Licensed modules, or null for "everything". */
+  modules: string[] | null;
   provisionError: string | null;
 }
+
+/**
+ * Modules a workspace can be licensed for, with the labels an operator would
+ * recognise. `admin` is deliberately absent — every workspace administers its
+ * own users, so it is not something to sell or withhold.
+ */
+const LICENSABLE: Array<{ id: string; label: string }> = [
+  { id: "crm", label: "CRM & leads" },
+  { id: "pricing", label: "Material pricing" },
+  { id: "projects", label: "Projects" },
+  { id: "storage", label: "Storage" },
+  { id: "catalogue", label: "Catalogue editor" },
+  { id: "delivery", label: "Delivery" },
+  { id: "showroom", label: "Showroom" },
+  { id: "accountant", label: "Accounting" },
+];
 
 const STATUS_STYLES: Record<string, string> = {
   active:
@@ -60,12 +78,14 @@ export default function PlatformConsole({
             name: string;
             status: string;
             r2_prefix: string;
+            modules: string[] | null;
             provision_error: string | null;
           }) => ({
             slug: w.slug,
             name: w.name,
             status: w.status,
             r2Prefix: w.r2_prefix,
+            modules: w.modules,
             provisionError: w.provision_error,
           }),
         ),
@@ -136,6 +156,46 @@ export default function PlatformConsole({
     } finally {
       setBusy(false);
     }
+  }
+
+  async function setModules(
+    target: WorkspaceSummary,
+    modules: string[] | null,
+  ) {
+    setError(null);
+    setNotice(null);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/platform/workspaces/${target.slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ modules }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Could not update licensing");
+      await refresh();
+      setNotice(
+        modules === null
+          ? `${target.name} is licensed for every module.`
+          : `${target.name} is licensed for ${modules.length} module(s).`,
+      );
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function toggleModule(target: WorkspaceSummary, id: string) {
+    // null means "everything", so the first time an operator unticks a box we
+    // have to materialise the full list and remove from it — otherwise the
+    // click would read as "license only this one".
+    const current =
+      target.modules ?? LICENSABLE.map((m) => m.id);
+    const next = current.includes(id)
+      ? current.filter((m) => m !== id)
+      : [...current, id];
+    setModules(target, next);
   }
 
   async function signOut() {
@@ -350,6 +410,45 @@ export default function PlatformConsole({
                   )}
                 </div>
               </div>
+              <div className="mt-4 border-t border-espark-border pt-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="text-sm font-medium text-espark-ink">
+                    Licensed modules
+                  </p>
+                  <button
+                    disabled={busy || ws.modules === null}
+                    onClick={() => setModules(ws, null)}
+                    className="text-xs text-espark-primary disabled:text-espark-muted"
+                  >
+                    {ws.modules === null ? "All modules" : "License all"}
+                  </button>
+                </div>
+                <p className="mt-1 text-xs text-espark-muted">
+                  Enforced above this company&rsquo;s own roles — their admin
+                  cannot grant staff a module you have not licensed.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {LICENSABLE.map((m) => {
+                    const on = ws.modules === null || ws.modules.includes(m.id);
+                    return (
+                      <button
+                        key={m.id}
+                        disabled={busy}
+                        onClick={() => toggleModule(ws, m.id)}
+                        aria-pressed={on}
+                        className={`rounded-full border px-3 py-1 text-xs transition-colors disabled:opacity-60 ${
+                          on
+                            ? "border-espark-primary bg-espark-primary/10 text-espark-ink"
+                            : "border-espark-border text-espark-muted"
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {ws.provisionError && (
                 <p className="mt-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
                   {ws.provisionError} — creating it again with the same code

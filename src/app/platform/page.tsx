@@ -22,6 +22,7 @@ export default async function PlatformPage() {
     name: ws.name,
     status: ws.status,
     r2Prefix: ws.r2Prefix,
+    modules: ws.modules,
     provisionError: ws.provisionError,
   }));
 
