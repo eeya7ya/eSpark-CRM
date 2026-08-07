@@ -1,11 +1,14 @@
+import BrandLoader from "@/components/brand/BrandLoader";
+
 /**
- * Inline brand loader — a breathing 3×3 grid of dots that scales with
- * `size`. Used inside buttons, panels, and tab bodies.
+ * Inline brand loader — the eSpark mark in motion, scaled down for buttons,
+ * panels and tab bodies. Shares its geometry and animation with the
+ * full-screen PageLoader, so waiting looks the same everywhere in the app.
  *
- * No "use client", no runtime style injection: the `mt-loader-grid`
- * keyframes live in globals.css so the animation runs on first paint
- * (server-rendered too) instead of waiting for React to hydrate and run
- * a useEffect — that delay was the "loader renders late" problem.
+ * No "use client", no runtime style injection: the keyframes live in
+ * globals.css so the animation runs on first paint (server-rendered too)
+ * instead of waiting for React to hydrate — that delay was the "loader
+ * renders late" problem.
  *
  *   <Spinner />                          — bare 16-px indicator.
  *   <Spinner size={20} label="Loading…"/>— with text on the right.
@@ -19,43 +22,16 @@ export default function Spinner({
   className?: string;
   label?: string;
 }) {
-  const dot = Math.max(3, Math.round(size / 3.2));
-  const gap = Math.max(2, Math.round(size / 5.5));
-  const radius = Math.max(1, Math.round(dot / 3));
-
   return (
     <span
       role="status"
       aria-live="polite"
       className={`inline-flex items-center gap-2 text-espark-ink/70 ${className}`}
     >
-      <span
-        aria-hidden="true"
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(3, ${dot}px)`,
-          gap: `${gap}px`,
-          flexShrink: 0,
-        }}
-      >
-        {Array.from({ length: 9 }).map((_, i) => {
-          const row = Math.floor(i / 3);
-          const col = i % 3;
-          return (
-            <span
-              key={i}
-              style={{
-                width: dot,
-                height: dot,
-                borderRadius: radius,
-                background: "#EF476F",
-                animation: "mt-loader-grid 1.3s ease-in-out infinite",
-                animationDelay: `${(row + col) * 0.1}s`,
-              }}
-            />
-          );
-        })}
-      </span>
+      {/* The mark is roughly half as wide as it is tall, so at inline sizes it
+          is scaled up a little to hold the same optical weight as the text
+          beside it. */}
+      <BrandLoader size={Math.round(size * 1.5)} className="shrink-0" />
       {label && (
         <span className="text-xs font-medium text-espark-ink/70">{label}</span>
       )}
