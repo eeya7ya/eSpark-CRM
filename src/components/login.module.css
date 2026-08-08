@@ -57,10 +57,20 @@
 .brand {
   position: fixed;
   inset: 0;
+  /* The square grid read as generic dashboard chrome and fought the diagonal
+     that defines this screen. Replaced with hairlines running at the SAME 12°
+     as the panel cut and the italic wordmark, so the background reinforces
+     the composition instead of arguing with it — plus two soft brand-tinted
+     pools for depth. Widely spaced and very low contrast: it should register
+     as texture, not as a pattern anyone reads. */
   background:
-    radial-gradient(52% 42% at 12% 8%, rgba(91, 120, 132, 0.1), transparent 65%),
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 100% 56px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 100%,
+    radial-gradient(46% 38% at 14% 10%, rgba(91, 120, 132, 0.13), transparent 68%),
+    radial-gradient(38% 34% at 78% 88%, rgba(91, 120, 132, 0.08), transparent 70%),
+    repeating-linear-gradient(
+      102deg,
+      rgba(255, 255, 255, 0.028) 0 1px,
+      transparent 1px 92px
+    ),
     var(--night);
   color: #fff;
   display: flex;
