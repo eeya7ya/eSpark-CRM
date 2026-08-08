@@ -57,11 +57,7 @@
 .brand {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(52% 42% at 12% 8%, rgba(91, 120, 132, 0.1), transparent 65%),
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 100% 56px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 100%,
-    var(--night);
+  background: var(--night);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -216,14 +212,14 @@
 .ghost {
   position: fixed;
   color: #fff;
-  opacity: 0.11;
+  opacity: 0.3;
 }
 .ghostLight {
   /* Absolute, not fixed: `.auth` is the containing block, and its clip-path
      then trims this half exactly along the 12° seam. */
   position: absolute;
   color: var(--night);
-  opacity: 0.085;
+  opacity: 0.22;
 }
 
 /* ══ auth panel (white, 12° cut) ═════════════════════════ */
