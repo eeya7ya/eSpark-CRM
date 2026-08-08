@@ -2,6 +2,7 @@ import { sql } from "./db";
 import type { Module } from "./modules";
 import { ALWAYS_LICENSED, MODULE_META, MODULE_ORDER } from "./moduleMeta";
 import { getBoundWorkspace } from "./workspaceContext";
+import { seatUsage, type SeatUsage } from "./seats";
 
 /**
  * The two access tiers, resolved together for the admin surfaces.
@@ -36,6 +37,12 @@ export interface SubscriptionSummary {
   unlimited: boolean;
   licensedCount: number;
   totalModules: number;
+  /**
+   * Accounts used against the plan's cap. Shown so a workspace admin knows
+   * where they stand BEFORE the create-user form refuses them — a limit set a
+   * tier above is otherwise invisible until it bites.
+   */
+  seats: SeatUsage;
 }
 
 /** Every module, in reading order, with its licence and seat count. */
@@ -67,14 +74,15 @@ export async function getModuleAccessRows(): Promise<ModuleAccessRow[]> {
 }
 
 /** Headline counts for the licence tier, derived from the rows above. */
-export function summariseSubscription(
+export async function summariseSubscription(
   rows: ModuleAccessRow[],
-): SubscriptionSummary {
+): Promise<SubscriptionSummary> {
   const bound = getBoundWorkspace();
   return {
     workspaceName: bound?.name ?? null,
     unlimited: (bound?.modules ?? null) === null,
     licensedCount: rows.filter((r) => r.licensed).length,
     totalModules: rows.length,
+    seats: await seatUsage(),
   };
 }

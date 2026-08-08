@@ -42,6 +42,13 @@ export interface WorkspaceBinding {
   r2Prefix: string;
   /** Licensed modules, or null for no restriction. See controlDb.Workspace. */
   modules: string[] | null;
+  /**
+   * Max user accounts, or null for uncapped. Carried on the binding for the
+   * same reason `modules` is: both are subscription limits enforced on
+   * ordinary workspace requests, and the binding is already resolved by the
+   * time one runs — so enforcing them costs no control-database round trip.
+   */
+  seatLimit: number | null;
 }
 
 const storage = new AsyncLocalStorage<WorkspaceBinding>();
@@ -60,6 +67,7 @@ export function toBinding(ws: Workspace | WorkspaceBinding): WorkspaceBinding {
     databaseUrl: ws.databaseUrl,
     r2Prefix: ws.r2Prefix,
     modules: ws.modules,
+    seatLimit: ws.seatLimit,
   };
 }
 

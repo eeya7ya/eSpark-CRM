@@ -55,6 +55,29 @@ export interface Workspace {
    */
   modules: string[] | null;
   provisionError: string | null;
+  /**
+   * ── Commercial terms ──────────────────────────────────────────────────
+   * `modules` above says WHICH parts of the product the customer bought.
+   * These say how much, for how long, and who to talk to about it.
+   */
+  /** Free-text plan name shown in the console (e.g. "trial", "standard"). */
+  plan: string;
+  /**
+   * Maximum user accounts this customer may hold, or null for uncapped.
+   * Enforced when their own admin creates a user — see `seatUsage()`.
+   */
+  seatLimit: number | null;
+  /**
+   * When the subscription lapses, ISO-8601, or null for no expiry. Advisory:
+   * it drives the console's "expiring" and "expired" states so an operator can
+   * act, and deliberately does NOT lock anyone out on its own — a billing date
+   * slipping past midnight should not take a working customer offline.
+   */
+  renewalAt: string | null;
+  contactName: string;
+  contactEmail: string;
+  /** Operator's own notes about this customer. */
+  notes: string;
 }
 
 /**
@@ -157,6 +180,22 @@ export function ensureControlSchema(): Promise<void> {
       `;
       // Added after the first control databases were created.
       await q`alter table workspaces add column if not exists modules text`;
+      // ── Subscription columns ────────────────────────────────────────────
+      // `modules` alone said WHICH parts of the product a customer bought but
+      // nothing about HOW MUCH, so a subscription could not be over-used —
+      // only mis-scoped. These carry the commercial terms.
+      //
+      // All additive and all nullable, because every existing control
+      // database already has rows: null `seat_limit` means uncapped and null
+      // `renewal_at` means no expiry, which is exactly how every workspace
+      // behaved before these columns existed. Nothing changes until an
+      // operator sets a value.
+      await q`alter table workspaces add column if not exists plan text not null default 'standard'`;
+      await q`alter table workspaces add column if not exists seat_limit integer`;
+      await q`alter table workspaces add column if not exists renewal_at timestamptz`;
+      await q`alter table workspaces add column if not exists contact_name text not null default ''`;
+      await q`alter table workspaces add column if not exists contact_email text not null default ''`;
+      await q`alter table workspaces add column if not exists notes text not null default ''`;
       await q`
         create table if not exists platform_admins (
           id                   bigserial primary key,
@@ -200,6 +239,12 @@ type WorkspaceRow = {
   branding: string | Record<string, unknown> | null;
   modules: string | null;
   provision_error: string | null;
+  plan: string | null;
+  seat_limit: number | string | null;
+  renewal_at: string | Date | null;
+  contact_name: string | null;
+  contact_email: string | null;
+  notes: string | null;
 };
 
 /**
@@ -252,6 +297,20 @@ function toWorkspace(row: WorkspaceRow): Workspace {
     branding: parseBranding(row.branding),
     modules: parseModules(row.modules),
     provisionError: row.provision_error,
+    plan: row.plan || "standard",
+    // A non-positive limit is meaningless and would lock the customer out of
+    // their own workspace, so it reads as "uncapped" rather than "zero seats".
+    seatLimit:
+      row.seat_limit === null || Number(row.seat_limit) <= 0
+        ? null
+        : Number(row.seat_limit),
+    renewalAt:
+      row.renewal_at instanceof Date
+        ? row.renewal_at.toISOString()
+        : row.renewal_at || null,
+    contactName: row.contact_name || "",
+    contactEmail: row.contact_email || "",
+    notes: row.notes || "",
   };
 }
 
@@ -267,7 +326,8 @@ export async function getWorkspaceBySlug(
   const q = getControlSql();
   const rows = (await q`
     select id, slug, name, database_url_enc, status, r2_prefix, branding,
-           modules, provision_error
+           modules, provision_error, plan, seat_limit, renewal_at,
+           contact_name, contact_email, notes
     from workspaces
     where slug = ${slug}
     limit 1
@@ -313,7 +373,8 @@ export async function listWorkspaces(): Promise<Workspace[]> {
   const q = getControlSql();
   const rows = (await q`
     select id, slug, name, database_url_enc, status, r2_prefix, branding,
-           modules, provision_error
+           modules, provision_error, plan, seat_limit, renewal_at,
+           contact_name, contact_email, notes
     from workspaces
     order by created_at desc
   `) as WorkspaceRow[];

@@ -327,7 +327,7 @@ export default async function DashboardPage() {
         noAccess: Math.max(0, users - withRole),
         departments: Number(adminKpiRows[0].departments),
       },
-      subscription: summariseSubscription(moduleRows),
+      subscription: await summariseSubscription(moduleRows),
       modules: moduleRows,
       departments: deptRows.map((r) => ({
         code: r.code,

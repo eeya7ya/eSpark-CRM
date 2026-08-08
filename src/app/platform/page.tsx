@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getPlatformAdmin } from "@/lib/platformAuth";
-import { hasControlPlane, listWorkspaces } from "@/lib/controlDb";
+import { hasControlPlane } from "@/lib/controlDb";
+import { listCustomers, summarisePlatform } from "@/lib/platformOverview";
 import PlatformConsole from "@/components/platform/PlatformConsole";
 
 export const dynamic = "force-dynamic";
@@ -15,21 +16,16 @@ export default async function PlatformPage() {
   const admin = await getPlatformAdmin();
   if (!admin) redirect("/platform/login");
 
-  // Identity, status and branding only. Connection strings never leave the
-  // server, and there is no query here that reaches inside a workspace.
-  const workspaces = (await listWorkspaces()).map((ws) => ({
-    slug: ws.slug,
-    name: ws.name,
-    status: ws.status,
-    r2Prefix: ws.r2Prefix,
-    modules: ws.modules,
-    provisionError: ws.provisionError,
-  }));
+  // Identity, subscription and usage. Connection strings never leave the
+  // server, and the only thing read from inside a workspace is its account
+  // count — the quantity being sold, and nothing else.
+  const customers = await listCustomers();
 
   return (
     <PlatformConsole
       adminName={admin.displayName}
-      initialWorkspaces={workspaces}
+      initialCustomers={customers}
+      initialSummary={summarisePlatform(customers)}
       canCreateDatabase={Boolean(process.env.PROVISION_DATABASE_URL)}
     />
   );

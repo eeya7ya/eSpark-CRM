@@ -41,7 +41,7 @@ export default async function AdminPage({
   const moduleRows = await getModuleAccessRows();
   const subscription = {
     rows: moduleRows,
-    summary: summariseSubscription(moduleRows),
+    summary: await summariseSubscription(moduleRows),
     isPlatformAdmin: platformAdmin !== null,
   };
 
