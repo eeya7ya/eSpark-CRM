@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { canReadAll, getSessionUser } from "@/lib/auth";
 import TopBar from "@/components/TopBar";
@@ -58,7 +59,19 @@ export default async function AdminPage({
     <div className="min-h-screen bg-espark-soft/40">
       <TopBar user={user} />
       <main className="mx-auto w-full max-w-[1800px] px-4 py-6 sm:px-6 lg:px-10">
-        <h1 className="text-2xl font-bold text-espark-ink mb-4">Admin</h1>
+        {/* This page administers ONE company's own staff. The owner's console
+            — every subscriber, individual and company — is a different surface
+            entirely, and previously nothing in the app linked to it, so it was
+            unreachable unless you already knew the URL. */}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-bold text-espark-ink">Admin</h1>
+          <Link
+            href="/crm-admin"
+            className="rounded-lg border border-espark-border bg-espark-surface px-3 py-1.5 text-sm font-semibold text-espark-ink/80 transition-colors hover:border-espark-primary/40 hover:text-espark-primary"
+          >
+            My CRM Admin →
+          </Link>
+        </div>
         {platformAdmin && (
           <SubscribersPanel
             workspaces={subscribers}
