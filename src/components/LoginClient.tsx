@@ -206,7 +206,12 @@ export default function LoginClient({
           is clipped to its own side (the auth panel's clip-path does the
           second one for free), so together they read as one continuous mark
           that changes colour where it crosses the seam. */}
-      <BrandGlyph className={s.ghost} tone="current" title="" />
+      <BrandGlyph
+        className={s.ghost}
+        tone="current"
+        knockoutColor="#1b1e20"
+        title=""
+      />
 
       {/* ══ auth side — cut at the wordmark's 12° ══ */}
       <div className={s.authEdge} aria-hidden="true" />
@@ -215,7 +220,12 @@ export default function LoginClient({
             that panel's own clip-path trims it to the seam, and shares the
             dark copy's coordinates — both anchor to the viewport's right
             edge and to its vertical centre, so the two halves line up. */}
-        <BrandGlyph className={s.ghostLight} tone="current" title="" />
+        <BrandGlyph
+          className={s.ghostLight}
+          tone="current"
+          knockoutColor="#f4f0ec"
+          title=""
+        />
         <form className={s.card} onSubmit={onSubmit} noValidate>
           <div>
             <span className={s.chip}>{t.chip}</span>

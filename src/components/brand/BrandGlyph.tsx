@@ -20,9 +20,18 @@ export default function BrandGlyph({
   className,
   title = "eSpark",
   tone = "theme",
+  knockoutColor,
 }: {
   className?: string;
   title?: string;
+  /**
+   * Colour of the icons knocked out of each node disc. Defaults suit a mark
+   * drawn on the surface it was designed for; override it when the mark is
+   * tinted for a background the defaults do not anticipate — a dark mark on a
+   * light ground needs a LIGHT knockout, and `tone="current"`'s black one
+   * would simply disappear into the disc.
+   */
+  knockoutColor?: string;
   /**
    * `theme` (default) paints the mark with the app's ink/surface tokens, so it
    * follows the light/dark toggle. `current` paints it with `currentColor` and
@@ -35,7 +44,8 @@ export default function BrandGlyph({
   const { minX, minY, width, height } = GLYPH_VIEWBOX;
   const markColor = tone === "current" ? "currentColor" : "rgb(var(--espark-ink))";
   const knockout =
-    tone === "current" ? "rgb(0 0 0 / 0.55)" : "rgb(var(--espark-surface))";
+    knockoutColor ??
+    (tone === "current" ? "rgb(0 0 0 / 0.55)" : "rgb(var(--espark-surface))");
 
   return (
     <svg
