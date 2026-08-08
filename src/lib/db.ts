@@ -703,6 +703,17 @@ const SUBSCRIBERS_FLAG = "subscribers_v1_2026_08";
  */
 const SUBSCRIBER_LOGIN_FLAG = "subscriber_login_v1_2026_08";
 
+/**
+ * Incremental migration: a subscriber's own tenant.
+ *
+ * `tenants` and `users.tenant_id` already exist and are the documented ceiling
+ * on cross-user visibility — nobody may ever see rows owned outside their own
+ * tenant. Giving each subscriber a tenant is therefore what makes their
+ * workspace behave like a separate app rather than a shared one with a filter
+ * bolted on: the isolation is the rule the app already enforces, not a new one.
+ */
+const SUBSCRIBER_TENANT_FLAG = "subscriber_tenant_v1_2026_08";
+
 /** One-shot schema bootstrap. Idempotent — safe to run on every cold start. */
 export async function ensureSchema(): Promise<void> {
   // In D1 mode (the default) apply the SQLite schema (d1/schema.sql)
@@ -1105,6 +1116,7 @@ async function _ensureSchemaOnce(): Promise<void> {
   let catalogueModuleApplied = false;
   let subscribersApplied = false;
   let subscriberLoginApplied = false;
+  let subscriberTenantApplied = false;
   try {
     const rows = (await q`
       select key from migration_flags
@@ -1129,7 +1141,8 @@ async function _ensureSchemaOnce(): Promise<void> {
         ${V18_MODULES_FLAG}, ${V18_FILE_SHARE_FLAG},
         ${DELIVERY_REQUESTS_FLAG}, ${SENT_TO_SALES_RECIPIENT_FLAG},
         ${QUOTATION_COMPLETED_FLAG}, ${CATALOGUE_MODULE_FLAG},
-        ${SUBSCRIBERS_FLAG}, ${SUBSCRIBER_LOGIN_FLAG}
+        ${SUBSCRIBERS_FLAG}, ${SUBSCRIBER_LOGIN_FLAG},
+        ${SUBSCRIBER_TENANT_FLAG}
       )
     `) as Array<{ key: string }>;
     const keys = new Set(rows.map((r) => r.key));
@@ -1183,6 +1196,7 @@ async function _ensureSchemaOnce(): Promise<void> {
     catalogueModuleApplied = keys.has(CATALOGUE_MODULE_FLAG);
     subscribersApplied = keys.has(SUBSCRIBERS_FLAG);
     subscriberLoginApplied = keys.has(SUBSCRIBER_LOGIN_FLAG);
+    subscriberTenantApplied = keys.has(SUBSCRIBER_TENANT_FLAG);
   } catch {
     // migration_flags missing or unreadable — run the full DDL below.
   }
@@ -1238,7 +1252,8 @@ async function _ensureSchemaOnce(): Promise<void> {
     quotationCompletedApplied &&
     catalogueModuleApplied &&
     subscribersApplied &&
-    subscriberLoginApplied
+    subscriberLoginApplied &&
+    subscriberTenantApplied
   )
     return;
 
@@ -3851,6 +3866,19 @@ async function _ensureSchemaOnce(): Promise<void> {
     `;
     await q`
       insert into migration_flags (key) values (${SUBSCRIBER_LOGIN_FLAG})
+      on conflict (key) do nothing
+    `;
+  }
+
+  if (!subscriberTenantApplied) {
+    // One tenant per subscriber, so the visibility ceiling the app already
+    // enforces isolates each subscriber's clients and quotations from every
+    // other subscriber's without a second scoping mechanism.
+    await q`
+      alter table subscribers add column if not exists tenant_id integer
+    `;
+    await q`
+      insert into migration_flags (key) values (${SUBSCRIBER_TENANT_FLAG})
       on conflict (key) do nothing
     `;
   }

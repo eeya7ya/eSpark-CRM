@@ -1,6 +1,7 @@
 import { sql } from "./db";
 import { canReadAll, type SessionUser } from "./auth";
 import { getBoundWorkspace } from "./workspaceContext";
+import { subscriptionFor, subscriptionIncludes } from "./subscriberAccess";
 
 /**
  * V2.0 module RBAC.
@@ -109,6 +110,27 @@ export function workspaceLicenses(module: Module): boolean {
   return bound.modules.includes(module);
 }
 
+/**
+ * Whether this user's SUBSCRIPTION allows `module`.
+ *
+ * A second ceiling, above the per-user grants and below the workspace licence:
+ * a subscriber may only ever open the tools they actually bought, whatever
+ * roles happen to sit on their account. Returns true for the CRM owner and
+ * their own staff, who belong to no subscription and are not bounded by one.
+ *
+ * A suspended subscription closes every tool — the subscription is the reason
+ * any of them is open in the first place.
+ */
+export async function subscriptionAllows(
+  userId: number,
+  module: Module,
+): Promise<boolean> {
+  const sub = await subscriptionFor(userId);
+  if (!sub) return true;
+  if (sub.status === "suspended") return false;
+  return subscriptionIncludes(sub.tools, module);
+}
+
 /** Active (non-revoked) grants for one user. Cached per request via React cache where called. */
 export async function getUserModuleRoles(userId: number): Promise<ModuleGrant[]> {
   const q = sql();
@@ -119,15 +141,26 @@ export async function getUserModuleRoles(userId: number): Promise<ModuleGrant[]>
       and revoked_at is null
     order by module, role
   `) as ModuleGrant[];
-  // Filtered here, the one place every consumer reads grants from, so an
-  // unlicensed module vanishes from the navigation too instead of being
-  // offered and then refused.
-  return rows.filter((r) => workspaceLicenses(r.module));
+  // Filtered here, the one place every consumer reads grants from, so a
+  // module that was never licensed or never bought vanishes from the
+  // navigation too instead of being offered and then refused.
+  const sub = await subscriptionFor(userId);
+  return rows.filter(
+    (r) =>
+      workspaceLicenses(r.module) &&
+      (!sub ||
+        (sub.status !== "suspended" &&
+          subscriptionIncludes(sub.tools, r.module))),
+  );
 }
 
 /** True when the user has ANY active role within `module`. */
 export async function hasModule(userId: number, module: Module): Promise<boolean> {
   if (!workspaceLicenses(module)) return false;
+  // The subscription is checked here too, not only in the require* gates:
+  // several pages ask this directly to decide what to render, so a tool that
+  // was never bought must answer "no" at the source rather than at one caller.
+  if (!(await subscriptionAllows(userId, module))) return false;
   const q = sql();
   const rows = (await q`
     select 1 as ok
@@ -147,6 +180,7 @@ export async function hasModuleRole(
   role: string,
 ): Promise<boolean> {
   if (!workspaceLicenses(module)) return false;
+  if (!(await subscriptionAllows(userId, module))) return false;
   const q = sql();
   const rows = (await q`
     select 1 as ok
@@ -174,6 +208,8 @@ export async function requireModule(
   // Before the admin short-circuit below: an unlicensed module is closed to
   // everyone in the workspace, including its own administrators.
   if (!workspaceLicenses(module)) throw new Error("FORBIDDEN");
+  // And a subscriber may only open what their subscription includes.
+  if (!(await subscriptionAllows(user.id, module))) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModule(user.id, module)) return;
   throw new Error("FORBIDDEN");
@@ -205,6 +241,7 @@ export async function requireModuleAllowLegacy(
   // workspace has not licensed, and the legacy bypass in particular fires for
   // exactly the users a freshly provisioned workspace starts with.
   if (!workspaceLicenses(module)) throw new Error("FORBIDDEN");
+  if (!(await subscriptionAllows(user.id, module))) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModule(user.id, module)) return;
 
@@ -341,6 +378,7 @@ export async function requireModuleRole(
   role: string,
 ): Promise<void> {
   if (!workspaceLicenses(module)) throw new Error("FORBIDDEN");
+  if (!(await subscriptionAllows(user.id, module))) throw new Error("FORBIDDEN");
   if (canReadAll(user)) return;
   if (await hasModuleRole(user.id, module, role)) return;
   throw new Error("FORBIDDEN");

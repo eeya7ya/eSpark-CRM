@@ -1,6 +1,7 @@
 import { sql } from "./db";
 import { hashPassword } from "./auth";
 import { MODULE_META, MODULE_ORDER } from "./moduleMeta";
+import { syncSubscriberAccess } from "./subscriberAccess";
 import type { Module } from "./modules";
 
 /**
@@ -298,6 +299,9 @@ export async function createSubscriber(
     values (${loginUsername}, ${hash}, 'user', ${input.name.trim()}, true,
             ${subscriber.id})
   `;
+  // Their own tenant, and grants for the tools bought — without this the
+  // subscription exists but every tool opens on "no access".
+  await syncSubscriberAccess(subscriber);
   return subscriber;
 }
 
@@ -399,7 +403,11 @@ export async function updateSubscriber(
   if (typeof input.notes === "string") {
     await q`update subscribers set notes = ${input.notes.trim()}, updated_at = now() where id = ${id}`;
   }
-  return getSubscriber(id);
+  const updated = await getSubscriber(id);
+  // Tools may have changed, so access is re-derived rather than left to drift
+  // from what the subscription now says.
+  if (updated) await syncSubscriberAccess(updated);
+  return updated;
 }
 
 /**
@@ -456,6 +464,9 @@ export async function setSubscriberLogin(
       values (${name}, ${hash}, 'user', ${sub.name}, true, ${subscriberId})
     `;
   }
+  // A login created after the fact needs the same tenant and grants as one
+  // created with the subscription.
+  await syncSubscriberAccess(sub);
   return name;
 }
 
