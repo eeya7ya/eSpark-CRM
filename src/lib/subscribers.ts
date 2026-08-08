@@ -66,6 +66,13 @@ export interface Subscriber {
   contactEmail: string;
   notes: string;
   createdAt: string;
+  /**
+   * The username they sign in with, or null when no login exists yet — which
+   * is every subscriber sold before logins were part of creating one. Shown so
+   * the owner knows what to hand over, and so a subscription nobody can reach
+   * is visible rather than silently broken.
+   */
+  loginUsername: string | null;
 }
 
 export interface SubscriberTotals {
@@ -111,6 +118,7 @@ export function sanitiseTools(input: unknown): string[] | null {
 
 type Row = {
   id: number | string;
+  login_username?: string | null;
   slug: string;
   name: string;
   kind: string;
@@ -158,6 +166,7 @@ function toSubscriber(r: Row): Subscriber {
       r.created_at instanceof Date
         ? r.created_at.toISOString()
         : String(r.created_at ?? ""),
+    loginUsername: r.login_username ?? null,
   };
 }
 
@@ -167,10 +176,14 @@ const COLUMNS =
 export async function listSubscribers(): Promise<Subscriber[]> {
   const q = sql();
   const rows = (await q`
-    select id, slug, name, kind, status, tools, plan, seat_limit, renewal_at,
-           contact_name, contact_email, notes, created_at
-    from subscribers
-    order by created_at desc, id desc
+    select s.id, s.slug, s.name, s.kind, s.status, s.tools, s.plan,
+           s.seat_limit, s.renewal_at, s.contact_name, s.contact_email,
+           s.notes, s.created_at,
+           (select u.username from users u
+             where u.subscriber_id = s.id
+             order by u.id asc limit 1) as login_username
+    from subscribers s
+    order by s.created_at desc, s.id desc
   `) as Row[];
   return rows.map(toSubscriber);
 }
@@ -178,9 +191,13 @@ export async function listSubscribers(): Promise<Subscriber[]> {
 export async function getSubscriber(id: number): Promise<Subscriber | null> {
   const q = sql();
   const rows = (await q`
-    select id, slug, name, kind, status, tools, plan, seat_limit, renewal_at,
-           contact_name, contact_email, notes, created_at
-    from subscribers where id = ${id} limit 1
+    select s.id, s.slug, s.name, s.kind, s.status, s.tools, s.plan,
+           s.seat_limit, s.renewal_at, s.contact_name, s.contact_email,
+           s.notes, s.created_at,
+           (select u.username from users u
+             where u.subscriber_id = s.id
+             order by u.id asc limit 1) as login_username
+    from subscribers s where s.id = ${id} limit 1
   `) as Row[];
   return rows.length > 0 ? toSubscriber(rows[0]) : null;
 }
@@ -302,9 +319,13 @@ export async function getSubscriberBySlug(
 ): Promise<Subscriber | null> {
   const q = sql();
   const rows = (await q`
-    select id, slug, name, kind, status, tools, plan, seat_limit, renewal_at,
-           contact_name, contact_email, notes, created_at
-    from subscribers where slug = ${slug} limit 1
+    select s.id, s.slug, s.name, s.kind, s.status, s.tools, s.plan,
+           s.seat_limit, s.renewal_at, s.contact_name, s.contact_email,
+           s.notes, s.created_at,
+           (select u.username from users u
+             where u.subscriber_id = s.id
+             order by u.id asc limit 1) as login_username
+    from subscribers s where s.slug = ${slug} limit 1
   `) as Row[];
   return rows.length > 0 ? toSubscriber(rows[0]) : null;
 }
@@ -379,6 +400,63 @@ export async function updateSubscriber(
     await q`update subscribers set notes = ${input.notes.trim()}, updated_at = now() where id = ${id}`;
   }
   return getSubscriber(id);
+}
+
+/**
+ * Create or replace a subscriber's login.
+ *
+ * Covers both cases the owner actually has: a subscription sold before logins
+ * existed and so has none, and a password that needs resetting because the
+ * holder forgot it. Either way the result is one account they can sign in
+ * with, flagged to change the password itself on first use so the owner never
+ * keeps knowing it.
+ */
+export async function setSubscriberLogin(
+  subscriberId: number,
+  username: string,
+  password: string,
+): Promise<string> {
+  const name = username.trim();
+  if (!name) throw new Error("A username is required.");
+  if ((password || "").length < 8) {
+    throw new Error("The password must be at least 8 characters.");
+  }
+  const sub = await getSubscriber(subscriberId);
+  if (!sub) throw new Error("No such subscriber.");
+
+  const q = sql();
+  // Taken by somebody who is not this subscriber's own login.
+  const clash = (await q`
+    select id from users
+    where username = ${name}
+      and (subscriber_id is null or subscriber_id <> ${subscriberId})
+    limit 1
+  `) as Array<{ id: number }>;
+  if (clash.length > 0) {
+    throw new Error(`The username "${name}" is already taken.`);
+  }
+
+  const hash = await hashPassword(password);
+  const existing = (await q`
+    select id from users where subscriber_id = ${subscriberId}
+    order by id asc limit 1
+  `) as Array<{ id: number }>;
+
+  if (existing.length > 0) {
+    await q`
+      update users
+      set username = ${name}, password_hash = ${hash},
+          must_change_password = true
+      where id = ${existing[0].id}
+    `;
+  } else {
+    await q`
+      insert into users (username, password_hash, role, display_name,
+                         must_change_password, subscriber_id)
+      values (${name}, ${hash}, 'user', ${sub.name}, true, ${subscriberId})
+    `;
+  }
+  return name;
 }
 
 export async function deleteSubscriber(id: number): Promise<boolean> {

@@ -564,6 +564,8 @@ function Card({
   const [contactName, setContactName] = useState(s.contactName);
   const [contactEmail, setContactEmail] = useState(s.contactEmail);
   const [notes, setNotes] = useState(s.notes);
+  const [loginUsername, setLoginUsername] = useState(s.loginUsername ?? s.slug);
+  const [loginPassword, setLoginPassword] = useState("");
 
   const field =
     "mt-1 w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm text-espark-ink outline-none focus:border-espark-primary";
@@ -590,6 +592,18 @@ function Card({
               {s.contactName}
               {s.contactName && s.contactEmail && " · "}
               {s.contactEmail}
+            </p>
+          )}
+          {s.loginUsername ? (
+            <p className="mt-1 text-xs text-espark-ink/55">
+              Signs in as{" "}
+              <span className="font-mono font-semibold text-espark-ink">
+                {s.loginUsername}
+              </span>
+            </p>
+          ) : (
+            <p className="mt-1 inline-block rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-900">
+              No login yet — nobody can sign in. Set one under Manage.
             </p>
           )}
         </div>
@@ -670,6 +684,64 @@ function Card({
                   </button>
                 );
               })}
+            </div>
+          </div>
+
+          <div className="mt-4 border-t border-espark-border pt-4">
+            <p className="text-sm font-semibold text-espark-ink">Sign-in</p>
+            <p className="mt-0.5 text-xs text-espark-ink/55">
+              {s.loginUsername
+                ? `They sign in as "${s.loginUsername}". Setting a password here replaces it — use this when they forget theirs.`
+                : "This subscription has no login yet, so nobody can sign in. Create one here and hand it over."}{" "}
+              They must change the password the first time they use it, so you
+              never keep knowing it.
+            </p>
+            <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <label className={label} htmlFor={`lu-${s.id}`}>
+                  Username
+                </label>
+                <input
+                  id={`lu-${s.id}`}
+                  value={loginUsername}
+                  onChange={(e) => setLoginUsername(e.target.value)}
+                  disabled={readOnly}
+                  autoComplete="off"
+                  className={field}
+                />
+              </div>
+              <div>
+                <label className={label} htmlFor={`lp-${s.id}`}>
+                  New password
+                </label>
+                <input
+                  id={`lp-${s.id}`}
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  disabled={readOnly}
+                  autoComplete="new-password"
+                  placeholder="at least 8 characters"
+                  className={field}
+                />
+              </div>
+              <div className="flex items-end">
+                {!readOnly && (
+                  <button
+                    disabled={busy || !loginUsername.trim() || loginPassword.length < 8}
+                    onClick={() =>
+                      void onPatch(
+                        s,
+                        { loginUsername, loginPassword },
+                        `${s.name} signs in as "${loginUsername}" and lands on /${s.slug}.`,
+                      ).then(() => setLoginPassword(""))
+                    }
+                    className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                  >
+                    {s.loginUsername ? "Reset login" : "Create login"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
