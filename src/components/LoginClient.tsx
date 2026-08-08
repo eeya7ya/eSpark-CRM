@@ -200,11 +200,10 @@ export default function LoginClient({
       </aside>
 
       {/* Brand mark as a full-height watermark straddling the 12° cut.
-          Rendered as a SOLID silhouette — knockout transparent — so each half
-          is a single colour. With the icons knocked out to their own side's
-          background, the discs inverted correctly but the icons inside them
-          did not: dark icons sat in the dark panel and bright icons in the
-          bright one, which is what the eye actually reads.
+          Each half knocks its node icons out in its OWN background colour, so
+          the icon is a hole showing the panel through — which is what makes
+          the whole mark read as one bright shape on the dark side and one
+          dark shape on the light side, node detail included.
           It is drawn TWICE at identical coordinates — this copy on the dark
           panel, a second one inside the auth panel below — because a single
           tint cannot read on both backgrounds at watermark opacity. Each copy
@@ -214,7 +213,7 @@ export default function LoginClient({
       <BrandGlyph
         className={s.ghost}
         tone="current"
-        knockoutColor="transparent"
+        knockoutColor="#1b1e20"
         title=""
       />
 
@@ -228,7 +227,7 @@ export default function LoginClient({
         <BrandGlyph
           className={s.ghostLight}
           tone="current"
-          knockoutColor="transparent"
+          knockoutColor="#f4f0ec"
           title=""
         />
         <form className={s.card} onSubmit={onSubmit} noValidate>
