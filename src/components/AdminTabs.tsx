@@ -15,9 +15,24 @@ import {
   AlertTriangle,
   ShieldCheck,
   Check,
+  Users,
+  Layers,
+  Settings2,
+  Tag,
+  FileText,
+  Mail,
+  Megaphone,
+  ListChecks,
   type LucideIcon,
 } from "@/lib/icons";
 import UsersAndRolesPanel from "./UsersAndRolesPanel";
+import SubscriptionPanel from "./SubscriptionPanel";
+// Type-only: erased at build, so the server module behind these shapes never
+// reaches the browser bundle.
+import type {
+  ModuleAccessRow,
+  SubscriptionSummary,
+} from "@/lib/adminOverview";
 import AdminSettings from "./AdminSettings";
 import BrandingAdmin from "./BrandingAdmin";
 import TechProposalAssetsAdmin from "./TechProposalAssetsAdmin";
@@ -28,6 +43,7 @@ import type { AppSettings } from "@/lib/settings";
 
 type Tab =
   | "users"
+  | "subscription"
   | "news"
   | "email"
   | "settings"
@@ -36,20 +52,124 @@ type Tab =
   | "backups"
   | "syslog";
 
-const TABS: Tab[] = [
-  "users",
-  "news",
-  "email",
-  "settings",
-  "branding",
-  "backups",
-  "syslog",
+interface TabDef {
+  id: Tab;
+  label: string;
+  /** One line under the heading, so each tab says what it is for. */
+  blurb: string;
+  icon: LucideIcon;
+  /**
+   * Set when the panel renders its own heading, so the shell does not print a
+   * second one above it.
+   */
+  ownsHeading?: boolean;
+}
+
+/**
+ * The tabs, grouped by the decision behind them.
+ *
+ * Nine tabs in one horizontal strip scrolled sideways and gave no clue which
+ * belonged together — you had to already know. They are grouped now: who may
+ * use the app, how the workspace presents itself, what it sends out, and what
+ * keeps it running.
+ *
+ * `Access` leads because it holds both tiers of the same question, in the
+ * order they constrain each other: what the company has licensed
+ * (Subscription) and who inside it holds a seat (Users & Roles).
+ */
+const TAB_GROUPS: Array<{ group: string; tabs: TabDef[] }> = [
+  {
+    group: "Access",
+    tabs: [
+      {
+        id: "users",
+        label: "Users & Roles",
+        blurb: "People in this workspace, and which modules each one may open.",
+        icon: Users,
+      },
+      {
+        id: "subscription",
+        label: "Subscription",
+        blurb: "The modules this workspace is licensed for, and the seats on each.",
+        icon: Layers,
+      },
+    ],
+  },
+  {
+    group: "Workspace",
+    tabs: [
+      {
+        id: "settings",
+        label: "Settings",
+        blurb: "Global presets applied across the app.",
+        icon: Settings2,
+      },
+      {
+        id: "branding",
+        label: "Branding",
+        blurb: "Logos and company profiles.",
+        icon: Tag,
+      },
+      {
+        id: "proposal",
+        label: "Technical Proposal",
+        blurb: "Cover art and assets for generated proposals.",
+        icon: FileText,
+        ownsHeading: true,
+      },
+    ],
+  },
+  {
+    group: "Communication",
+    tabs: [
+      {
+        id: "news",
+        label: "News",
+        blurb: "Announcements shown on everyone's dashboard.",
+        icon: Megaphone,
+      },
+      {
+        id: "email",
+        label: "Email",
+        blurb: "Mail server and per-user mailboxes.",
+        icon: Mail,
+      },
+    ],
+  },
+  {
+    group: "System",
+    tabs: [
+      {
+        id: "backups",
+        label: "Backups",
+        blurb: "Back up and restore the database and the stored files.",
+        icon: Database,
+        ownsHeading: true,
+      },
+      {
+        id: "syslog",
+        label: "Syslog",
+        blurb: "Click activity across the app.",
+        icon: ListChecks,
+      },
+    ],
+  },
 ];
+
+/**
+ * Derived, never hand-written. The old list was maintained separately from the
+ * buttons and had already fallen out of step — `proposal` was missing from it,
+ * so `/admin?tab=proposal` silently opened Users & Roles instead. Deriving it
+ * means a tab that exists is always a tab that can be deep-linked.
+ */
+const ALL_TABS: TabDef[] = TAB_GROUPS.flatMap((g) => g.tabs);
+const TAB_IDS: string[] = ALL_TABS.map((t) => t.id);
 
 export default function AdminTabs({
   initialSettings,
   readOnly = false,
   initialTab,
+  subscription,
 }: {
   initialSettings: AppSettings;
   /**
@@ -58,116 +178,130 @@ export default function AdminTabs({
    * `requireAdmin()` — `readOnly` is the UX mirror of that gate.
    */
   readOnly?: boolean;
-  /** Tab to open on mount (e.g. from `/admin?tab=clients`). */
+  /** Tab to open on mount (e.g. from `/admin?tab=subscription`). */
   initialTab?: string;
+  /** Both access tiers, resolved server-side — see lib/adminOverview. */
+  subscription: {
+    rows: ModuleAccessRow[];
+    summary: SubscriptionSummary;
+    isPlatformAdmin: boolean;
+  };
 }) {
   const [tab, setTab] = useState<Tab>(
-    (TABS as string[]).includes(initialTab ?? "")
-      ? (initialTab as Tab)
-      : "users",
+    TAB_IDS.includes(initialTab ?? "") ? (initialTab as Tab) : "users",
   );
+  const active = ALL_TABS.find((t) => t.id === tab) ?? ALL_TABS[0];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 border-b border-espark-border overflow-x-auto">
-        <TabButton active={tab === "users"} onClick={() => setTab("users")}>
-          Users &amp; Roles
-        </TabButton>
-        <TabButton active={tab === "news"} onClick={() => setTab("news")}>
-          News
-        </TabButton>
-        <TabButton active={tab === "email"} onClick={() => setTab("email")}>
-          Email
-        </TabButton>
-        <TabButton
-          active={tab === "settings"}
-          onClick={() => setTab("settings")}
-        >
-          Settings
-        </TabButton>
-        <TabButton
-          active={tab === "branding"}
-          onClick={() => setTab("branding")}
-        >
-          Branding
-        </TabButton>
-        <TabButton
-          active={tab === "proposal"}
-          onClick={() => setTab("proposal")}
-        >
-          Technical Proposal
-        </TabButton>
-        <TabButton active={tab === "backups"} onClick={() => setTab("backups")}>
-          Backups
-        </TabButton>
-        <TabButton active={tab === "syslog"} onClick={() => setTab("syslog")}>
-          Syslog
-        </TabButton>
-      </div>
+    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-7">
+      {/* Navigation. A grouped rail on desktop, where there is room for the
+          group names; the same buttons collapse to one scrolling pill row on
+          narrow screens, with the headings hidden rather than stacked. */}
+      <nav
+        aria-label="Admin sections"
+        className="mb-4 flex gap-3 overflow-x-auto border-b border-espark-border pb-2 lg:mb-0 lg:flex-col lg:gap-5 lg:overflow-visible lg:border-b-0 lg:pb-0"
+      >
+        {/* `flex-none` on each group works in both directions: it stops the
+            group shrinking in the horizontal scroller, and stops it GROWING to
+            fill the column on desktop, which otherwise spread the four groups
+            down the rail with the gaps varying by how tall each group was. */}
+        {TAB_GROUPS.map((g) => (
+          <div key={g.group} className="flex-none">
+            <p className="mb-1.5 hidden px-2 text-[10px] font-semibold uppercase tracking-wider text-espark-ink/40 lg:block">
+              {g.group}
+            </p>
+            <div className="flex gap-1.5 lg:flex-col lg:gap-0.5">
+              {g.tabs.map((t) => (
+                <NavItem
+                  key={t.id}
+                  def={t}
+                  active={tab === t.id}
+                  onClick={() => setTab(t.id)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </nav>
 
-      {tab === "users" && (
-        <section>
-          <h2 className="text-lg font-semibold text-espark-ink mb-3">
-            Users &amp; Roles
-          </h2>
-          <UsersAndRolesPanel readOnly={readOnly} />
-        </section>
-      )}
+      <div className="min-w-0">
+        {/* One heading for the shell, so each panel no longer carries its own
+            (and no longer disagrees with the button that opened it). The two
+            panels that already render a heading opt out via `ownsHeading`. */}
+        {!active.ownsHeading && (
+          <header className="mb-4">
+            <h2 className="text-lg font-semibold text-espark-ink">
+              {active.label}
+            </h2>
+            <p className="mt-0.5 max-w-3xl text-sm text-espark-ink/60">
+              {active.blurb}
+            </p>
+          </header>
+        )}
 
-      {tab === "news" && (
-        <section>
-          <h2 className="text-lg font-semibold text-espark-ink mb-3">
-            Dashboard announcements
-          </h2>
-          <NewsAdminPanel />
-        </section>
-      )}
+        {tab === "users" && <UsersAndRolesPanel readOnly={readOnly} />}
 
-      {tab === "email" && (
-        <section>
-          <h2 className="text-lg font-semibold text-espark-ink mb-3">
-            Email — server &amp; user mailboxes
-          </h2>
-          <EmailAdminPanel />
-        </section>
-      )}
+        {tab === "subscription" && (
+          <SubscriptionPanel
+            rows={subscription.rows}
+            summary={subscription.summary}
+            isPlatformAdmin={subscription.isPlatformAdmin}
+          />
+        )}
 
-      {tab === "settings" && (
-        <section>
-          <h2 className="text-lg font-semibold text-espark-ink mb-3">
-            Global presets
-          </h2>
+        {tab === "news" && <NewsAdminPanel />}
+
+        {tab === "email" && <EmailAdminPanel />}
+
+        {tab === "settings" && (
           <AdminSettings initialSettings={initialSettings} />
-        </section>
-      )}
+        )}
 
-      {tab === "branding" && (
-        <section>
-          <h2 className="text-lg font-semibold text-espark-ink mb-3">
-            Branding — logos &amp; company profiles
-          </h2>
+        {tab === "branding" && (
           <BrandingAdmin initialSettings={initialSettings} readOnly={readOnly} />
-        </section>
-      )}
+        )}
 
-      {tab === "proposal" && (
-        <TechProposalAssetsAdmin
-          initialSettings={initialSettings}
-          readOnly={readOnly}
-        />
-      )}
+        {tab === "proposal" && (
+          <TechProposalAssetsAdmin
+            initialSettings={initialSettings}
+            readOnly={readOnly}
+          />
+        )}
 
-      {tab === "backups" && <BackupsSection />}
+        {tab === "backups" && <BackupsSection />}
 
-      {tab === "syslog" && (
-        <section>
-          <h2 className="text-lg font-semibold text-espark-ink mb-3">
-            Syslog — click activity
-          </h2>
-          <SyslogPanel readOnly={readOnly} />
-        </section>
-      )}
+        {tab === "syslog" && <SyslogPanel readOnly={readOnly} />}
+      </div>
     </div>
+  );
+}
+
+/** One entry in the admin rail: icon + label, active state carried by both. */
+function NavItem({
+  def,
+  active,
+  onClick,
+}: {
+  def: TabDef;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const Icon = def.icon;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      title={def.blurb}
+      className={`flex flex-none items-center gap-2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors lg:w-full ${
+        active
+          ? "bg-espark-primary/10 text-espark-primary"
+          : "text-espark-ink/65 hover:bg-espark-soft hover:text-espark-ink"
+      }`}
+    >
+      <Icon className="h-4 w-4 flex-none" />
+      {def.label}
+    </button>
   );
 }
 
@@ -179,6 +313,8 @@ function BackupsSection() {
     <section className="space-y-5">
       <div>
         <h2 className="text-lg font-semibold text-espark-ink">Backups</h2>
+        {/* Kept here rather than in the shell's generic header because it is
+            longer than a one-line blurb and explains both directions. */}
         <p className="mt-1 max-w-3xl text-sm text-espark-ink/60">
           Everything the app holds, covered both ways. <strong>Back up</strong>{" "}
           the database, the R2 files, or one complete archive — then{" "}
@@ -1683,25 +1819,3 @@ function buildPricingWorkbook(
   return XLSX.write(wb, { bookType: "xlsx", type: "array" }) as ArrayBuffer;
 }
 
-function TabButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`-mb-px flex-shrink-0 whitespace-nowrap px-4 py-2 text-sm font-semibold border-b-2 transition-colors ${
-        active
-          ? "border-espark-primary text-espark-primary"
-          : "border-transparent text-espark-ink/60 hover:text-espark-ink"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}

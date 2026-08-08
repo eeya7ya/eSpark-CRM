@@ -6,6 +6,10 @@ import { getAppSettings } from "@/lib/settings";
 import { getPlatformAdmin } from "@/lib/platformAuth";
 import { hasControlPlane, listWorkspaces } from "@/lib/controlDb";
 import SubscribersPanel from "@/components/platform/SubscribersPanel";
+import {
+  getModuleAccessRows,
+  summariseSubscription,
+} from "@/lib/adminOverview";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +36,15 @@ export default async function AdminPage({
   const platformAdmin = hasControlPlane() ? await getPlatformAdmin() : null;
   const subscribers = platformAdmin ? await listWorkspaces() : [];
 
+  // Both access tiers for the Subscription tab: what this workspace has
+  // licensed, and how many people hold a seat in each module.
+  const moduleRows = await getModuleAccessRows();
+  const subscription = {
+    rows: moduleRows,
+    summary: summariseSubscription(moduleRows),
+    isPlatformAdmin: platformAdmin !== null,
+  };
+
   const settings = await settingsPromise;
   const sp = await searchParams;
   return (
@@ -55,6 +68,7 @@ export default async function AdminPage({
           initialSettings={settings}
           readOnly={readOnly}
           initialTab={sp.tab}
+          subscription={subscription}
         />
       </main>
     </div>
