@@ -27,6 +27,7 @@ import {
 } from "@/lib/icons";
 import UsersAndRolesPanel from "./UsersAndRolesPanel";
 import SubscriptionPanel from "./SubscriptionPanel";
+import SubscribersAdminPanel from "./SubscribersAdminPanel";
 // Type-only: erased at build, so the server module behind these shapes never
 // reaches the browser bundle.
 import type {
@@ -42,6 +43,7 @@ import SyslogPanel from "./SyslogPanel";
 import type { AppSettings } from "@/lib/settings";
 
 type Tab =
+  | "subscribers"
   | "users"
   | "subscription"
   | "news"
@@ -79,7 +81,19 @@ interface TabDef {
  */
 const TAB_GROUPS: Array<{ group: string; tabs: TabDef[] }> = [
   {
-    group: "Access",
+    group: "My CRM",
+    tabs: [
+      {
+        id: "subscribers",
+        label: "Subscribers",
+        blurb:
+          "Everyone subscribed to the CRM — one person buying tools for themselves, or a company whose own sub-admin manages their staff.",
+        icon: Layers,
+      },
+    ],
+  },
+  {
+    group: "This workspace",
     tabs: [
       {
         id: "users",
@@ -91,7 +105,7 @@ const TAB_GROUPS: Array<{ group: string; tabs: TabDef[] }> = [
         id: "subscription",
         label: "Subscription",
         blurb: "The modules this workspace is licensed for, and the seats on each.",
-        icon: Layers,
+        icon: ShieldCheck,
       },
     ],
   },
@@ -259,6 +273,10 @@ export default function AdminTabs({
               {active.blurb}
             </p>
           </header>
+        )}
+
+        {current === "subscribers" && (
+          <SubscribersAdminPanel readOnly={readOnly} />
         )}
 
         {current === "users" && <UsersAndRolesPanel readOnly={readOnly} />}
