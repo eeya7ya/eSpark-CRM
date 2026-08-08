@@ -56,6 +56,8 @@ export async function POST(req: NextRequest) {
       seatLimit?: number | null;
       contactName?: string;
       contactEmail?: string;
+      loginUsername?: string;
+      loginPassword?: string;
     };
     const subscriber = await createSubscriber({
       slug: String(body.slug || ""),
@@ -66,6 +68,8 @@ export async function POST(req: NextRequest) {
       seatLimit: body.seatLimit ?? null,
       contactName: body.contactName,
       contactEmail: body.contactEmail,
+      loginUsername: String(body.loginUsername || ""),
+      loginPassword: String(body.loginPassword || ""),
     });
     return NextResponse.json({ ok: true, subscriber });
   } catch (err) {

@@ -1,4 +1,5 @@
 import { sql } from "./db";
+import { hashPassword } from "./auth";
 import { MODULE_META, MODULE_ORDER } from "./moduleMeta";
 import type { Module } from "./modules";
 
@@ -210,6 +211,14 @@ export interface CreateSubscriberInput {
   seatLimit?: number | null;
   contactName?: string;
   contactEmail?: string;
+  /**
+   * The login handed to the subscriber. For an individual this IS them; for a
+   * company it is their sub-admin, who then creates their own staff. Selling a
+   * subscription without one leaves a row nobody can sign in to, so both are
+   * required at creation.
+   */
+  loginUsername: string;
+  loginPassword: string;
 }
 
 export async function createSubscriber(
@@ -231,7 +240,22 @@ export async function createSubscriber(
         ? Math.floor(input.seatLimit)
         : null;
 
+  const loginUsername = input.loginUsername.trim();
+  if (!loginUsername) throw new Error("A username is required.");
+  if ((input.loginPassword || "").length < 8) {
+    throw new Error("The password must be at least 8 characters.");
+  }
+
   const q = sql();
+  // Refused before the subscriber row is written, so a taken username cannot
+  // leave a subscription behind that nobody can sign in to.
+  const clash = (await q`
+    select id from users where username = ${loginUsername} limit 1
+  `) as Array<{ id: number }>;
+  if (clash.length > 0) {
+    throw new Error(`The username "${loginUsername}" is already taken.`);
+  }
+
   const rows = (await q`
     insert into subscribers (slug, name, kind, tools, plan, seat_limit,
                              contact_name, contact_email)
@@ -246,7 +270,43 @@ export async function createSubscriber(
   if (rows.length === 0) {
     throw new Error(`"${slug}" is already taken by another subscriber.`);
   }
-  return toSubscriber(rows[0]);
+  const subscriber = toSubscriber(rows[0]);
+
+  // Their login. `must_change_password` so the password set here is a handover
+  // credential rather than one the owner keeps knowing.
+  const hash = await hashPassword(input.loginPassword);
+  await q`
+    insert into users (username, password_hash, role, display_name,
+                       must_change_password, subscriber_id)
+    values (${loginUsername}, ${hash}, 'user', ${input.name.trim()}, true,
+            ${subscriber.id})
+  `;
+  return subscriber;
+}
+
+/** The subscriber a login belongs to, or null for the CRM owner's own side. */
+export async function subscriberForUser(
+  userId: number,
+): Promise<Subscriber | null> {
+  const q = sql();
+  const rows = (await q`
+    select subscriber_id from users where id = ${userId} limit 1
+  `) as Array<{ subscriber_id: number | null }>;
+  const id = rows[0]?.subscriber_id;
+  return id ? getSubscriber(Number(id)) : null;
+}
+
+/** A subscriber by their route, for the /[slug] page. */
+export async function getSubscriberBySlug(
+  slug: string,
+): Promise<Subscriber | null> {
+  const q = sql();
+  const rows = (await q`
+    select id, slug, name, kind, status, tools, plan, seat_limit, renewal_at,
+           contact_name, contact_email, notes, created_at
+    from subscribers where slug = ${slug} limit 1
+  `) as Row[];
+  return rows.length > 0 ? toSubscriber(rows[0]) : null;
 }
 
 export interface UpdateSubscriberInput {

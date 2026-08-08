@@ -692,6 +692,17 @@ const CATALOGUE_MODULE_FLAG = "catalogue_module_v1_2026_08";
  */
 const SUBSCRIBERS_FLAG = "subscribers_v1_2026_08";
 
+/**
+ * Incremental migration: a subscriber's own login.
+ *
+ * Selling a subscription is only half of it — the person who bought it has to
+ * be able to sign in. `users.subscriber_id` is that link: null for the CRM
+ * owner and their own staff, set for anyone who belongs to a subscriber, which
+ * is what sends them to their own route at sign-in instead of the owner's
+ * dashboard.
+ */
+const SUBSCRIBER_LOGIN_FLAG = "subscriber_login_v1_2026_08";
+
 /** One-shot schema bootstrap. Idempotent — safe to run on every cold start. */
 export async function ensureSchema(): Promise<void> {
   // In D1 mode (the default) apply the SQLite schema (d1/schema.sql)
@@ -1093,6 +1104,7 @@ async function _ensureSchemaOnce(): Promise<void> {
   let quotationCompletedApplied = false;
   let catalogueModuleApplied = false;
   let subscribersApplied = false;
+  let subscriberLoginApplied = false;
   try {
     const rows = (await q`
       select key from migration_flags
@@ -1117,7 +1129,7 @@ async function _ensureSchemaOnce(): Promise<void> {
         ${V18_MODULES_FLAG}, ${V18_FILE_SHARE_FLAG},
         ${DELIVERY_REQUESTS_FLAG}, ${SENT_TO_SALES_RECIPIENT_FLAG},
         ${QUOTATION_COMPLETED_FLAG}, ${CATALOGUE_MODULE_FLAG},
-        ${SUBSCRIBERS_FLAG}
+        ${SUBSCRIBERS_FLAG}, ${SUBSCRIBER_LOGIN_FLAG}
       )
     `) as Array<{ key: string }>;
     const keys = new Set(rows.map((r) => r.key));
@@ -1170,6 +1182,7 @@ async function _ensureSchemaOnce(): Promise<void> {
     quotationCompletedApplied = keys.has(QUOTATION_COMPLETED_FLAG);
     catalogueModuleApplied = keys.has(CATALOGUE_MODULE_FLAG);
     subscribersApplied = keys.has(SUBSCRIBERS_FLAG);
+    subscriberLoginApplied = keys.has(SUBSCRIBER_LOGIN_FLAG);
   } catch {
     // migration_flags missing or unreadable — run the full DDL below.
   }
@@ -1224,7 +1237,8 @@ async function _ensureSchemaOnce(): Promise<void> {
     sentToSalesRecipientApplied &&
     quotationCompletedApplied &&
     catalogueModuleApplied &&
-    subscribersApplied
+    subscribersApplied &&
+    subscriberLoginApplied
   )
     return;
 
@@ -3821,6 +3835,22 @@ async function _ensureSchemaOnce(): Promise<void> {
     `;
     await q`
       insert into migration_flags (key) values (${SUBSCRIBERS_FLAG})
+      on conflict (key) do nothing
+    `;
+  }
+
+  if (!subscriberLoginApplied) {
+    // Links a login to the subscriber it belongs to. Null means the CRM
+    // owner's own side of the app, which is every account that exists today —
+    // so this changes nothing until a subscriber is actually sold.
+    await q`
+      alter table users add column if not exists subscriber_id integer
+    `;
+    await q`
+      create index if not exists users_subscriber_idx on users(subscriber_id)
+    `;
+    await q`
+      insert into migration_flags (key) values (${SUBSCRIBER_LOGIN_FLAG})
       on conflict (key) do nothing
     `;
   }
