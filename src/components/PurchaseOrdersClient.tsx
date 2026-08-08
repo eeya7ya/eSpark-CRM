@@ -361,7 +361,7 @@ export default function PurchaseOrdersClient({
           </div>
           <button
             onClick={() => setReloadTick((t) => t + 1)}
-            className="shrink-0 rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+            className="shrink-0 rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/85"
           >
             Retry
           </button>
@@ -608,7 +608,7 @@ export default function PurchaseOrdersClient({
             <button
               type="submit"
               disabled={creating}
-              className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+              className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-espark-primary/85 disabled:opacity-60"
             >
               {creating ? "Creating…" : "Create PO"}
             </button>

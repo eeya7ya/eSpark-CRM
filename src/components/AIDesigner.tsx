@@ -240,7 +240,7 @@ export default function AIDesigner({
             <button
               onClick={runDesign}
               disabled={loading || !brief.trim()}
-              className="rounded-md bg-espark-primary text-white py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+              className="rounded-md bg-espark-primary text-white py-2 text-sm font-semibold hover:bg-espark-primary/85 disabled:opacity-60"
             >
               {loading ? "Designing\u2026" : "Design with Groq"}
             </button>
@@ -350,7 +350,7 @@ export default function AIDesigner({
             </div>
             <button
               onClick={addItemsToDraft}
-              className="mt-3 w-full rounded-md bg-espark-primary text-white py-2 text-sm font-semibold hover:bg-red-700"
+              className="mt-3 w-full rounded-md bg-espark-primary text-white py-2 text-sm font-semibold hover:bg-espark-primary/85"
             >
               Add {result.items.length} items to quotation draft
             </button>

@@ -389,7 +389,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
 
       {/* File picker */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-espark-primary/85">
           Choose file
           <input
             type="file"
@@ -503,7 +503,7 @@ export default function CatalogueUpload({ onDone }: { onDone?: () => void }) {
             <button
               onClick={upload}
               disabled={uploading || fpStatus === "loading" || toUpload.length === 0}
-              className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-50"
             >
               {uploading
                 ? uploadProgress

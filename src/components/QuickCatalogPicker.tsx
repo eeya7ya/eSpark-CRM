@@ -270,7 +270,7 @@ export default function QuickCatalogPicker({
                   onClick={() => handleAdd(p)}
                   title={`Add to "${resolvedPage || `${p.vendor} ${p.system}`.trim() || "General"}"`}
                   aria-label="Add product"
-                  className="shrink-0 w-6 h-6 rounded-full bg-espark-primary text-white flex items-center justify-center text-xs font-bold hover:bg-red-700 active:scale-95 transition-transform"
+                  className="shrink-0 w-6 h-6 rounded-full bg-espark-primary text-white flex items-center justify-center text-xs font-bold hover:bg-espark-primary/85 active:scale-95 transition-transform"
                 >
                   +
                 </button>

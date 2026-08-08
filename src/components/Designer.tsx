@@ -2083,7 +2083,7 @@ export default function Designer({
               }
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 quickPickerOpen
-                  ? "bg-espark-primary text-white border-espark-primary hover:bg-red-700"
+                  ? "bg-espark-primary text-white border-espark-primary hover:bg-espark-primary/85"
                   : "border-espark-primary text-espark-primary hover:bg-espark-primary hover:text-white"
               }`}
             >

@@ -1,12 +1,13 @@
+import BrandLoader from "@/components/brand/BrandLoader";
+
 /**
- * Hero-screen loader — the breathing 3×3 grid of dots at full size with a
- * message below. Used by every `loading.tsx` route skeleton and full-card
- * loading states.
+ * Hero-screen loader — the eSpark mark drawing itself, with a message below.
+ * Used by every `loading.tsx` route skeleton and full-card loading state.
  *
- * No "use client", no runtime style injection: the `mt-loader-grid`
- * keyframes live in globals.css, so the dots animate on the very first
- * paint — including inside server-rendered route loaders, before any
- * client JS runs. That removes the "loader shows up / starts late" delay.
+ * No "use client", no runtime style injection: the keyframes live in
+ * globals.css, so the mark animates on the very first paint — including inside
+ * server-rendered route loaders, before any client JS runs. That removes the
+ * "loader shows up / starts late" delay.
  *
  *   <PageLoader />                              — defaults.
  *   <PageLoader label="Building your deal…" />  — custom message.
@@ -27,33 +28,8 @@ export default function PageLoader({
 
   return (
     <div role="status" aria-live="polite" className={wrapperClass}>
-      <div
-        aria-hidden="true"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 16px)",
-          gap: 9,
-        }}
-      >
-        {Array.from({ length: 9 }).map((_, i) => {
-          const row = Math.floor(i / 3);
-          const col = i % 3;
-          return (
-            <span
-              key={i}
-              style={{
-                width: 16,
-                height: 16,
-                borderRadius: 5,
-                background: "#EF476F",
-                animation: "mt-loader-grid 1.3s ease-in-out infinite",
-                animationDelay: `${(row + col) * 0.1}s`,
-              }}
-            />
-          );
-        })}
-      </div>
-      <p className="m-0 text-center text-[1.05rem] font-semibold tracking-wide text-[#9E1B45]">
+      <BrandLoader size={96} />
+      <p className="m-0 text-center text-[1.05rem] font-semibold tracking-wide text-espark-muted">
         {label}
       </p>
     </div>

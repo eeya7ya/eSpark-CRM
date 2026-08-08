@@ -450,7 +450,7 @@ function CheckAnswerView({
             onClick={submit}
             disabled={busy || !allMarked}
             title={allMarked ? "" : "Mark every item before submitting"}
-            className="rounded-md bg-espark-primary text-white px-4 py-1.5 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+            className="rounded-md bg-espark-primary text-white px-4 py-1.5 text-sm font-semibold hover:bg-espark-primary/85 disabled:opacity-60"
           >
             {busy ? "Sending…" : "Send reply"}
           </button>

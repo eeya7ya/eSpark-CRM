@@ -300,7 +300,7 @@ export default function EmailAdminPanel() {
           <button
             onClick={() => void saveConfig()}
             disabled={savingCfg}
-            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 transition-colors"
+            className="rounded-lg bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-50 transition-colors"
           >
             {savingCfg ? "Saving…" : "Save mail server settings"}
           </button>
@@ -546,7 +546,7 @@ function MailboxEditor({
           <button
             onClick={() => void save()}
             disabled={busy || !email.trim()}
-            className="rounded bg-espark-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+            className="rounded bg-espark-primary px-3 py-1.5 text-sm font-semibold text-white hover:bg-espark-primary/85 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save mailbox"}
           </button>

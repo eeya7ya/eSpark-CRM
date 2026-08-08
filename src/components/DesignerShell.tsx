@@ -191,7 +191,7 @@ export default function DesignerShell({
         <div className="mt-3 flex items-center gap-2">
           <button
             onClick={() => setReloadTick((t) => t + 1)}
-            className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+            className="rounded-md bg-espark-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-espark-primary/85"
           >
             Retry
           </button>

@@ -138,7 +138,7 @@ export default function QuotationStockCheckPanel({
           <button
             onClick={request}
             disabled={busy || loading}
-            className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60"
+            className="rounded-md bg-espark-primary text-white px-4 py-2 text-sm font-semibold hover:bg-espark-primary/85 disabled:opacity-60"
           >
             {busy ? "Sending…" : "Check availability"}
           </button>

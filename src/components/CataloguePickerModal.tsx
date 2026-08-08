@@ -373,7 +373,7 @@ export default function CataloguePickerModal({
                       className={`mt-2 w-full rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                         justAdded === p.id
                           ? "bg-emerald-600 text-white"
-                          : "bg-espark-primary text-white hover:bg-red-700"
+                          : "bg-espark-primary text-white hover:bg-espark-primary/85"
                       }`}
                     >
                       {justAdded === p.id

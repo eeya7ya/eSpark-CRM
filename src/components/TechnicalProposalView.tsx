@@ -679,7 +679,7 @@ export default function TechnicalProposalView({
           </button>
           <button
             onClick={runPrint}
-            className="rounded-md bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+            className="rounded-md bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85"
           >
             Print / PDF
           </button>
