@@ -681,6 +681,17 @@ const QUOTATION_COMPLETED_FLAG = "quotation_completed_v1_2026_07";
  */
 const CATALOGUE_MODULE_FLAG = "catalogue_module_v1_2026_08";
 
+/**
+ * Incremental migration: the `subscribers` table.
+ *
+ * Every existing database already has all the flags above set, so ensureSchema
+ * returns before it ever reaches the fresh-database bootstrap — a new table
+ * added there alone would never be created on a deployment that already runs,
+ * which is exactly what happened the first time this shipped. It needs its own
+ * flag to reach existing databases.
+ */
+const SUBSCRIBERS_FLAG = "subscribers_v1_2026_08";
+
 /** One-shot schema bootstrap. Idempotent — safe to run on every cold start. */
 export async function ensureSchema(): Promise<void> {
   // In D1 mode (the default) apply the SQLite schema (d1/schema.sql)
@@ -1081,6 +1092,7 @@ async function _ensureSchemaOnce(): Promise<void> {
   let sentToSalesRecipientApplied = false;
   let quotationCompletedApplied = false;
   let catalogueModuleApplied = false;
+  let subscribersApplied = false;
   try {
     const rows = (await q`
       select key from migration_flags
@@ -1104,7 +1116,8 @@ async function _ensureSchemaOnce(): Promise<void> {
         ${PROJECT_DISTRIBUTION_PHONE_FLAG}, ${CHECKLIST_TEMPLATES_FLAG},
         ${V18_MODULES_FLAG}, ${V18_FILE_SHARE_FLAG},
         ${DELIVERY_REQUESTS_FLAG}, ${SENT_TO_SALES_RECIPIENT_FLAG},
-        ${QUOTATION_COMPLETED_FLAG}, ${CATALOGUE_MODULE_FLAG}
+        ${QUOTATION_COMPLETED_FLAG}, ${CATALOGUE_MODULE_FLAG},
+        ${SUBSCRIBERS_FLAG}
       )
     `) as Array<{ key: string }>;
     const keys = new Set(rows.map((r) => r.key));
@@ -1156,6 +1169,7 @@ async function _ensureSchemaOnce(): Promise<void> {
     sentToSalesRecipientApplied = keys.has(SENT_TO_SALES_RECIPIENT_FLAG);
     quotationCompletedApplied = keys.has(QUOTATION_COMPLETED_FLAG);
     catalogueModuleApplied = keys.has(CATALOGUE_MODULE_FLAG);
+    subscribersApplied = keys.has(SUBSCRIBERS_FLAG);
   } catch {
     // migration_flags missing or unreadable — run the full DDL below.
   }
@@ -1209,7 +1223,8 @@ async function _ensureSchemaOnce(): Promise<void> {
     deliveryRequestsApplied &&
     sentToSalesRecipientApplied &&
     quotationCompletedApplied &&
-    catalogueModuleApplied
+    catalogueModuleApplied &&
+    subscribersApplied
   )
     return;
 
@@ -3775,6 +3790,37 @@ async function _ensureSchemaOnce(): Promise<void> {
     `;
     await q`
       insert into migration_flags (key) values (${CATALOGUE_MODULE_FLAG})
+      on conflict (key) do nothing
+    `;
+  }
+
+  if (!subscribersApplied) {
+    // Who has subscribed to the CRM, and what they bought. See the fresh-DB
+    // definition above for the column notes; this is the same table reaching
+    // databases that already existed.
+    await q`
+      create table if not exists subscribers (
+        id            serial primary key,
+        slug          text unique not null,
+        name          text not null,
+        kind          text not null default 'company',
+        status        text not null default 'active',
+        tools         text,
+        plan          text not null default 'standard',
+        seat_limit    integer,
+        renewal_at    timestamptz,
+        contact_name  text not null default '',
+        contact_email text not null default '',
+        notes         text not null default '',
+        created_at    timestamptz not null default now(),
+        updated_at    timestamptz not null default now()
+      )
+    `;
+    await q`
+      create index if not exists subscribers_kind_idx on subscribers(kind)
+    `;
+    await q`
+      insert into migration_flags (key) values (${SUBSCRIBERS_FLAG})
       on conflict (key) do nothing
     `;
   }
