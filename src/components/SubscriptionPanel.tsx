@@ -61,7 +61,11 @@ export default function SubscriptionPanel({
                     ? `All ${summary.totalModules} modules licensed`
                     : `${summary.licensedCount} of ${summary.totalModules} modules licensed`}
                   {" · "}
-                  {seatTotal} {seatTotal === 1 ? "seat" : "seats"} in use
+                  {summary.seats.limit === null
+                    ? `${summary.seats.used} ${summary.seats.used === 1 ? "account" : "accounts"}`
+                    : `${summary.seats.used}/${summary.seats.limit} accounts used`}
+                  {" · "}
+                  {seatTotal} module {seatTotal === 1 ? "seat" : "seats"} granted
                 </p>
               </div>
             </div>
@@ -82,6 +86,17 @@ export default function SubscriptionPanel({
             </p>
           )}
         </div>
+
+        {/* Surfaced here so an admin sees the cap BEFORE the create-user form
+            refuses them. The limit is set a tier above, on the platform
+            console, and is otherwise invisible until it bites. */}
+        {summary.seats.full && (
+          <p className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+            All {summary.seats.limit} accounts on your plan are in use, so new
+            users cannot be created. Remove an account, or ask your provider to
+            raise the limit.
+          </p>
+        )}
 
         {stranded.length > 0 && (
           <p className="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">

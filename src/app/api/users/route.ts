@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql, ensureSchema } from "@/lib/db";
 import { hashPassword, requireAdmin } from "@/lib/auth";
+import { seatUsage } from "@/lib/seats";
 
 export const runtime = "nodejs";
 
@@ -52,6 +53,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "username and password required" },
         { status: 400 },
+      );
+    }
+    // The subscription's seat cap. Checked here rather than in the admin UI
+    // because this endpoint is what actually creates the account, and the
+    // customer's own admin owns that screen. Uncapped workspaces (and any
+    // deployment with no control plane) pass straight through.
+    const seats = await seatUsage();
+    if (seats.full) {
+      return NextResponse.json(
+        {
+          error:
+            `Your plan allows ${seats.limit} user ${seats.limit === 1 ? "account" : "accounts"} ` +
+            `and all of them are in use. Remove an account, or contact your provider to raise the limit.`,
+        },
+        { status: 409 },
       );
     }
     const role: "admin" | "viewer" | "user" =
