@@ -49,7 +49,12 @@ export default function ChangePasswordClient({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Could not change password");
-      router.push("/");
+      // A subscriber lands on their own route; the CRM owner on "/".
+      router.push(
+        typeof data.home === "string" && data.home.startsWith("/")
+          ? data.home
+          : "/",
+      );
       router.refresh();
     } catch (err) {
       setError((err as Error).message);

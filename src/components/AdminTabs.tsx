@@ -44,8 +44,6 @@ import type { AppSettings } from "@/lib/settings";
 
 type Tab =
   | "subscribers"
-  | "users"
-  | "subscription"
   | "news"
   | "email"
   | "settings"
@@ -89,23 +87,6 @@ const TAB_GROUPS: Array<{ group: string; tabs: TabDef[] }> = [
         blurb:
           "Everyone subscribed to the CRM — one person buying tools for themselves, or a company whose own sub-admin manages their staff.",
         icon: Layers,
-      },
-    ],
-  },
-  {
-    group: "This workspace",
-    tabs: [
-      {
-        id: "users",
-        label: "Users & Roles",
-        blurb: "People in this workspace, and which modules each one may open.",
-        icon: Users,
-      },
-      {
-        id: "subscription",
-        label: "Subscription",
-        blurb: "The modules this workspace is licensed for, and the seats on each.",
-        icon: ShieldCheck,
       },
     ],
   },
@@ -208,17 +189,8 @@ export default function AdminTabs({
     isPlatformAdmin: boolean;
   };
 }) {
-  // Groups minus anything this subscription has no use for, with emptied
-  // groups dropped so the rail never renders a heading over nothing.
-  const groups = useMemo(
-    () =>
-      TAB_GROUPS.map((g) => ({
-        ...g,
-        tabs: g.tabs.filter((t) => hasStaff || t.id !== "users"),
-      })).filter((g) => g.tabs.length > 0),
-    [hasStaff],
-  );
-  const visible = useMemo(() => groups.flatMap((g) => g.tabs), [groups]);
+  const groups = TAB_GROUPS;
+  const visible = ALL_TABS;
   const fallback = visible[0]?.id ?? "settings";
   const [tab, setTab] = useState<Tab>(() =>
     visible.some((t) => t.id === initialTab) ? (initialTab as Tab) : fallback,
@@ -279,15 +251,6 @@ export default function AdminTabs({
           <SubscribersAdminPanel readOnly={readOnly} />
         )}
 
-        {current === "users" && <UsersAndRolesPanel readOnly={readOnly} />}
-
-        {current === "subscription" && (
-          <SubscriptionPanel
-            rows={subscription.rows}
-            summary={subscription.summary}
-            isPlatformAdmin={subscription.isPlatformAdmin}
-          />
-        )}
 
         {current === "news" && <NewsAdminPanel />}
 

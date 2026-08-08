@@ -119,10 +119,12 @@ async function authenticate(
   await ensureDefaultAdmin();
   const q = sql();
     const rows = (await q`
-      select id, username, password_hash, role, display_name, phone,
-             must_change_password
-      from users
-      where username = ${username}
+      select u.id, u.username, u.password_hash, u.role, u.display_name, u.phone,
+             u.must_change_password, s.slug as subscriber_slug,
+             s.status as subscriber_status
+      from users u
+      left join subscribers s on s.id = u.subscriber_id
+      where u.username = ${username}
       limit 1
     `) as Array<{
       id: number;
@@ -132,6 +134,8 @@ async function authenticate(
       display_name: string;
       phone: string | null;
       must_change_password: boolean | number | null;
+      subscriber_slug: string | null;
+      subscriber_status: string | null;
     }>;
     if (rows.length === 0) {
       recordFailure(key);
@@ -147,6 +151,14 @@ async function authenticate(
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 },
+      );
+    }
+    // A suspended subscription cannot sign in. Checked after the password so
+    // the response cannot be used to enumerate which accounts exist.
+    if (row.subscriber_slug && row.subscriber_status === "suspended") {
+      return NextResponse.json(
+        { error: "This subscription is suspended. Contact your provider." },
+        { status: 403 },
       );
     }
     clearAttempts(key);
@@ -171,5 +183,8 @@ async function authenticate(
         must_change_password: mustChangePassword,
       },
       workspace: workspaceSlug || undefined,
+      // Where this account belongs. A subscriber lands on their own route
+      // rather than the owner's dashboard, which is not theirs to see.
+      home: row.subscriber_slug ? `/${row.subscriber_slug}` : "/",
     });
 }

@@ -126,11 +126,17 @@ export default function LoginClient({
         return;
       }
       // Otherwise honour a same-origin `?next=`, never an absolute URL.
+      // Falling back to the home the server resolved for this account: a
+      // subscriber goes to their own route, the CRM owner to "/".
       const nextParam = new URLSearchParams(window.location.search).get("next");
+      const home =
+        typeof data.home === "string" && data.home.startsWith("/")
+          ? data.home
+          : "/";
       const dest =
         nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
           ? nextParam
-          : "/";
+          : home;
       router.push(dest);
       router.refresh();
     } catch (err) {

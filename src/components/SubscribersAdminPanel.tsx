@@ -301,6 +301,8 @@ function AddForm({
   const [contactEmail, setContactEmail] = useState("");
   const [seatLimit, setSeatLimit] = useState("");
   const [picked, setPicked] = useState<string[]>([]);
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   const field =
     "mt-1 w-full rounded-lg border border-espark-border bg-espark-surface px-3 py-2 text-sm text-espark-ink outline-none focus:border-espark-primary";
@@ -322,11 +324,15 @@ function AddForm({
           tools: picked.length > 0 ? picked : null,
           seatLimit:
             individual || seatLimit.trim() === "" ? null : Number(seatLimit),
+          loginUsername,
+          loginPassword,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not add");
-      await onCreated(`${name} added.`);
+      await onCreated(
+        `${name} added. They sign in as "${loginUsername}" and land on /${slug}.`,
+      );
     } catch (err) {
       onError((err as Error).message);
     } finally {
@@ -421,6 +427,46 @@ function AddForm({
             />
           </div>
         )}
+      </div>
+
+      <div className="mt-4 rounded-xl border border-espark-border bg-espark-soft/40 p-3">
+        <p className={label}>Their login</p>
+        <p className="mt-1 text-[11px] text-espark-ink/45">
+          {individual
+            ? "How they sign in. After signing in they land on their own route."
+            : "Their sub-admin's login. After signing in they land on the company's own route."}{" "}
+          They must change this password the first time they use it.
+        </p>
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label className={label} htmlFor="sub-user">
+              Username
+            </label>
+            <input
+              id="sub-user"
+              value={loginUsername}
+              onChange={(e) => setLoginUsername(e.target.value)}
+              required
+              autoComplete="off"
+              className={field}
+            />
+          </div>
+          <div>
+            <label className={label} htmlFor="sub-pass">
+              Password
+            </label>
+            <input
+              id="sub-pass"
+              type="password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              minLength={8}
+              required
+              autoComplete="new-password"
+              className={field}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="mt-4">

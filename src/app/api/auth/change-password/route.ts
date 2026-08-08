@@ -76,7 +76,16 @@ export async function POST(req: NextRequest) {
     // Re-issue the session with the gate cleared so the app unlocks right away.
     await createSessionCookie({ ...user, mustChangePassword: false });
 
-    return NextResponse.json({ ok: true });
+    const homeRows = (await sql()`
+      select s.slug from users u
+      left join subscribers s on s.id = u.subscriber_id
+      where u.id = ${user.id} limit 1
+    `) as Array<{ slug: string | null }>;
+    // Same rule as login: a subscriber goes to their own route, not the
+    // owner's dashboard, so the first thing after setting a password is
+    // their own space rather than a redirect they have no access to.
+    const home = homeRows[0]?.slug ? `/${homeRows[0].slug}` : "/";
+    return NextResponse.json({ ok: true, home });
   } catch (err) {
     const msg = (err as Error).message;
     const status = msg === "UNAUTHENTICATED" ? 401 : 500;
