@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import JSZip from "jszip";
 import {
   Database,
@@ -170,6 +170,7 @@ export default function AdminTabs({
   readOnly = false,
   initialTab,
   subscription,
+  hasStaff = true,
 }: {
   initialSettings: AppSettings;
   /**
@@ -180,6 +181,12 @@ export default function AdminTabs({
   readOnly?: boolean;
   /** Tab to open on mount (e.g. from `/admin?tab=subscription`). */
   initialTab?: string;
+  /**
+   * False for a single-person subscription: there is no staff to manage, so
+   * Users & Roles is dropped rather than shown with one row that is the
+   * subscriber themselves.
+   */
+  hasStaff?: boolean;
   /** Both access tiers, resolved server-side — see lib/adminOverview. */
   subscription: {
     rows: ModuleAccessRow[];
@@ -187,10 +194,25 @@ export default function AdminTabs({
     isPlatformAdmin: boolean;
   };
 }) {
-  const [tab, setTab] = useState<Tab>(
-    TAB_IDS.includes(initialTab ?? "") ? (initialTab as Tab) : "users",
+  // Groups minus anything this subscription has no use for, with emptied
+  // groups dropped so the rail never renders a heading over nothing.
+  const groups = useMemo(
+    () =>
+      TAB_GROUPS.map((g) => ({
+        ...g,
+        tabs: g.tabs.filter((t) => hasStaff || t.id !== "users"),
+      })).filter((g) => g.tabs.length > 0),
+    [hasStaff],
   );
-  const active = ALL_TABS.find((t) => t.id === tab) ?? ALL_TABS[0];
+  const visible = useMemo(() => groups.flatMap((g) => g.tabs), [groups]);
+  const fallback = visible[0]?.id ?? "settings";
+  const [tab, setTab] = useState<Tab>(() =>
+    visible.some((t) => t.id === initialTab) ? (initialTab as Tab) : fallback,
+  );
+  // A hidden tab must not stay selected — a deep link to ?tab=users on a
+  // single-person subscription would otherwise render a panel with no way back.
+  const current = visible.some((t) => t.id === tab) ? tab : fallback;
+  const active = visible.find((t) => t.id === current) ?? visible[0];
 
   return (
     <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-7">
@@ -205,7 +227,7 @@ export default function AdminTabs({
             group shrinking in the horizontal scroller, and stops it GROWING to
             fill the column on desktop, which otherwise spread the four groups
             down the rail with the gaps varying by how tall each group was. */}
-        {TAB_GROUPS.map((g) => (
+        {groups.map((g) => (
           <div key={g.group} className="flex-none">
             <p className="mb-1.5 hidden px-2 text-[10px] font-semibold uppercase tracking-wider text-espark-ink/40 lg:block">
               {g.group}
@@ -215,7 +237,7 @@ export default function AdminTabs({
                 <NavItem
                   key={t.id}
                   def={t}
-                  active={tab === t.id}
+                  active={current === t.id}
                   onClick={() => setTab(t.id)}
                 />
               ))}
@@ -239,9 +261,9 @@ export default function AdminTabs({
           </header>
         )}
 
-        {tab === "users" && <UsersAndRolesPanel readOnly={readOnly} />}
+        {current === "users" && <UsersAndRolesPanel readOnly={readOnly} />}
 
-        {tab === "subscription" && (
+        {current === "subscription" && (
           <SubscriptionPanel
             rows={subscription.rows}
             summary={subscription.summary}
@@ -249,28 +271,28 @@ export default function AdminTabs({
           />
         )}
 
-        {tab === "news" && <NewsAdminPanel />}
+        {current === "news" && <NewsAdminPanel />}
 
-        {tab === "email" && <EmailAdminPanel />}
+        {current === "email" && <EmailAdminPanel />}
 
-        {tab === "settings" && (
+        {current === "settings" && (
           <AdminSettings initialSettings={initialSettings} />
         )}
 
-        {tab === "branding" && (
+        {current === "branding" && (
           <BrandingAdmin initialSettings={initialSettings} readOnly={readOnly} />
         )}
 
-        {tab === "proposal" && (
+        {current === "proposal" && (
           <TechProposalAssetsAdmin
             initialSettings={initialSettings}
             readOnly={readOnly}
           />
         )}
 
-        {tab === "backups" && <BackupsSection />}
+        {current === "backups" && <BackupsSection />}
 
-        {tab === "syslog" && <SyslogPanel readOnly={readOnly} />}
+        {current === "syslog" && <SyslogPanel readOnly={readOnly} />}
       </div>
     </div>
   );

@@ -33,6 +33,25 @@ export type WorkspaceStatus =
   | "suspended"
   | "failed";
 
+/**
+ * What kind of subscriber this workspace belongs to. Both kinds get their own
+ * database — the difference is who administers what inside it.
+ *
+ *   individual — one person subscribing for themselves. They ARE the only
+ *                user; there is no sub-admin and no staff to manage. Their
+ *                subscription is simply which tools they may open: one
+ *                (quotation designer only, say) or several.
+ *   company    — a client company. Their own sub-admin manages their staff
+ *                (presales, sales, projects) within the tools licensed here.
+ *
+ * Defaults to 'company', which is what every workspace created before this
+ * column existed was.
+ */
+export type WorkspaceKind = "individual" | "company";
+
+/** A single-person subscription is exactly one account, by definition. */
+export const INDIVIDUAL_SEAT_LIMIT = 1;
+
 export interface Workspace {
   id: number;
   slug: string;
@@ -55,6 +74,8 @@ export interface Workspace {
    */
   modules: string[] | null;
   provisionError: string | null;
+  /** Individual or company subscriber — see WorkspaceKind. */
+  kind: WorkspaceKind;
   /**
    * ── Commercial terms ──────────────────────────────────────────────────
    * `modules` above says WHICH parts of the product the customer bought.
@@ -87,6 +108,7 @@ export interface Workspace {
  */
 export const RESERVED_SLUGS = new Set([
   "admin",
+  "crm-admin",
   "api",
   "app",
   "assets",
@@ -196,6 +218,9 @@ export function ensureControlSchema(): Promise<void> {
       await q`alter table workspaces add column if not exists contact_name text not null default ''`;
       await q`alter table workspaces add column if not exists contact_email text not null default ''`;
       await q`alter table workspaces add column if not exists notes text not null default ''`;
+      // Individual vs company — see WorkspaceKind. Additive with a 'company'
+      // default, so every existing workspace keeps behaving exactly as it did.
+      await q`alter table workspaces add column if not exists kind text not null default 'company'`;
       await q`
         create table if not exists platform_admins (
           id                   bigserial primary key,
@@ -239,6 +264,7 @@ type WorkspaceRow = {
   branding: string | Record<string, unknown> | null;
   modules: string | null;
   provision_error: string | null;
+  kind: string | null;
   plan: string | null;
   seat_limit: number | string | null;
   renewal_at: string | Date | null;
@@ -297,13 +323,16 @@ function toWorkspace(row: WorkspaceRow): Workspace {
     branding: parseBranding(row.branding),
     modules: parseModules(row.modules),
     provisionError: row.provision_error,
+    kind: row.kind === "individual" ? "individual" : "company",
     plan: row.plan || "standard",
     // A non-positive limit is meaningless and would lock the customer out of
     // their own workspace, so it reads as "uncapped" rather than "zero seats".
     seatLimit:
-      row.seat_limit === null || Number(row.seat_limit) <= 0
-        ? null
-        : Number(row.seat_limit),
+      row.kind === "individual"
+        ? INDIVIDUAL_SEAT_LIMIT
+        : row.seat_limit === null || Number(row.seat_limit) <= 0
+          ? null
+          : Number(row.seat_limit),
     renewalAt:
       row.renewal_at instanceof Date
         ? row.renewal_at.toISOString()
@@ -326,7 +355,7 @@ export async function getWorkspaceBySlug(
   const q = getControlSql();
   const rows = (await q`
     select id, slug, name, database_url_enc, status, r2_prefix, branding,
-           modules, provision_error, plan, seat_limit, renewal_at,
+           modules, provision_error, kind, plan, seat_limit, renewal_at,
            contact_name, contact_email, notes
     from workspaces
     where slug = ${slug}
@@ -373,7 +402,7 @@ export async function listWorkspaces(): Promise<Workspace[]> {
   const q = getControlSql();
   const rows = (await q`
     select id, slug, name, database_url_enc, status, r2_prefix, branding,
-           modules, provision_error, plan, seat_limit, renewal_at,
+           modules, provision_error, kind, plan, seat_limit, renewal_at,
            contact_name, contact_email, notes
     from workspaces
     order by created_at desc
