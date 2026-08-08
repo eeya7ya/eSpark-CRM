@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { ensureSchema } from "@/lib/db";
-import { deleteSubscriber, updateSubscriber } from "@/lib/subscribers";
+import {
+  deleteSubscriber,
+  setSubscriberLogin,
+  updateSubscriber,
+} from "@/lib/subscribers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -31,6 +35,17 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: "invalid id" }, { status: 400 });
     }
     const body = (await req.json()) as Record<string, unknown>;
+
+    // Setting or resetting the login. Done before the field updates so a
+    // rejected username (already taken) fails the whole request rather than
+    // half-applying it.
+    if (
+      typeof body.loginUsername === "string" &&
+      typeof body.loginPassword === "string" &&
+      body.loginPassword.length > 0
+    ) {
+      await setSubscriberLogin(id, body.loginUsername, body.loginPassword);
+    }
     const subscriber = await updateSubscriber(id, {
       name: typeof body.name === "string" ? body.name : undefined,
       status:
