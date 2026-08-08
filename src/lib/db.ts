@@ -125,9 +125,14 @@ function clientFor(url: string): Sql {
     const oldest = cache.keys().next().value;
     if (oldest !== undefined) cache.delete(oldest);
   }
+  // The hosted pooler requires TLS. A database on the loopback address is not
+  // reachable off the machine and generally has no certificate at all, so
+  // demanding TLS there only makes it impossible to run the app locally
+  // against a plain `postgres` — which is exactly the setup used to check that
+  // a change works before deploying it.
+  const isLocal = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(url);
   const client = postgres(url, {
-    // The pooler requires TLS for every connection.
-    ssl: "require",
+    ssl: isLocal ? false : "require",
     // Required for transaction-mode poolers (pgbouncer-in-transaction-mode)
     // because prepared statements cannot span pooled connections.
     prepare: false,
@@ -1217,6 +1222,48 @@ async function _ensureSchemaOnce(): Promise<void> {
       role          text not null default 'user',
       created_at    timestamptz not null default now()
     )
+  `;
+  // ── Subscribers ──────────────────────────────────────────────────────────
+  // Who has subscribed to the CRM, in the two shapes it is sold in:
+  //
+  //   individual — one person subscribing for themselves. No sub-admin and no
+  //                staff; what they bought is which tools they may open, one
+  //                or several.
+  //   company    — a company whose own sub-admin manages their people
+  //                (presales, sales, projects) within the tools bought.
+  //
+  // In THIS database, keyed by `slug`, which is the route they are reached at.
+  // Deliberately not a separate control database and not a subdomain: one
+  // database that already exists and needs no configuration is the difference
+  // between a feature that runs and one that only runs once four environment
+  // variables are set. The shape below is the same either way, so moving it
+  // later is a migration rather than a rewrite.
+  await q`
+    create table if not exists subscribers (
+      id            serial primary key,
+      slug          text unique not null,
+      name          text not null,
+      kind          text not null default 'company',
+      status        text not null default 'active',
+      -- JSON array of tool ids, or null for every tool. Text rather than
+      -- jsonb for the same reason app_settings is: postgres.js cannot
+      -- introspect column types with prepared statements off, and can surface
+      -- jsonb as a raw string. An explicit parse behaves identically either
+      -- way.
+      tools         text,
+      plan          text not null default 'standard',
+      -- Null means uncapped. An individual is always 1, enforced in lib.
+      seat_limit    integer,
+      renewal_at    timestamptz,
+      contact_name  text not null default '',
+      contact_email text not null default '',
+      notes         text not null default '',
+      created_at    timestamptz not null default now(),
+      updated_at    timestamptz not null default now()
+    )
+  `;
+  await q`
+    create index if not exists subscribers_kind_idx on subscribers(kind)
   `;
   await q`
     create table if not exists quotations (
