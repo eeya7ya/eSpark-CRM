@@ -200,6 +200,10 @@ export default function LoginClient({
       </aside>
 
       {/* Brand mark as a full-height watermark straddling the 12° cut.
+          Each half knocks its node icons out in its OWN background colour, so
+          the icon is a hole showing the panel through — which is what makes
+          the whole mark read as one bright shape on the dark side and one
+          dark shape on the light side, node detail included.
           It is drawn TWICE at identical coordinates — this copy on the dark
           panel, a second one inside the auth panel below — because a single
           tint cannot read on both backgrounds at watermark opacity. Each copy
