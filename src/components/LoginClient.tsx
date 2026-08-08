@@ -206,7 +206,7 @@ export default function LoginClient({
           dark shape on the light side, node detail included.
           It is drawn TWICE at identical coordinates — this copy on the dark
           panel, a second one inside the auth panel below — because a single
-          tint cannot read on both backgrounds at watermark opacity. Each copy
+          tint cannot be opposite both backgrounds at once. Each copy
           is clipped to its own side (the auth panel's clip-path does the
           second one for free), so together they read as one continuous mark
           that changes colour where it crosses the seam. */}
