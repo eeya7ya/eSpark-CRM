@@ -5,9 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, LogOut, ArrowLeft, HelpCircle } from "@/lib/icons";
 import type { SessionUser } from "@/lib/auth";
-import NotificationsBell, {
-  clearNotificationsCache,
-} from "@/components/NotificationsBell";
+// The bell itself was removed from the header; the cache helper stays because
+// logout must still drop any notification state cached for the signed-in user
+// before the next person signs in on the same browser.
+import { clearNotificationsCache } from "@/components/NotificationsBell";
 import SideNav from "@/components/SideNav";
 import HelpCenter from "@/components/HelpCenter";
 import AppFooter from "@/components/AppFooter";
@@ -142,7 +143,6 @@ export default function TopBar({ user }: { user: SessionUser }) {
               <HelpCircle className="h-4 w-4" strokeWidth={2.25} />
               <span className="hidden text-xs font-semibold sm:inline">Help</span>
             </button>
-            <NotificationsBell />
             <span className="ml-1 hidden items-center gap-1.5 rounded-full border border-espark-border/60 bg-espark-surface/60 px-3 py-1 text-[11px] font-medium text-espark-ink/70 sm:inline-flex">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               {user.display_name || user.username}

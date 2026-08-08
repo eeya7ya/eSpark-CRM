@@ -19,7 +19,6 @@ import {
   Building2,
   type LucideIcon,
 } from "@/lib/icons";
-import MessagesPanel from "@/components/MessagesPanel";
 
 /**
  * The administration board.
@@ -138,8 +137,11 @@ export default function AdminDashboardClient({
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
+      {/* Full width. This used to be a 2/3 + 1/3 split with the alarms and
+          messages inbox down the right-hand side; the inbox is gone from the
+          admin board, so the panels take the whole row rather than leaving a
+          third of the page empty. */}
+      <div className="space-y-4">
           {/* ── Tier 1: the subscription ───────────────────────────────── */}
           <Panel
             title="Subscription"
@@ -268,14 +270,6 @@ export default function AdminDashboardClient({
               </div>
             )}
           </Panel>
-        </div>
-
-        {/* Inbox — alarms + messages */}
-        <div className="lg:col-span-1">
-          <div className="h-[560px]">
-            <MessagesPanel />
-          </div>
-        </div>
       </div>
     </div>
   );
