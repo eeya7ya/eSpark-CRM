@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import type { Workspace } from "./controlDb";
+import type { Workspace, WorkspaceKind } from "./controlDb";
 
 /**
  * Which workspace the current request belongs to.
@@ -49,6 +49,12 @@ export interface WorkspaceBinding {
    * time one runs — so enforcing them costs no control-database round trip.
    */
   seatLimit: number | null;
+  /**
+   * Individual or company. Carried so ordinary requests can tell whether this
+   * workspace has staff at all — an individual subscription has exactly one
+   * account and no user management to show.
+   */
+  kind: WorkspaceKind;
 }
 
 const storage = new AsyncLocalStorage<WorkspaceBinding>();
@@ -68,6 +74,7 @@ export function toBinding(ws: Workspace | WorkspaceBinding): WorkspaceBinding {
     r2Prefix: ws.r2Prefix,
     modules: ws.modules,
     seatLimit: ws.seatLimit,
+    kind: ws.kind,
   };
 }
 

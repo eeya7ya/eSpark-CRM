@@ -5,6 +5,7 @@ import AdminTabs from "@/components/AdminTabs";
 import { getAppSettings } from "@/lib/settings";
 import { getPlatformAdmin } from "@/lib/platformAuth";
 import { hasControlPlane, listWorkspaces } from "@/lib/controlDb";
+import { getBoundWorkspace } from "@/lib/workspaceContext";
 import SubscribersPanel from "@/components/platform/SubscribersPanel";
 import {
   getModuleAccessRows,
@@ -45,6 +46,12 @@ export default async function AdminPage({
     isPlatformAdmin: platformAdmin !== null,
   };
 
+  // A single-person subscription has no staff — the subscriber is the only
+  // account — so the whole Users & Roles surface is meaningless there and is
+  // dropped rather than shown empty. A deployment with no control plane has no
+  // subscription kind at all and keeps the full set.
+  const hasStaff = getBoundWorkspace()?.kind !== "individual";
+
   const settings = await settingsPromise;
   const sp = await searchParams;
   return (
@@ -69,6 +76,7 @@ export default async function AdminPage({
           readOnly={readOnly}
           initialTab={sp.tab}
           subscription={subscription}
+          hasStaff={hasStaff}
         />
       </main>
     </div>

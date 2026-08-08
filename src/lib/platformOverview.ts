@@ -1,4 +1,9 @@
-import { listWorkspaces, type Workspace, type WorkspaceStatus } from "./controlDb";
+import {
+  listWorkspaces,
+  type Workspace,
+  type WorkspaceKind,
+  type WorkspaceStatus,
+} from "./controlDb";
 import { runInWorkspace } from "./workspaceContext";
 import { sql } from "./db";
 
@@ -29,6 +34,8 @@ export interface CustomerRow {
   slug: string;
   name: string;
   status: WorkspaceStatus;
+  /** Individual or company subscriber — see controlDb.WorkspaceKind. */
+  kind: WorkspaceKind;
   plan: string;
   contactName: string;
   contactEmail: string;
@@ -115,6 +122,7 @@ export async function listCustomers(now = Date.now()): Promise<CustomerRow[]> {
         slug: ws.slug,
         name: ws.name,
         status: ws.status,
+        kind: ws.kind,
         plan: ws.plan,
         contactName: ws.contactName,
         contactEmail: ws.contactEmail,

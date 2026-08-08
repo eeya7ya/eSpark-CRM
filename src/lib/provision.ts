@@ -10,6 +10,7 @@ import {
   validateSlug,
   workspaceKeyReady,
   type Workspace,
+  type WorkspaceKind,
 } from "./controlDb";
 import { runInWorkspace } from "./workspaceContext";
 
@@ -51,6 +52,12 @@ export interface ProvisionInput {
   databaseUrl?: string;
   /** Seeded into the workspace's app_settings so documents carry them. */
   companyDetails?: Record<string, unknown>;
+  /**
+   * Individual or company subscriber. Both get their own database; the kind
+   * decides whether anyone inside administers staff. Defaults to 'company',
+   * matching every workspace created before the distinction existed.
+   */
+  kind?: WorkspaceKind;
 }
 
 export interface ProvisionResult {
@@ -241,16 +248,18 @@ export async function provisionWorkspace(
 
   const sealed = sealDatabaseUrl(databaseUrl);
   const r2Prefix = `ws/${slug}`;
+  const kind: WorkspaceKind = input.kind === "individual" ? "individual" : "company";
   await control`
     insert into workspaces (slug, name, database_url_enc, status, r2_prefix,
-                            provision_error)
+                            provision_error, kind)
     values (${slug}, ${input.name.trim()}, ${sealed}, 'provisioning',
-            ${r2Prefix}, null)
+            ${r2Prefix}, null, ${kind})
     on conflict (slug) do update set name             = excluded.name,
                                      database_url_enc = excluded.database_url_enc,
                                      status           = 'provisioning',
                                      r2_prefix        = excluded.r2_prefix,
                                      provision_error  = null,
+                                     kind             = excluded.kind,
                                      updated_at       = now()
   `;
   invalidateWorkspace(slug);
