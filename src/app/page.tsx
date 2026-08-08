@@ -3,6 +3,10 @@ import { canReadAll, getSessionUser } from "@/lib/auth";
 import { getTenantUserIds } from "@/lib/scope";
 import { sql, ensureSchema } from "@/lib/db";
 import { getUserModuleRoles } from "@/lib/modules";
+import {
+  getModuleAccessRows,
+  summariseSubscription,
+} from "@/lib/adminOverview";
 import TopBar from "@/components/TopBar";
 import RouteRefresher from "@/components/RouteRefresher";
 import DashboardClient, { type DashboardData } from "@/components/DashboardClient";
@@ -267,13 +271,19 @@ export default async function DashboardPage() {
     );
   }
 
-  // Admins get an administration board: people, roles and departments —
-  // not the salesperson's quotation analytics. (They can still open the CRM
-  // module for the sales view.)
+  // Admins get an administration board: who is in the workspace, what the
+  // workspace has licensed, and who holds a seat in each module.
+  //
+  // Deliberately no quotation data. Counting quotations here mixed the two
+  // things an admin actually decides — the licence and the seats — with the
+  // sales output of the people holding those seats, and the same numbers are
+  // already the CRM dashboard's whole job. An admin who wants them opens the
+  // CRM module. This board answers only "who can reach what, and under which
+  // licence", which is the question the tabs below it act on.
   if (isAdmin) {
     const qa = sql();
-    // KPI headline + department table are independent — run them together.
-    const [adminKpiRows, deptRows] = await Promise.all([
+    // Independent aggregates — one round trip each, run together.
+    const [adminKpiRows, deptRows, moduleRows] = await Promise.all([
       qa`
       select
         (select count(*) from users)::int as users,
@@ -292,28 +302,36 @@ export default async function DashboardPage() {
       >,
       qa`
       select
-        coalesce(nullif(u.department_code, ''), 'Unassigned') as code,
-        count(distinct u.id)::int as users,
-        count(q.id)::int as quotations
-      from users u
-      left join quotations q
-        on q.owner_id = u.id and q.deleted_at is null
+        coalesce(nullif(department_code, ''), 'Unassigned') as code,
+        count(*)::int as users
+      from users
       group by 1
       order by users desc, code asc
-    ` as Promise<Array<{ code: string; users: number; quotations: number }>>,
+    ` as Promise<Array<{ code: string; users: number }>>,
+      // Both access tiers — the workspace licence and the per-module seat
+      // counts — resolved together in lib/adminOverview so this board and the
+      // /admin tabs read them from one place.
+      getModuleAccessRows(),
     ]);
 
+    const users = Number(adminKpiRows[0].users);
+    const withRole = Number(adminKpiRows[0].with_role);
     const adminData: AdminDashboardData = {
       kpis: {
-        users: Number(adminKpiRows[0].users),
+        users,
         admins: Number(adminKpiRows[0].admins),
-        withRole: Number(adminKpiRows[0].with_role),
+        withRole,
+        // Everyone who holds no active grant in any module. These are the
+        // people an admin still has to act on, which is why this replaced the
+        // department count in the headline strip.
+        noAccess: Math.max(0, users - withRole),
         departments: Number(adminKpiRows[0].departments),
       },
+      subscription: summariseSubscription(moduleRows),
+      modules: moduleRows,
       departments: deptRows.map((r) => ({
         code: r.code,
         users: Number(r.users),
-        quotations: Number(r.quotations),
       })),
     };
 

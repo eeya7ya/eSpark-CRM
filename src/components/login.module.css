@@ -172,8 +172,8 @@
 
 /* Brand mark as a watermark straddling the 12° seam.
    Drawn twice at identical coordinates, one copy per side, because no single
-   tint reads at watermark opacity on both near-black and warm paper: brand
-   blue that lifts off the dark panel vanishes into the light one. Each copy
+   tint can be opposite BOTH near-black and warm paper — the one thing this
+   mark has to be. Each copy
    is clipped to its own side — the dark one by the viewport, the light one by
    `.auth`'s existing clip-path — so the two halves meet exactly on the seam
    and read as one mark passing beneath it.
@@ -204,22 +204,39 @@
 .root[dir="rtl"] .ghostLight {
   transform: translate(-50%, -50%);
 }
-/* Each half is tinted OPPOSITE to the ground it sits on: white where the
-   panel is dark, near-black where it is light. Opacity is set per side rather
-   than shared, because the same figure needs more strength to lift off
-   near-black than it does to sit on warm paper. Strong enough to read as part
-   of the design; still well under the text and the form that cross it. */
+/* Each half is tinted OPPOSITE to the ground it sits on, and the two tints are
+   mirror images of each other about the midpoint between the two grounds.
+   That mirroring is the whole point, and it is why these are flat colours
+   rather than white/near-black dropped to a low opacity as they were before.
+   A translucent tint cannot get you there: it can only pull the mark TOWARDS
+   the ground behind it, so at watermark strength both halves collapse into
+   their own ground's family — measured, the old pair landed at L*41 on the
+   near-black panel and L*78 on the paper one. Each half was technically
+   lighter/darker than its ground, yet the mark read as a dark shape on the
+   dark side and a light shape on the light side, which is backwards, and the
+   connectors crossing the seam read as one continuous grey.
+   The values below are picked in L* (perceptual lightness), not by eye:
+   ground   near-black L*11 · paper L*95    → midpoint L*53
+   mark     L*71 on near-black · L*35 on paper
+   Both sit 60 L* from their own ground and 18 the far side of the midpoint,
+   so each half is unambiguously in the opposite family — the mark is bright
+   on the dark panel and dark on the light one — and a connector crossing the
+   seam visibly flips colour there instead of running through in one tone.
+   Equal-and-opposite distances also keep the two halves the same perceived
+   strength, so they still read as ONE mark passing under the seam.
+   No opacity: at these lightnesses the mark already sits far below the text
+   and the form, and a flat colour is what makes it measurable. It also keeps
+   the icon knockouts exact — each is painted in its own side's ground colour,
+   so it stays a true hole rather than a tinted one. */
 .ghost {
   position: fixed;
-  color: #fff;
-  opacity: 0.3;
+  color: #aeb1b2;
 }
 .ghostLight {
   /* Absolute, not fixed: `.auth` is the containing block, and its clip-path
      then trims this half exactly along the 12° seam. */
   position: absolute;
-  color: var(--night);
-  opacity: 0.22;
+  color: #4f5354;
 }
 
 /* ══ auth panel (white, 12° cut) ═════════════════════════ */
