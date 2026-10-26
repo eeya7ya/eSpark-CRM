@@ -141,6 +141,62 @@ export async function ensureDefaultAdmin(): Promise<void> {
   }
 }
 
+/**
+ * Break-glass recovery for a locked-out admin. Single-workspace only.
+ *
+ * `ensureDefaultAdmin` only seeds `admin` when no such account exists, so once
+ * it does — its password changed and forgotten, or the database copied over
+ * from another deployment — `admin123` no longer opens it and nothing in the
+ * app can. With `ADMIN_RESET_PASSWORD` set in the environment, signing in as
+ * the default admin with exactly that password re-keys the account to it
+ * (recreating it if it was deleted, restoring the admin role) and forces a
+ * password change straight after.
+ *
+ * Any other username or password leaves the database untouched, so the
+ * variable is inert until used. Remove it once you are back in: while it is
+ * set, typing it re-keys the account again.
+ *
+ * Not offered on multi-workspace deployments: one environment variable that
+ * opens every client's admin account is exactly the cross-workspace reach the
+ * control plane is built to prevent.
+ */
+export async function resetAdminFromEnv(
+  username: string,
+  password: string,
+): Promise<void> {
+  if (hasControlPlane()) return;
+  const reset = process.env.ADMIN_RESET_PASSWORD || "";
+  // Too short to be a deliberate recovery password — most likely a stray value.
+  if (reset.length < 8) return;
+  const user = process.env.DEFAULT_ADMIN_USER || "admin";
+  // Case-folded: a phone keyboard turns `admin` into `Admin`.
+  if (username.toLowerCase() !== user.toLowerCase()) return;
+  // Compare digests rather than the raw strings, so the comparison takes the
+  // same time whatever was typed.
+  const digest = async (s: string) =>
+    b64(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+  if ((await digest(password)) !== (await digest(reset))) return;
+
+  await ensureSchema();
+  const q = sql();
+  const hash = await hashPassword(reset);
+  const existing = (await q`
+    select id from users where username = ${user} limit 1
+  `) as Array<{ id: number }>;
+  if (existing.length > 0) {
+    await q`
+      update users
+      set password_hash = ${hash}, role = 'admin', must_change_password = true
+      where id = ${existing[0].id}
+    `;
+  } else {
+    await q`
+      insert into users (username, password_hash, role, must_change_password)
+      values (${user}, ${hash}, 'admin', true)
+    `;
+  }
+}
+
 export async function createSessionCookie(user: SessionUser): Promise<void> {
   const token = await new SignJWT({
     sub: String(user.id),

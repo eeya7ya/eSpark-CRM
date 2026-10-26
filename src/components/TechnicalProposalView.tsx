@@ -33,6 +33,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { QuotationItem } from "./QuotationPreview";
 import { runQuotationPrint } from "@/lib/printQuotation";
+import { buildPrintTitle } from "@/lib/printFilename";
+import ProtectedPdfDialog from "./ProtectedPdfDialog";
 import PageLoader from "./PageLoader";
 import EditableImage from "./EditableImage";
 
@@ -303,6 +305,7 @@ export default function TechnicalProposalView({
   const [loading, setLoading] = useState(true);
   const [enriching, setEnriching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [protectOpen, setProtectOpen] = useState(false);
 
   const storageKey = `mt:tp:overrides:${quotationId}`;
   const [overrides, setOverridesRaw] = useState<TpOverrides>({});
@@ -678,6 +681,13 @@ export default function TechnicalProposalView({
             Reset to defaults
           </button>
           <button
+            onClick={() => setProtectOpen(true)}
+            className="rounded-md border border-espark-border px-4 py-2 text-sm font-semibold hover:bg-espark-soft"
+            title="Read-only, watermarked PDF for the client — can't be edited or copied from"
+          >
+            Read-only PDF
+          </button>
+          <button
             onClick={runPrint}
             className="rounded-md bg-espark-primary px-4 py-2 text-sm font-semibold text-white hover:bg-espark-primary/85"
           >
@@ -686,6 +696,14 @@ export default function TechnicalProposalView({
         </div>
       </div>
 
+      <ProtectedPdfDialog
+        open={protectOpen}
+        onClose={() => setProtectOpen(false)}
+        onPrint={runPrint}
+        fileName={buildPrintTitle(ref, projectName || "Technical Proposal")}
+        watermark={{ recipient: customerName, reference: ref, date: dateLong, logoUrl: "/logo.png" }}
+        heading="Technical Proposal — read-only"
+      />
       <div className="overflow-x-auto print:overflow-x-visible">
         <div className="quotation-doc fp-doc">
           {/* ───── 1. Cover ─────────────────────────────────────────── */}
