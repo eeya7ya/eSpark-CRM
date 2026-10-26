@@ -294,6 +294,9 @@ export default function LoginClient({
                 name="username"
                 type="text"
                 autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -313,6 +316,11 @@ export default function LoginClient({
                 name="password"
                 type={showPw ? "text" : "password"}
                 autoComplete="current-password"
+                // Revealed as plain text it would otherwise be capitalised and
+                // autocorrected on a phone, changing the password typed.
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

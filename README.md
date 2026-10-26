@@ -50,6 +50,7 @@ settings:
 | `GROQ_WEB_MODEL`                 |          | Default `groq/compound` (agentic web search)                                            |
 | `DEFAULT_ADMIN_USER`             |          | Default `admin`                                                                         |
 | `DEFAULT_ADMIN_PASS`             |          | Default `admin123` — **change immediately after first login**                           |
+| `ADMIN_RESET_PASSWORD`           |          | Locked out? Set it, redeploy, sign in as `admin` with this password, then **remove it**  |
 | `GITHUB_REPO`                    |          | `owner/repo` that hosts `DATABASE/` — default this repo                                 |
 | `GITHUB_BRANCH`                  |          | Branch that hosts `DATABASE/`                                                            |
 | `COMPANY_LOGO_URL`               |          | Raw GitHub URL for the eSpark logo (falls back to `/logo-placeholder.svg`)              |

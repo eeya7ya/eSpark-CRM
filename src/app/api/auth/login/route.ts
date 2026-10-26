@@ -3,6 +3,7 @@ import { sql } from "@/lib/db";
 import {
   createSessionCookie,
   ensureDefaultAdmin,
+  resetAdminFromEnv,
   verifyPassword,
 } from "@/lib/auth";
 import { hasControlPlane, getWorkspaceBySlugCached } from "@/lib/controlDb";
@@ -57,11 +58,16 @@ function clearAttempts(key: string): void {
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, password, workspace } = (await req.json()) as {
+    const body = (await req.json()) as {
       username?: string;
       password?: string;
       workspace?: string;
     };
+    const { password, workspace } = body;
+    // Phone keyboards and autofill leave stray spaces around a username; no
+    // username contains one at either end, so dropping them can't match the
+    // wrong account. The password is taken exactly as typed.
+    const username = (body.username || "").trim();
     if (!username || !password) {
       return NextResponse.json(
         { error: "Missing credentials" },
@@ -117,26 +123,8 @@ async function authenticate(
   workspaceSlug: string,
 ): Promise<NextResponse> {
   await ensureDefaultAdmin();
-  const q = sql();
-    const rows = (await q`
-      select u.id, u.username, u.password_hash, u.role, u.display_name, u.phone,
-             u.must_change_password, s.slug as subscriber_slug,
-             s.status as subscriber_status
-      from users u
-      left join subscribers s on s.id = u.subscriber_id
-      where u.username = ${username}
-      limit 1
-    `) as Array<{
-      id: number;
-      username: string;
-      password_hash: string;
-      role: "admin" | "user";
-      display_name: string;
-      phone: string | null;
-      must_change_password: boolean | number | null;
-      subscriber_slug: string | null;
-      subscriber_status: string | null;
-    }>;
+  await resetAdminFromEnv(username, password);
+  const rows = await findUser(username);
     if (rows.length === 0) {
       recordFailure(key);
       return NextResponse.json(
@@ -187,4 +175,46 @@ async function authenticate(
       // rather than the owner's dashboard, which is not theirs to see.
       home: row.subscriber_slug ? `/${row.subscriber_slug}` : "/",
     });
+}
+
+interface UserRow {
+  id: number;
+  username: string;
+  password_hash: string;
+  role: "admin" | "user";
+  display_name: string;
+  phone: string | null;
+  must_change_password: boolean | number | null;
+  subscriber_slug: string | null;
+  subscriber_status: string | null;
+}
+
+/**
+ * The account a login names. An exact match wins; failing that, a match that
+ * differs only in letter case — a phone capitalising `admin` to `Admin` — but
+ * only when exactly one account matches that way, so two usernames that differ
+ * only in case can never be confused for each other.
+ */
+async function findUser(username: string): Promise<UserRow[]> {
+  const q = sql();
+  const exact = (await q`
+    select u.id, u.username, u.password_hash, u.role, u.display_name, u.phone,
+           u.must_change_password, s.slug as subscriber_slug,
+           s.status as subscriber_status
+    from users u
+    left join subscribers s on s.id = u.subscriber_id
+    where u.username = ${username}
+    limit 1
+  `) as UserRow[];
+  if (exact.length > 0) return exact;
+  const folded = (await q`
+    select u.id, u.username, u.password_hash, u.role, u.display_name, u.phone,
+           u.must_change_password, s.slug as subscriber_slug,
+           s.status as subscriber_status
+    from users u
+    left join subscribers s on s.id = u.subscriber_id
+    where lower(u.username) = lower(${username})
+    limit 2
+  `) as UserRow[];
+  return folded.length === 1 ? folded : [];
 }
